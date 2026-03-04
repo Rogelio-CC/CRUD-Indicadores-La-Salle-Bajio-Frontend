@@ -1,0 +1,184 @@
+﻿@page "/home/vistaEstrategias/detalleEstrategia/{strategyId:guid}"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@inject EstrategiaApiService EstrategiaApiService
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@inject AuthStateService AuthState
+@using System.Net
+
+<link rel="stylesheet" href="css/DetailV.css" />
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+
+<PageTitle>Detalle de la estrategia</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<h1>Detalles de la estrategia</h1>
+
+<Divider Class="separate-line-detail" />
+
+<Div Class="container-detail">
+    <Form>
+        <fieldset class="form-grid">
+            <!-- Fila 1 -->
+            <Field Class="form-field">
+                <FieldLabel For="descripcion">Descripción</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentStrategy.DescripcionEstrategia" ReadOnly="true" ElementId="descripcion" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="indicadorAsociado">Indicador asociado</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentStrategy.Indicador" ReadOnly="true" ElementId="indicadorAsociado" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentStrategy.Creador" ReadOnly="true" ElementId="creadorAsociado" />
+            </Field>
+
+            <!-- Fila 2 -->
+            <Field Class="form-field">
+                <FieldLabel For="fechaDeEmision">Fecha de emisión</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentStrategy.FechaEmision.ToString("dd/MM/yyyy")" ReadOnly="true" ElementId="fechaDeEmision" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="periodoEscolarAsociado">Período Escolar asociado</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentStrategy.Periodo" ReadOnly="true" ElementId="periodoEscolarAsociado" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="carreraAsociada">Carrera asociada</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentStrategy.Carrera" ReadOnly="true" ElementId="carreraAsociada" />
+            </Field>
+        </fieldset>
+    </Form>
+    
+    <Div Class="form-submit">
+        <Button Style="font-family:IndivisaFont;
+                       background-color: #002855;
+                       color: #ffffff;
+                       width:96%;
+                       box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                       text-transform: uppercase;"
+                Clicked="goBack">
+            Regresar
+        </Button>
+    </Div>
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public Guid? strategyId { get; set; }
+
+    private Strategy currentStrategy = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    private Modal modalToShowErrorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            if (strategyId is not null && strategyId != Guid.Empty)
+            {
+                var responseToGetId = await EstrategiaApiService.GetByIdAsync(strategyId.Value);
+
+                if (!responseToGetId.Success)
+                {
+                    switch (responseToGetId.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                var dto = responseToGetId.Data;
+            
+                currentStrategy = new Strategy
+                {
+                    Id = dto!.Id,
+                    DescripcionEstrategia = dto.DescripcionEstrategia,
+                    FechaEmision = dto.FechaEmision,
+                    IndicadorId = dto.IndicadorId,
+                    Indicador = dto.Indicador,
+                    CreadorId = dto.CreadorId,
+                    Creador = dto.Creador,
+                    PeriodoId = dto.PeriodoId,
+                    Periodo = dto.Periodo,
+                    CarreraId = dto.CarreraId,
+                    Carrera = dto.Carrera
+                };
+            
+            }
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home/vistaEstrategias");
+
+    }
+
+    private Task HideModal(Modal modal)
+    {
+        NavManager.NavigateTo("/home/vistaEstrategias");
+        return modal.Hide();
+    }
+}

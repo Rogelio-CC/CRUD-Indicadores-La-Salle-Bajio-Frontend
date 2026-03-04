@@ -1,0 +1,282 @@
+﻿@page "/home/vistaRoles/creacionRol"
+@page "/home/vistaRoles/creacionRol/{roleId:guid}"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@inject RoleApiService RoleApiService
+@using System.ComponentModel.DataAnnotations
+@using PruebaAutenticador2.Services;
+@using PruebaAutenticador2.Classes;
+@inject AuthStateService AuthState
+@using System.Net
+
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/AllForms.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<PageTitle>@pageTitle</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<h1>Rol</h1>
+
+<Divider Class="separate-line-register" />
+
+<Div Class="container-register">
+    <Form>
+        <fieldset class="form-grid">
+            <Validations @ref="validations" Mode="ValidationMode.Auto" Model="currentRole">
+                <Validation Validator="@ValidationRule.IsNotEmpty">
+                    <Field Class="form-field">
+                        <FieldLabel For="nombreRol">Nombre del rol</FieldLabel>
+                        <TextEdit Class="form-control" ElementId="nombreRol" @bind-Text=currentRole.Nombre/>
+                    </Field>
+                </Validation>
+                <Validation Validator="@ValidationRule.IsNotEmpty">
+                    <Field Class="form-field">
+                        <FieldLabel For="permisos">Permisos</FieldLabel>
+                        <TextEdit Class="form-control" ElementId="permisos" @bind-Text=currentRole.Permisos/>
+                    </Field>
+                </Validation>
+            </Validations>
+        </fieldset>
+    </Form>
+
+    <Div Class="form-submit">
+        <Button Style="font-family:IndivisaFont;
+                   background-color: #002855;
+                   color: #ffffff;
+                   width:50%;
+                   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                   text-transform: uppercase;"
+        Clicked="submit">
+            @buttonText
+        </Button>
+        <Button Style="font-family:IndivisaFont;
+                   background-color: #002855;
+                   color: #ffffff;
+                   width:50%;
+                   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                   text-transform: uppercase;"
+                Clicked="goBack">
+            Cancelar
+        </Button>
+    </Div>
+
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, false)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessageAndRedirectViewPage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, true)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+@code {
+    [Parameter]
+    public Guid? roleId { get; set; }
+
+    private Role currentRole = new();
+    private string pageTitle = "Crear rol";
+    private string buttonText = "Crear";
+
+    private Validations validations;
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    private Modal modalToShowErrorMessage;
+
+    private Modal modalToShowErrorMessageAndRedirectViewPage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            if (roleId is not null && roleId != Guid.Empty)
+            {
+                var roleFromApi = await RoleApiService.GetByIdAsync(roleId.Value);
+
+                if (!roleFromApi.Success)
+                {
+                    switch (roleFromApi.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            errorMessage = roleFromApi.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+
+                            break;
+
+                        default:
+                            errorMessage = roleFromApi.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                if (roleFromApi != null)
+                {
+                    currentRole = roleFromApi.Data!;
+                    pageTitle = "Editar rol";
+                    buttonText = "Actualizar";
+                }
+            }
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessageAndRedirectViewPage.Show();
+        }  
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+
+    async Task submit()
+    {
+        if (await validations.ValidateAll())
+        {
+            await saveRole();
+        }
+    }
+
+    private async Task saveRole()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            if (roleId is null || roleId == Guid.Empty)
+            {
+                var response =await RoleApiService.CreateAsync(currentRole);
+
+                if (!response.Success)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = "Los campos del rol no deben quedar vacios (son obligatorios). Además, el nombre del rol y los permisos del rol deben tener al menos 5 caracteres y no debe superar los 100 caracteres.";
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+            }
+            else
+            {
+                var response = await RoleApiService.UpdateAsync(currentRole.Id, currentRole);
+
+                if (!response.Success)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = "Los campos del rol no deben quedar vacios (son obligatorios). Además, el nombre del rol y los permisos del rol deben tener al menos 5 caracteres y no debe superar los 100 caracteres. También puede ser que el ID no coincida.";
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.NotFound:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        default:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+            }
+
+            NavManager.NavigateTo("/home/vistaRoles");
+
+        } finally
+        {
+            isLoading = false;
+        }
+       
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home/vistaRoles");
+    }
+
+    private Task HideModal(Modal modal, bool value)
+    {
+        if (value)
+        {
+            NavManager.NavigateTo("/home/vistaRoles");
+            return modal.Hide();
+        }
+        else
+        {
+            return modal.Hide();
+        }
+    }
+}

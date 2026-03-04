@@ -1,0 +1,300 @@
+﻿@page "/home/verCalendario/"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@using System.Globalization
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@inject AuthStateService AuthState
+@inject EventosCalendarioService EventosCalendarioService
+
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+<link rel="stylesheet" href="css/Calendar.css" />
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role"/>
+
+<h1>Calendario</h1>
+
+<Divider Class="separate-line-calendar" />
+
+<Div Class = "container-search">
+    <Form>
+        <fieldset class="form-search">
+            <Field Class="form-field-search">
+                <FieldLabel For="Evento">Evento</FieldLabel>
+                <Select Class="form-select-search"
+                        TValue="string"
+                        SelectedValue="@filterTitle"
+                        SelectedValueChanged="(value) => { filterTitle = value; ApplyFilters(); }">
+                    <SelectItem TValue="string" Value="string.Empty">Selecciona alguna de las opciones</SelectItem>
+                    @foreach(var academicEvent in AcademicEvents)
+                    {
+                        <SelectItem TValue="string" Value="@academicEvent.Titulo">@academicEvent.Titulo</SelectItem>
+                    }
+                </Select>
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="Fecha de inicio">Fecha de inicio</FieldLabel>
+                <DateEdit TValue="DateTime?"
+                          Date="@filterStart"
+                          DateChanged="(value) => { filterStart = value; ApplyFilters(); }" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="Fecha de finalizacion">Fecha de finalización</FieldLabel>
+                <DateEdit TValue="DateTime?"
+                          Date="@filterEnd"
+                          DateChanged="(value) => { filterEnd = value; ApplyFilters(); }" />
+            </Field>
+        </fieldset>
+    </Form>
+</Div>
+
+<Div class="academic-calendar-container">
+    <!-- Encabezado con navegación -->
+    <Div Class="calendar-navigation">
+        <Button @onclick="() => ChangeMonth(-1)">
+            <Icon Name="IconName.ChevronLeft" Style="color:white"/>
+        </Button>
+
+        <Heading Size="HeadingSize.Is4" Class="calendar-title">
+            @CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(currentMonth) @currentYear
+        </Heading>
+
+        <Button @onclick="() => ChangeMonth(1)">
+            <Icon Name="IconName.ChevronRight" Style="color:white" />
+        </Button>
+    </Div>
+
+    <!-- Días de la semana (fila horizontal) -->
+    <Div Class="weekdays-header">
+        @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))
+        {
+            <Div class="weekday">
+                @CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedDayName((DayOfWeek)day)
+            </Div>
+        }
+    </Div>
+
+    <!-- Cuadrícula de días - CAMBIO PRINCIPAL -->
+    <Div Class="calendar-grid">
+        @{
+            var weeks = GetWeeksInMonth(currentYear, currentMonth);
+            // Mostrar solo las semanas que contengan días del mes actual
+            var weeksToShow = weeks.Where(week => week.Any(day => day != DateTime.MinValue));
+        }
+
+        @foreach (var week in weeksToShow)
+        {
+            <div class="calendar-row">
+                @foreach (var day in week)
+                {
+                    <div class="calendar-day"
+                         style="background-color: @GetDayBackgroundColor(day)"
+                         >
+                        @if (day != DateTime.MinValue)
+                        {
+                            <div class="day-number">@day.Day</div>
+                            @foreach (var eventItem in GetAcademicEvents(day))
+                            {
+                                <Div class="calendar-event" @onclick="() => ShowModal(eventItem)">
+                                    @eventItem.Titulo
+                                </Div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </Div>
+</Div>
+
+<Modal @ref="@modalRef" Class="event-modal">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <h3 style="text-align:center;">@selectedEvent.Titulo</h3>
+            <Div Class="event-dates">
+                <h5>Tipo de evento: @selectedEvent.TipoEvento</h5>
+                <h5>Día de inicio: @selectedEvent.FechaInicio.ToShortDateString()</h5> 
+                <h5>Día de finalización: @selectedEvent.FechaFin.ToShortDateString()</h5>
+            </Div>
+                <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Block="true" Clicked="() => HideModal(modalRef)">
+                    Ok
+                </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer/>
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+@code {
+
+    private int currentYear = DateTime.Now.Year;
+    private int currentMonth = DateTime.Now.Month;
+    private CalendarEvent selectedEvent = new();
+
+    private string filterTitle = string.Empty;
+    private DateTime? filterStart;
+    private DateTime? filterEnd;
+    private List<CalendarEvent> AcademicEvents = new();
+    private List<CalendarEvent> filteredEvents = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await EventosCalendarioService.GetAllAsync();
+
+            AcademicEvents = response.Data!.ToList();
+            
+            filteredEvents = AcademicEvents;
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void ApplyFilters()
+    {
+        filteredEvents = AcademicEvents.Where(ev =>
+            (string.IsNullOrWhiteSpace(filterTitle) || ev.Titulo.Contains(filterTitle, StringComparison.OrdinalIgnoreCase)) &&
+            (!filterStart.HasValue || ev.FechaInicio >= filterStart.Value) &&
+            (!filterEnd.HasValue || ev.FechaFin <= filterEnd.Value)
+        ).ToList();
+
+        // Si NO hay filtros aplicados, regresar al mes actual
+        bool noFilters =
+            string.IsNullOrWhiteSpace(filterTitle) &&
+            !filterStart.HasValue &&
+            !filterEnd.HasValue;
+
+        if (noFilters)
+        {
+            currentYear = DateTime.Now.Year;
+            currentMonth = DateTime.Now.Month;
+            return;
+        }
+
+
+        // 👉 Si hay eventos filtrados, mover al mes del primer evento encontrado
+        if (filteredEvents.Count > 0)
+        {
+            var firstEvent = filteredEvents.OrderBy(e => e.FechaInicio).First();
+
+            currentYear = firstEvent.FechaInicio.Year;
+            currentMonth = firstEvent.FechaInicio.Month;
+        }
+        
+    }
+
+    private void ChangeMonth(int delta)
+    {
+        var newDate = new DateTime(currentYear, currentMonth, 1).AddMonths(delta);
+        currentYear = newDate.Year;
+        currentMonth = newDate.Month;
+    }
+
+    private List<DateTime[]> GetWeeksInMonth(int year, int month)
+    {
+        var firstDay = new DateTime(year, month, 1);
+        var lastDay = firstDay.AddMonths(1).AddDays(-1);
+
+        var weeks = new List<DateTime[]>();
+        var currentWeek = new DateTime[7];
+        var currentDay = firstDay;
+
+        // Ajustar para que la semana comience en Domingo
+        while (currentDay.DayOfWeek != DayOfWeek.Sunday)
+        {
+            currentDay = currentDay.AddDays(-1);
+        }
+
+        // Cambio clave: continuar hasta cubrir todos los días del mes
+        while (currentDay <= lastDay || weeks.Count < 6) // Mostrar mínimo 6 filas
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                currentWeek[i] = (currentDay.Month == month) ? currentDay : DateTime.MinValue;
+                currentDay = currentDay.AddDays(1);
+            }
+            weeks.Add(currentWeek);
+            currentWeek = new DateTime[7];
+        }
+
+        return weeks;
+    }
+
+    private List<CalendarEvent> GetAcademicEvents(DateTime day)
+    {
+        return filteredEvents.Where(e => e.IsOnDate(day)).ToList();
+    }
+
+    private string GetDayBackgroundColor(DateTime day)
+    {
+        var events = GetAcademicEvents(day);
+        if (events.Any())
+        {
+            // Tomamos el color del primer evento
+            return events.First().Color!;
+        }
+        return "";
+    }
+
+    private Modal modalRef;
+
+    private Modal modalToShowErrorMessage;
+
+    private Task ShowModal(CalendarEvent ev)
+    {
+        selectedEvent = ev;
+        return modalRef.Show();
+    }
+
+    private Task HideModal(Modal modal)
+    {
+        return modal.Hide();
+    }
+}

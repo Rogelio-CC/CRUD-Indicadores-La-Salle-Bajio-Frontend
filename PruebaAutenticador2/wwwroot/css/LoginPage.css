@@ -1,0 +1,123 @@
+﻿.login-page {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden; /*Oculta contenido que sobresalga del contenedor (sin barras de desplazamiento)*/
+}
+
+
+.left-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.login-card-left {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.15);
+    padding: 40px 30px;
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.background-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.right-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.15);
+}
+
+.image-right img {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+
+h2 {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    color: #002855;
+}
+
+.footer-text {
+    line-height: 1.5;
+    margin-top: 20px;
+    font-size: 12px;
+}
+
+.logo {
+    width: 150px;
+}
+
+/* Responsividad para móviles (anchura) */
+@media (min-width: 320px) and (max-width: 768px) {
+
+    .login-page {
+        grid-template-columns: 1fr; /* Solo una columna */
+    }
+
+    .right-section {
+        display: none; /* Oculta completamente la sección de imagen */
+    }
+
+    .left-section {
+        padding: 1rem; /* Reduce el padding en móviles */
+    }
+}
+
+/* Animaciones generales */
+.login-page {
+    overflow-x: hidden;
+}
+
+.left-section {
+    animation: fadeInLeft 0.8s ease-out forwards;
+}
+
+.right-section {
+    animation: fadeInRight 0.8s ease-out forwards;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

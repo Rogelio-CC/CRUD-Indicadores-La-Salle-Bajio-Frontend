@@ -1,0 +1,435 @@
+﻿@page "/home/vistaIndicadores/vistaGruposIndicadores/vistaGraficas"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@inject IndicadorApiService IndicadorApiService
+@inject GrupoIndicadoresApiService GrupoIndicadoresApiService
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@using PruebaAutenticador2.Shared.DTOS.Indicador
+@using PruebaAutenticador2.Shared.DTOS.ListaCombos
+@inject AuthStateService AuthState
+
+<link rel="stylesheet" href="css/GraphSearch.css" />
+<link rel="stylesheet" href="css/Nabvar.css" />
+<Link rel="stylesheet" href="~/css/Fonts.css"/>
+<link rel="stylesheet" href="css/Footer.css" />
+
+<PageTitle>Búsqueda de Gráficas</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<h1>Gráficas generadas</h1>
+
+<Divider Class="separate-line-detail" />
+
+<Container Class="container-search">
+    <Form>
+        <fieldset class="form-search">
+            <Field Class="form-field-search">
+                <FieldLabel For="DescripcionGrupo">Descripción/Título del grupo de indicadores</FieldLabel>
+                <Select TValue="Guid?" @bind-SelectedValue="selectedGrupoId" Class="form-select-search" ElementId="DescripcionGrupo">
+                    <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+
+                    @foreach (var grupo in indicatorList
+                                        .GroupBy(i => new { i.GrupoId, i.Grupo })
+                                        .Select(g => g.Key))
+                    {
+                        <SelectItem Value="@grupo.GrupoId">
+                            @grupo.Grupo
+                        </SelectItem>
+                    }
+                </Select>
+            </Field>
+            <Field Class="form-field-search">
+                <FieldLabel For="DirectrizAsociado">Directriz asociado</FieldLabel>
+                <Select TValue="Guid?" @bind-SelectedValue="selectedDirectrizId" Class="form-select-search" ElementId="DirectrizAsociado">
+                    <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+
+                    @foreach (var directriz in indicatorList
+                                        .GroupBy(i => new { i.DirectrizId, i.Directriz })
+                                        .Select(g => g.Key))
+                    {
+                        <SelectItem Value="@directriz.DirectrizId">
+                            @directriz.Directriz
+                        </SelectItem>
+                    }
+                </Select>
+            </Field>
+            <Field Class="form-field-search">
+                <FieldLabel For="PeriodoEscolarAsociado">Periodo escolar asociado</FieldLabel>
+                <Select TValue="Guid?" @bind-SelectedValue="selectedPeriodoId" Class="form-select-search" ElementId="PeriodoEscolarAsociado">
+                    <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+
+                    @foreach (var periodo in indicatorList
+                                        .GroupBy(i => new { i.PeriodoId, i.Periodo })
+                                        .Select(g => g.Key))
+                    {
+                        <SelectItem Value="@periodo.PeriodoId">
+                            @periodo.Periodo
+                        </SelectItem>
+                    }
+                </Select>
+            </Field>
+            <Field Class="form-field-search">
+                <FieldLabel For="CarreraAsociada">Carrera asociada</FieldLabel>
+                <Select TValue="Guid?" @bind-SelectedValue="selectedCarreraId" Class="form-select-search" ElementId="CarreraAsociada">
+                    <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+
+                    @foreach (var carrera in indicatorList
+                                        .GroupBy(i => new { i.CarreraId, i.Carrera })
+                                        .Select(g => g.Key))
+                    {
+                        <SelectItem Value="@carrera.CarreraId">
+                            @carrera.Carrera
+                        </SelectItem>
+                    }
+                </Select>
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="FechaEmision">Fecha de emisión</FieldLabel>
+                <DateEdit TValue="DateTime" @bind-SelectedValue="selectedCreationDate" ElementId="FechaEmision" />
+            </Field>
+        </fieldset>
+    </Form>
+    <!-- Botón fuera del formulario -->
+    <Div Class="form-submit">
+        <Button Style="font-family:IndivisaFont;
+                       background-color: #002855;
+                       color: #ffffff;
+                       width:96%;
+                       box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                       text-transform: uppercase;
+                       margin-bottom: 30px;"
+                Clicked="toSearchGraphics">
+            Buscar
+        </Button>
+    </Div>
+</Container>
+
+<Container Class="container-graphics">
+    <Div Class="title-container">
+        <h3 style="padding-top: 30px;">
+            Resultados de la búsqueda
+        </h3>
+    </Div>
+    @if (graficasCargadas)
+    {
+        <Div Class="dashboard-grid">
+
+            <!-- CARD 1 -->
+            <Div Class="dashboard-card">
+                <Div Class="card-header">
+                    Cantidad total de indicadores del grupo
+                </Div>
+
+                <RadzenChart Style="height:260px;">
+                    <RadzenColumnSeries Data="@totalIndicadoresPorGrupoData"
+                                        CategoryProperty="Categoria"
+                                        ValueProperty="Valor" />
+                </RadzenChart>
+            </Div>
+
+            <!-- CARD 2 -->
+            <Div Class="dashboard-card">
+                <Div Class="card-header">
+                    Cantidad total de indicadores cumplidos del grupo
+                </Div>
+
+                <RadzenChart Style="height:260px;">
+                    <RadzenColumnSeries Data="@cumplimientoData"
+                                     CategoryProperty="Categoria"
+                                     ValueProperty="Valor">
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </RadzenColumnSeries>
+                </RadzenChart>
+            </Div>
+
+            <!-- CARD 3 -->
+            <Div Class="dashboard-card">
+                <Div Class="card-header">
+                    Porcentaje de cumplimiento de los indicadores del grupo
+                </Div>
+
+                <RadzenChart Style="height:260px;">
+                    <RadzenPieSeries Data="@porcentajeCumplimientoData"
+                                     CategoryProperty="Categoria"
+                                     ValueProperty="Valor">
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </RadzenPieSeries>
+                </RadzenChart>
+            </Div>
+
+            <!-- CARD 4 -->
+            <Div Class="dashboard-card">
+                <Div Class="card-header">
+                    Cantidad total de indicadores del grupo por directriz
+                </Div>
+
+                <RadzenChart Style="height:260px;">
+                    <RadzenColumnSeries Data="@totalIndicadoresGrupoPorDirectrizData"
+                                        CategoryProperty="Categoria"
+                                        ValueProperty="Valor">
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </RadzenColumnSeries>
+                </RadzenChart>
+            </Div>
+
+            <!-- CARD 5 -->
+            <Div Class="dashboard-card">
+                <Div Class="card-header">
+                    Cantidad total de indicadores del grupo por periodo
+                </Div>
+
+                <RadzenChart Style="height:260px;">
+                    <RadzenColumnSeries Data="@totalIndicadoresGrupoPorPeriodoData"
+                                        CategoryProperty="Categoria"
+                                        ValueProperty="Valor">
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </RadzenColumnSeries>
+                </RadzenChart>
+            </Div>
+
+            <!-- CARD 6 -->
+            <Div Class="dashboard-card">
+                <Div Class="card-header">
+                    Cantidad total de indicadores del grupo por carrera
+                </Div>
+
+                <RadzenChart Style="height:260px;">
+                    <RadzenColumnSeries Data="@totalIndicadoresGrupoPorCarreraData"
+                                        CategoryProperty="Categoria"
+                                        ValueProperty="Valor">
+                        <RadzenSeriesDataLabels Visible="true" />
+                    </RadzenColumnSeries>
+                </RadzenChart>
+            </Div>
+
+        </Div>
+    }
+    else
+    {
+        <Column>
+            <p class="text-center greyText">Seleccione filtros y haga clic en "Buscar" para ver las gráficas.</p>
+        </Column>
+    }
+    
+</Container>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer/>
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+@code {
+
+    private bool graficasCargadas = false;
+
+    private List<IndicadorDto> indicatorList = new();
+
+    private Guid? selectedGrupoId;
+    private Guid? selectedPeriodoId;
+    private Guid? selectedCarreraId;
+    private Guid? selectedDirectrizId;
+    private DateTime? selectedCreationDate { get; set; }
+
+    // Datos para gráficas (resultado)
+    private int totalIndicators = 0;
+    private int completedIndicators = 0;
+
+    // Lista real filtrada
+    private List<IndicadorDto> filteredIndicators = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    private Modal modalToShowErrorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAllIndicators();
+    }
+
+    private async Task LoadAllIndicators()
+    {
+        try 
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await IndicadorApiService.GetAllAsync();
+
+            indicatorList = response.Data!.ToList();
+
+            filteredIndicators = indicatorList;
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+
+    private void toSearchGraphics()
+    {
+        // Validación correcta
+        if (selectedGrupoId != Guid.Empty &&
+            selectedPeriodoId != Guid.Empty &&
+            selectedCarreraId != Guid.Empty)
+        {
+            filteredIndicators = indicatorList
+             .Where(i =>
+                 (!selectedGrupoId.HasValue || selectedGrupoId == Guid.Empty || i.GrupoId == selectedGrupoId) &&
+                 (!selectedDirectrizId.HasValue || selectedDirectrizId == Guid.Empty || i.DirectrizId == selectedDirectrizId) &&
+                 (!selectedPeriodoId.HasValue || selectedPeriodoId == Guid.Empty || i.PeriodoId == selectedPeriodoId) &&
+                 (!selectedCarreraId.HasValue || selectedCarreraId == Guid.Empty || i.CarreraId == selectedCarreraId) &&
+                 (!selectedCreationDate.HasValue || i.FechaEmision.Date == selectedCreationDate.Value.Date)
+             )
+             .ToList();
+
+             //Gráfico 1
+            totalIndicadoresPorGrupoData = filteredIndicators
+            .GroupBy(i => i.Grupo)
+            .Select(g => new BarData
+            {
+                Categoria = g.Key,
+                Valor = g.Count()
+            })
+            .ToArray();
+
+            //Gráfico 2
+            var total = filteredIndicators.Count;
+            var cumplidos = filteredIndicators.Count(i => i.FechaCumplimiento != null);
+            var noCumplidos = total - cumplidos;
+
+            cumplimientoData = new BarData[]
+            {
+                new BarData
+                {
+                    Categoria = "Cumplidos",
+                    Valor = cumplidos
+                },
+                new BarData
+                {
+                    Categoria = "No cumplidos",
+                    Valor = noCumplidos
+                }
+            };
+
+            // Gráfico 3
+            int porcentajeCumplido = total == 0 ? 0 : (int)((double)cumplidos / total * 100);
+            int porcentajeRestante = 100 - porcentajeCumplido;
+
+            porcentajeCumplimientoData = new PieData[]
+            {
+                new PieData
+                {
+                    Categoria = "Cumplido %",
+                    Valor = porcentajeCumplido
+                },
+                new PieData
+                {
+                    Categoria = "No cumplido %",
+                    Valor = porcentajeRestante
+                }
+            };
+
+            //Gráfico 4
+            totalIndicadoresGrupoPorDirectrizData = filteredIndicators
+            .GroupBy(i => i.Directriz)
+            .Select(g => new BarData
+            {
+                Categoria = g.Key,
+                Valor = g.Count()
+            })
+            .ToArray();
+
+            //Gráfico 5
+            totalIndicadoresGrupoPorPeriodoData = filteredIndicators
+            .GroupBy(i => i.Periodo)
+            .Select(g => new BarData
+            {
+                Categoria = g.Key,
+                Valor = g.Count()
+            })
+            .ToArray();
+
+            //Gráfico 6
+            totalIndicadoresGrupoPorCarreraData = filteredIndicators
+            .GroupBy(i => i.Carrera)
+            .Select(g => new BarData
+            {
+                Categoria = g.Key,
+                Valor = g.Count()
+            })
+            .ToArray();
+
+            graficasCargadas = true;
+        }
+        else
+        {
+            graficasCargadas = false;
+        }
+    }
+
+    private Task HideModal(Modal modal)
+    {
+        return modal.Hide();
+    }
+
+    bool showDataLabels = true;
+
+    class PieData
+    {
+        public string Categoria { get; set; }
+        public int Valor { get; set; }
+    }
+
+    private PieData[] porcentajeCumplimientoData;
+
+    class BarData
+    {
+        public string Categoria { get; set; }
+        public int Valor { get; set; }
+    }
+
+    private BarData[] totalIndicadoresPorGrupoData;
+    private BarData[] cumplimientoData;
+    private BarData[] totalIndicadoresGrupoPorDirectrizData;
+    private BarData[] totalIndicadoresGrupoPorPeriodoData;
+    private BarData[] totalIndicadoresGrupoPorCarreraData;
+
+}

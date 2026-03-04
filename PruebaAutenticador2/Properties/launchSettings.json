@@ -1,0 +1,33 @@
+{
+  //ESTE ARCHIVO FUNCIONA ÚNICAMENTE DE MANERA LOCAL. No se publicará cuando la app este en producción.
+  // La sección "iisSettings" configura como se ejecuta la aplicación cuando se usa el tipo de servidor IIS (Internet Information Services) Express.
+  // En "iisExpress" se muestra en que URL y puerto se ejecuta la aplicación con este servidor.
+  "iisSettings": {
+    "windowsAuthentication": false, // Específica si la autenticación de Windows esta habilitada. En este caso, esta desactivada.
+    "anonymousAuthentication": true, // Específica si la autenticación anónima esta habilitada. En este caso, esta habilitada.
+    "iisExpress": {
+      "applicationUrl": "http://localhost:22462",
+      "sslPort": 44342
+    }
+  },
+  // La sección "profiles" define como se puede ejecutar la app desde Visual Studio o CLI (Command Client Interface).
+  // Cada perfil es una forma distinta de lanzar el proyecto.
+  "profiles": {
+    "https": {
+      "commandName": "Project", // Indica que se ejecutará usando el servidor interno "Kestrel"
+      "dotnetRunMessages": true, // Muestra mensajes informativos al ejecutar URL de servidor y estado de compilación.
+      "launchBrowser": true, // Abre automáticamente el navegador 
+      "applicationUrl": "https://localhost:7068;http://localhost:5272",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

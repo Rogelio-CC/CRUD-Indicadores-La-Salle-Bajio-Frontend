@@ -1,0 +1,110 @@
+﻿/*Importación de fuente(s)*/
+@import "Fonts.css";
+
+
+h1 {
+    margin: 30px 30px 20px; /*Margen de 30px hacia arriba, 30px hacia la derecha e izquierda y 20px hacia abajo*/
+    font-size: 2em;
+    text-transform: uppercase; /*Transforma todas las letras de la palabra en mínúscula*/
+    color: #002855; /*Color del texto*/
+    font-family: IndivisaFontBold; /*Se colocar la tipografía de la Salle en su versión Bold*/
+    text-align: center; /*El texto se alinea al centro*/
+}
+
+.separate-line-register {
+    width: 96%; /*Abarca el 96% de la anchura de la linea*/
+    border: 3px solid #002855; /*Genera un borde sólido de 3px*/
+    opacity: 1; /*En este caso, ayuda a que la linea se vea más clara y no tan delgada*/
+    margin: 0 auto; /*Ayuda a centrar la línea automáticamente*/
+}
+
+.container-register {
+    width: 94%;
+    padding: 20px; /*Relleno interno de 20px*/
+    box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.35); /*Genera sombras alrededor del contenedor*/
+    border-radius: 10px; /*Redondea las esquinas del contenedor*/
+    background-color: white;
+    margin: 30px 30px 0;
+    margin-bottom: 352px; /*Margen por debajo para separar el contenedor principal del pie de página (footer)*/
+}
+
+form {
+    padding: 2rem;
+}
+
+    form label {
+        display: block; /*Se muestra como bloque*/
+        color: #002855;
+        font-family: IndivisaFontBold;
+        text-align: start;
+        font-size: 1rem;
+        text-transform: uppercase;
+    }
+
+.form-grid {
+    display: grid; /*Se muestra como cuadrícula*/
+    grid-template-columns: repeat(2, 1fr); /*Se alinean en 3 columnas*/
+    gap: 20px; /*Espacio de 20px entre los inputs*/
+    margin-bottom: 1rem;
+}
+
+.form-field {
+    display: flex; /*Ayuda a mostrar los elementos*/
+    flex-direction: column; /*Se muestran y acomodan por columna*/
+}
+
+.form-control {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border: 2px solid #002855;
+    font-size: 1rem;
+    text-transform: uppercase;
+    border-radius: 6px;
+    font-family: IndivisaFont;
+    text-align: start;
+}
+
+.form-select {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border: 2px solid #002855;
+    font-size: 1rem;
+    text-transform: uppercase;
+    border-radius: 6px;
+    font-family: IndivisaFont;
+    text-align: start;
+}
+
+.form-submit {
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    gap: 25px;
+}
+
+/* Responsividad para móviles (anchura)*/
+@media (min-width: 320px) and (max-width: 768px) {
+
+    .container-register {
+        width: auto; /*Ayuda a tener una anchura automática y basada en la anchura establecida en la versión de computadora*/
+    }
+
+    .form-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-control {
+        text-align: center;
+    }
+
+    form label {
+        text-align: center;
+    }
+
+    .form-submit {
+        display: block;
+    }
+
+    .btn {
+        margin-bottom: 20px;
+    }
+}

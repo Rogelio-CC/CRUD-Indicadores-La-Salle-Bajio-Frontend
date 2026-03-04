@@ -1,0 +1,146 @@
+﻿@import "Fonts.css";
+
+h1 {
+    margin: 30px 30px 20px;
+    font-size: 2em;
+    text-transform: uppercase;
+    color: #002855;
+    font-family: IndivisaFontBold;
+    text-align: center;
+}
+
+.separate-line-detail {
+    width: 96%;
+    border: 3px solid #002855;
+    opacity: 1;
+    margin: 0 auto;
+}
+
+.container-search {
+    width: 50%;
+    box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.10);
+    border-radius: 10px;
+    background-color: white;
+    margin: 30px 30px 30px;
+    justify-self: center;
+}
+
+form {
+    padding: 2rem;
+}
+
+    form label {
+        display: block;
+        color: #002855;
+        font-family: IndivisaFontBold;
+        text-align: start;
+        font-size: 1rem;
+        text-transform: uppercase;
+    }
+
+.form-search {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.form-field-search {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-select-search {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border: 2px solid #002855;
+    font-size: 1rem;
+    text-transform: uppercase;
+    border-radius: 6px;
+    font-family: IndivisaFont;
+    text-align: start;
+}
+
+.form-control {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    border: 2px solid #002855;
+    font-size: 1rem;
+    text-transform: uppercase;
+    border-radius: 6px;
+    font-family: IndivisaFont;
+    text-align: start;
+}
+
+.form-submit {
+    text-align: center;
+}
+
+/* Grid tipo BI */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+/* Card */
+.dashboard-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 16px 18px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease;
+}
+
+    .dashboard-card:hover {
+        transform: translateY(-3px);
+    }
+
+/* Título de cada gráfica */
+.card-header {
+    font-size: 14px;
+    font-family: IndivisaFontBold;
+    color: #002855;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.text-center {
+    text-align: center;
+    font-family: IndivisaFontBold;
+    margin-top: 20px;
+}
+
+.greyText {
+    color: #6c757d;
+}
+
+.container-graphics {
+    width: 96%;
+    box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.10);
+    border-radius: 10px;
+    background-color: white;
+    margin: 24px auto;
+    margin-bottom: 250px;
+    padding: 20px;
+    justify-self: center;
+}
+
+.title-container {
+    font-family: IndivisaFontBold;
+    color: #002855;
+    text-align: center;
+}
+
+/* Responsividad para móviles (anchura )*/
+@media (min-width: 320px) and (max-width: 768px) {
+    .container-search {
+        width: auto;
+    }
+
+    .form-control {
+        text-align: center;
+    }
+
+    form label {
+        text-align: center;
+    }
+}

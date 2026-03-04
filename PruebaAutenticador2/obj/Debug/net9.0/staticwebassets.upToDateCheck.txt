@@ -1,0 +1,88 @@
+wwwroot\css\AllForms.css
+wwwroot\css\bootstrap\bootstrap.min.css
+wwwroot\css\bootstrap\bootstrap.min.css.map
+wwwroot\css\Calendar.css
+wwwroot\css\Custom-button-login.css
+wwwroot\css\Custom-button-logout.css
+wwwroot\css\DetailV.css
+wwwroot\css\Fonts.css
+wwwroot\css\Footer.css
+wwwroot\css\Form_Profile.css
+wwwroot\css\GraphSearch.css
+wwwroot\css\LoginPage.css
+wwwroot\css\Nabvar.css
+wwwroot\css\open-iconic\FONT-LICENSE
+wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css
+wwwroot\css\open-iconic\font\fonts\open-iconic.eot
+wwwroot\css\open-iconic\font\fonts\open-iconic.otf
+wwwroot\css\open-iconic\font\fonts\open-iconic.svg
+wwwroot\css\open-iconic\font\fonts\open-iconic.ttf
+wwwroot\css\open-iconic\font\fonts\open-iconic.woff
+wwwroot\css\open-iconic\ICON-LICENSE
+wwwroot\css\open-iconic\README.md
+wwwroot\css\site.css
+wwwroot\css\Tables.css
+wwwroot\css\ViewEvidences.css
+wwwroot\css\Welcome.css
+wwwroot\favicon.ico
+wwwroot\Images\FondoSalle.jpg
+wwwroot\Images\fondo_login.jpg
+wwwroot\Images\icono_lasallebajio_BLANCO.png
+wwwroot\Images\lasallebajio_BLANCO.png
+wwwroot\Images\logo_salle.png
+wwwroot\indivisa_fonts\ttf\EULA 2021.pdf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Sans-Heavy Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Sans-Heavy.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Sans-Regular Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Sans-Regular.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Sans-Thin Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Sans-Thin.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Serif Heavy Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Serif Heavy.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Serif Regular Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Serif Regular.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Serif Thin Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Display Serif Thin.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Sans-Black Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Sans-Black.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Sans-Bold Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Sans-Light Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Sans-Light.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Sans-Regular Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Serif Black Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Serif Black.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Serif Bold Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Serif Light Italic.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Serif Light.ttf
+wwwroot\indivisa_fonts\ttf\Indivisa Text Serif Regular Italic.ttf
+wwwroot\indivisa_fonts\ttf\indivisa-text-sans-bold.ttf
+wwwroot\indivisa_fonts\ttf\indivisa-text-sans-regular.ttf
+wwwroot\indivisa_fonts\ttf\indivisa-text-serif-bold.ttf
+wwwroot\indivisa_fonts\ttf\indivisa-text-serif-regular.ttf
+wwwroot\js\authStorage.js
+wwwroot\js\download.js
+wwwroot\logoBlazor.png
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\ViewEvidences.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\Tables.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\site.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\open-iconic\README.md
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\open-iconic\font\fonts\open-iconic.svg
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\open-iconic\font\fonts\open-iconic.otf
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\open-iconic\font\css\open-iconic-bootstrap.min.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\Nabvar.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\LoginPage.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\GraphSearch.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\Form_Profile.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\Footer.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\Fonts.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\Welcome.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\DetailV.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\Custom-button-logout.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\Custom-button-login.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\Calendar.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\bootstrap\bootstrap.min.css.map
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\bootstrap\bootstrap.min.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\css\AllForms.css
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\js\download.js
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\js\authStorage.js
+C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\wwwroot\favicon.ico

@@ -1,0 +1,241 @@
+﻿@page "/home/vistaIndicadores/vistaGruposIndicadores"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@inject GrupoIndicadoresApiService GrupoIndicadoresApiService
+@inject AuthStateService AuthState
+
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Tables.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<PageTitle>Lista de grupos de los indicadores</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<Div Class="header-section">
+    <h1 class="title-general">Lista de grupos de los indicadores</h1>
+    <Div Class="header-buttons">
+        <Button Class="add-button" Clicked="@addGOIs">
+            Agregar grupo
+        </Button>
+        <Button Class="add-button" Clicked="@viewGraphics">
+            Ver gráficas generadas
+        </Button>
+        <Button Class="add-button" Clicked="@goBack">
+            Regresar a los indicadores
+        </Button>
+    </Div>
+</Div>
+
+<Divider Class="separate-line" />
+
+<Div Class="search-container">
+    <Span Class="search-icon">
+        <i class="fas fa-search"></i>
+    </Span>
+    <TextEdit Placeholder="Busca por descripción" Class="search-bar" Text="@searchText" TextChanged="@OnSearchChanged" />
+</Div>
+
+<Div Class="table-container">
+    <Table Bordered ResponsiveMode="TableResponsiveMode.Mobile" align="left" Class="all-table">
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Número del grupo
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Descripción
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Acciones
+                </TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var groupOfIndicators in filteredGroupOfIndicators)
+            {
+                <TableRow>
+                    <TableRowCell MobileModeCaption="Número del grupo">@groupOfIndicators.numeroGrupo</TableRowCell>
+                    <TableRowCell MobileModeCaption="Descripción">@groupOfIndicators.DescripcionGrupo</TableRowCell>
+                    <TableRowCell>
+                        <Div Class="buttons-container">
+                            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-left: 15px;" Clicked="() => editGOIs(groupOfIndicators.Id)">
+                                Editar
+                            </Button>
+                            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff; margin-left: 15px;" Clicked="() => confirmDelete(groupOfIndicators.Id)">
+                                Eliminar
+                            </Button>
+                        </Div>
+                    </TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader Style="background-color: #002855;">
+            <ModalTitle Style="font-family:IndivisaFontBold; color: #ffffff;">Eliminación de un grupo de indicadores</ModalTitle>
+            <CloseButton Style="background-color: #ffffff; opacity: 1;" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar este grupo?</FieldLabel>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => HideModal(modalRef)">No</Button>
+            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff;" Clicked="@deleteGOIs">Si</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+@code {
+
+    private List<GroupOfIndicators> groupOfIndicatorsList = new();
+
+    private string searchText = string.Empty;
+    private List<GroupOfIndicators> filteredGroupOfIndicators = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadGOIS();
+    }
+
+    private async Task LoadGOIS()
+    {
+
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await GrupoIndicadoresApiService.GetAllAsync();
+
+            groupOfIndicatorsList = response.Data!.OrderBy(r => r.DescripcionGrupo).ToList();
+
+            filteredGroupOfIndicators = groupOfIndicatorsList;
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void OnSearchChanged(string value)
+    {
+        searchText = value;
+
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            filteredGroupOfIndicators = groupOfIndicatorsList;
+        }
+        else
+        {
+            filteredGroupOfIndicators = groupOfIndicatorsList
+                .Where(a =>
+                    a.DescripcionGrupo.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
+    private void addGOIs()
+    {
+        NavManager.NavigateTo("/home/vistaIndicadores/vistaGruposIndicadores/creacionGrupoIndicadores");
+    }
+
+    private void viewGraphics()
+    {
+        NavManager.NavigateTo("/home/vistaIndicadores/vistaGruposIndicadores/vistaGraficas");
+    }
+
+    private void editGOIs(Guid id)
+    {
+        NavManager.NavigateTo($"/home/vistaIndicadores/vistaGruposIndicadores/creacionGrupoIndicadores/{id}");
+    }
+
+    private Guid GOIsToDelete;
+
+    private Task confirmDelete(Guid id)
+    {
+        GOIsToDelete = id;
+        return modalRef.Show();
+    }
+
+    private async Task deleteGOIs()
+    {
+        var response = await GrupoIndicadoresApiService.DeleteAsync(GOIsToDelete);
+
+        if (!response.Success)
+        {
+            errorMessage = response.ErrorMessage ?? "No se pudo eliminar el grupo de indicadores";
+            modalToShowErrorMessage?.Show();
+            return;
+        }
+
+        await LoadGOIS();
+        await modalRef.Hide();
+    }
+
+    private Modal modalRef;
+    private Modal modalToShowErrorMessage;
+
+    private Task HideModal(Modal modal)
+    {
+        return modal.Hide();
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home/vistaIndicadores");
+    }
+
+}

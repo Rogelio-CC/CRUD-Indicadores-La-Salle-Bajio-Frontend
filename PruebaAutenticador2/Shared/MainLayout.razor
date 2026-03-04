@@ -1,0 +1,101 @@
+﻿@using PruebaAutenticador2.Services
+@inherits LayoutComponentBase
+@inject NavigationManager Navigation
+@inject TokenStorageService TokenStorage
+@inject AuthStateService AuthState
+@inject TokenWatcherService TokenWatcher
+@implements IDisposable
+
+<HeadContent>
+    <RadzenTheme Theme="material" />
+</HeadContent>
+
+<RadzenComponents />
+
+<link rel="stylesheet" href="css/Fonts.css" />
+
+<div class="page" style="overflow-x: hidden;">
+    <main>
+        <article>
+            <ErrorBoundary @ref="errorBoundary">
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent Context="exception">
+                    <div id="blazor-error-ui">
+                        <p>Ocurrió un error inesperado. Por favor, recargue la página</p>
+                        <p>@exception.Message</p>
+                        <button class="oi-reload" @onclick="Reload">
+                            Recargar página
+                        </button>
+                    </div>
+                </ErrorContent>
+            </ErrorBoundary>
+        </article>
+    </main>
+</div>
+
+@if (showSessionExpireModal)
+{
+    <Modal @ref="@modalToShowTokenExpired" Style="border-radius: 10px;">
+        <ModalContent Centered="true">
+            <ModalBody>
+                <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">Tu sesión ha caducado y en unos segundos volverás a la pantalla de iniciar sesión.</Heading>
+            </ModalBody>
+        </ModalContent>
+    </Modal>
+}
+
+@code {
+    private bool showSessionExpireModal = false;
+    private ErrorBoundary? errorBoundary;
+    private Modal? modalToShowTokenExpired;
+
+    private void Reload()
+    {
+        errorBoundary?.Recover();
+        Navigation.NavigateTo(Navigation.Uri);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await TokenStorage.GetTokenAsync();
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            AuthState.SetToken(token);
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        TokenWatcher.Start();
+
+        TokenWatcher.OnTokenExpired += HandleTokenExpired;
+    }
+
+    private void HandleTokenExpired()
+    {
+        InvokeAsync(() =>
+        {
+            showSessionExpireModal = true;
+            StateHasChanged();
+        });
+
+        modalToShowTokenExpired?.Show();
+
+        Task.Delay(4000).ContinueWith(_ =>
+        {
+            InvokeAsync(() => Navigation.NavigateTo("/MicrosoftIdentity/Account/SignOut", true));
+        });
+    }
+
+    public void Dispose()
+    {
+        TokenWatcher.OnTokenExpired -= HandleTokenExpired;
+    }
+}
+
+
+
+

@@ -1,0 +1,340 @@
+﻿<!--Ruta de la interfaz-->
+@page "/home/vistaActividades"
+@attribute [Authorize]
+
+<!--Importación de librería/servicio de navegación-->
+@inject NavigationManager NavManager
+@inject ActividadApiService ActividadApiService
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@using PruebaAutenticador2.Shared.DTOS.Actividad
+@inject AuthStateService AuthState
+
+<!--Importaciones de estilos CSS-->
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Tables.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<!--Título principal de la pestaña-->
+<PageTitle>Lista de actividades</PageTitle>
+
+<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<!--Contenedor de encabezado donde contiene el título principal de la página y bótones-->
+<Div Class="header-section">
+    <h1 class="title-general">Lista de actividades</h1>
+    <Div Class="header-buttons">
+        <Button Class="add-button" Clicked="@addActivity">
+            Agregar actividad
+        </Button>
+        <Button Class="add-button" Clicked="@goBack">
+            Regresar al inicio
+        </Button>
+    </Div>
+</Div>
+
+<!--Línea de seperación entre el contenedor del encabezado y el contenido-->
+<Divider Class="separate-line" />
+
+<!--Barra de búsqueda-->
+<Div Class="search-container">
+    <Span Class="search-icon">
+        <i class="fas fa-search"></i>
+    </Span>
+    <TextEdit Placeholder="Busca por descripción" Class="search-bar" Text="@searchText" TextChanged="@OnSearchChanged" />
+</Div>
+
+@if (AuthState.Role == "maestro" || AuthState.Role == "investigador")
+{
+    <!--Contenedor que contiene la tabla-->
+    <Div Class="table-container">
+        <!--Tabla-->
+        <Table Bordered ResponsiveMode="TableResponsiveMode.Mobile" align="left" Class="all-table">
+            <!--Encabezado de la tabla-->
+            <TableHeader>
+                <!--Fila del encabezado de la tabla-->
+                <TableRow>
+                    <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                        Descripción
+                    </TableHeaderCell>
+                    <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                        Creador aosciado
+                    </TableHeaderCell>
+                    <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                        Estrategia asociada
+                    </TableHeaderCell>
+                    <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                        Acciones
+                    </TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <!--Contenido de la tabla-->
+            <TableBody>
+                @foreach (var activity in filteredActivities)
+                {
+                    <!--Fila 1 de la tabla-->
+                    <TableRow>
+                        <TableRowCell MobileModeCaption="Descripción">@activity.DescripcionActividad</TableRowCell>
+                        <TableRowCell MobileModeCaption="Creador aosciado">@activity.Creador</TableRowCell>
+                        <TableRowCell MobileModeCaption="Estrategia asociada">@activity.Estrategia</TableRowCell>
+                        <TableRowCell>
+                            <!--Contenedor para los botones de acciones-->
+                            <Div Class="buttons-container">
+                                <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => viewActivity(activity.Id)">
+                                    Detalles
+                                </Button>
+                                <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-left: 15px;" Clicked="() => editActivity(activity.Id)" Disabled>
+                                    Editar
+                                </Button>
+                                <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff; margin-left: 15px;" Clicked="() => confirmDelete(activity.Id)" Disabled>
+                                    Eliminar
+                                </Button>
+                            </Div>
+                        </TableRowCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    </Div>
+}
+else
+{
+    <!--Contenedor que contiene la tabla-->
+    <Div Class="table-container">
+        <!--Tabla-->
+        <Table Bordered ResponsiveMode="TableResponsiveMode.Mobile" align="left" Class="all-table">
+            <!--Encabezado de la tabla-->
+            <TableHeader>
+                <!--Fila del encabezado de la tabla-->
+                <TableRow>
+                    <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                        Descripción
+                    </TableHeaderCell>
+                    <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                        Creador aosciado
+                    </TableHeaderCell>
+                    <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                        Estrategia asociada
+                    </TableHeaderCell>
+                    <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                        Acciones
+                    </TableHeaderCell>
+                </TableRow>
+            </TableHeader>
+            <!--Contenido de la tabla-->
+            <TableBody>
+                @foreach (var activity in filteredActivities)
+                {
+                    <!--Fila 1 de la tabla-->
+                    <TableRow>
+                        <TableRowCell MobileModeCaption="Descripción">@activity.DescripcionActividad</TableRowCell>
+                        <TableRowCell MobileModeCaption="Creador aosciado">@activity.Creador</TableRowCell>
+                        <TableRowCell MobileModeCaption="Estrategia asociada">@activity.Estrategia</TableRowCell>
+                        <TableRowCell>
+                            <!--Contenedor para los botones de acciones-->
+                            <Div Class="buttons-container">
+                                <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => viewActivity(activity.Id)">
+                                    Detalles
+                                </Button>
+                                @if (CanEditOrDelete(activity.CreadorId))
+                                {
+                                    <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-left: 15px;" Clicked="() => editActivity(activity.Id)">
+                                        Editar
+                                    </Button>
+                                    <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff; margin-left: 15px;" Clicked="() => confirmDelete(activity.Id)">
+                                        Eliminar
+                                    </Button>
+                                }
+                            </Div>
+                        </TableRowCell>
+                    </TableRow>
+                }
+            </TableBody>
+        </Table>
+    </Div>
+}
+
+<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+
+<!--Ventana Modal para elminar o no una actividad (en este caso)-->
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader Style="background-color: #002855;">
+            <ModalTitle Style="font-family:IndivisaFontBold; color: #ffffff;">Eliminación de una actividad</ModalTitle>
+            <CloseButton Style="background-color: #ffffff; opacity: 1;" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar esta actividad?</FieldLabel>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => HideModal(modalRef)">No</Button>
+            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff;" Clicked="@deleteActivity">Si</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+
+
+@code {
+
+    private List<ActividadDto> activityList = new();
+
+    private string searchText = "";
+    private List<ActividadDto> filteredActivities = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await LoadActivities();
+    }
+
+    private async Task LoadActivities()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await ActividadApiService.GetAllAsync();
+
+            activityList = response.Data!.OrderBy(r => r.DescripcionActividad).ToList();
+
+            filteredActivities = activityList;
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+       
+    }
+
+    //Función para buscar una actividad por descripción
+    private void OnSearchChanged(string value)
+    {
+        searchText = value;
+
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            filteredActivities = activityList;
+        }
+        else
+        {
+            filteredActivities = activityList
+                .Where(a =>
+                    a.DescripcionActividad.Contains(searchText, StringComparison.OrdinalIgnoreCase)) //StringComparison.OrdinalIgnoreCase se usa para comparar cadenas rápidamente.
+                    .ToList();
+        }
+    }
+
+    private bool CanEditOrDelete(Guid creadorId)
+    {
+        if (AuthState.Role == "Administrador") return true;
+
+        if (AuthState.IdUser == null) return false;
+
+        return creadorId.ToString() == AuthState.IdUser;
+    }
+
+
+    private void addActivity()
+    {
+        NavManager.NavigateTo("/home/vistaActividades/creacionActividad");
+    }
+
+    private Guid activityToDelete;
+
+    private void viewActivity(Guid id)
+    {
+        NavManager.NavigateTo($"/home/vistaActividades/detalleActividad/{id}");
+    }
+
+    private void editActivity(Guid id)
+    {
+        NavManager.NavigateTo($"/home/vistaActividades/creacionActividad/{id}");
+    }
+
+    private Task confirmDelete(Guid id)
+    {
+        activityToDelete = id;
+        return modalRef.Show();
+    }
+
+    private async Task deleteActivity()
+    {
+        var response = await ActividadApiService.DeleteAsync(activityToDelete);
+
+        if (!response.Success)
+        {
+            errorMessage = response.ErrorMessage ?? "No se pudo eliminar la actividad.";
+            modalToShowErrorMessage?.Show();
+            return;
+        }
+
+        await LoadActivities();
+        await modalRef.Hide();
+    }
+
+    //Función para regresar a la pantalla principal
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home");
+    }
+
+    // Funciones de mostrar y ocultar el modal
+    private Modal modalRef;
+    private Modal modalToShowErrorMessage;
+
+    private Task HideModal(Modal modal)
+    {
+        return modal.Hide();
+    }
+
+}
+

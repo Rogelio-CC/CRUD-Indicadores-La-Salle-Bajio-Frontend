@@ -1,0 +1,122 @@
+﻿@import "Fonts.css";
+
+.view-profile-page {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+
+.left-section {
+    position: relative; /* Necesario para el posicionamiento absoluto de la imagen */
+    box-shadow: 4px 0 10px rgba(0, 0, 0, 0.15);
+}
+
+.image-left {
+    width: 100%;
+    height: 100%;
+}
+
+    .image-left img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* Asegura que la imagen cubra todo el espacio */
+        object-position: center; /* Centra la imagen */
+        display: block; /* Elimina espacios debajo de la imagen */
+    }
+
+
+.right-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+form {
+    padding: 2rem;
+}
+
+
+    form .mb-3 {
+        margin-bottom: 1.5rem;
+    }
+
+    form label {
+        display: block;
+        margin-bottom: 2em;
+        color: #002855;
+        font-family: IndivisaFontBold;
+        text-align: start;
+    }
+
+.form-control {
+    width: 500px;
+    border: 3px solid #002855;
+    font-size: 1rem;
+    border-radius: 6px;
+    font-family: IndivisaFont;
+    text-align: start;
+}
+
+.container-form {
+    width: 96%;
+    padding: 20px;
+    box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    background-color: white;
+    margin: 30px 30px 0;
+}
+
+
+/* Responsividad para móviles (anchura )*/
+@media (min-width: 320px) and (max-width: 768px) {
+
+    .view-profile-page {
+        grid-template-columns: 1fr; /* Solo una columna */
+    }
+
+    .left-section {
+        display: none; /* Oculta completamente la sección de imagen */
+    }
+
+    .right-section {
+        padding: 1rem; /* Reduce el padding en móviles */
+    }
+
+    .form-control {
+        width: auto;
+    }
+
+    form {
+        padding: 0;
+    }
+
+    .container-form {
+        width: auto;
+    }
+}
+
+/* Responsividad para tabletas (anchura)  */
+@media (min-width: 744px) and (max-width: 1370px) {
+    .view-profile-page {
+        grid-template-columns: 1fr;
+    }
+
+    .left-section {
+        display: none;
+    }
+
+    .right-section {
+        padding: 1rem;
+    }
+
+    form {
+        padding: 0;
+    }
+
+    .container-form {
+        width: auto;
+    }
+}

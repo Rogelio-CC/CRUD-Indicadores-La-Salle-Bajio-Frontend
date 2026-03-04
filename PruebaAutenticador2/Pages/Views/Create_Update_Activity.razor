@@ -1,0 +1,518 @@
+﻿<!--Ruta de la interfaz-->
+@page "/home/vistaActividades/creacionActividad"
+@page "/home/vistaActividades/creacionActividad/{activityId:guid}"
+@attribute [Authorize]
+
+<!--Importación de librería/servicio de navegación-->
+@inject NavigationManager NavManager
+@inject ActividadApiService ActividadApiService
+@inject UsuarioApiService UsuarioApiService
+@inject PeriodoEscolarApiService PeriodoEscolarApiService
+@inject CarreraApiService CarreraApiService
+@inject EstrategiaApiService EstrategiaApiService
+@inject EmailService EmailService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@using System.ComponentModel.DataAnnotations
+@using PruebaAutenticador2.Shared.DTOS.ListaCombos
+@using PruebaAutenticador2.Shared.DTOS.Actividad
+@using System.Net
+@inject AuthStateService AuthState
+
+<!--Importaciones de estilos CSS-->
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/AllForms.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<!--Título principal de la pestaña-->
+<PageTitle>@pageTitle</PageTitle>
+
+<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<!--Título principal de la pantalla-->
+<h1>Actividad</h1>
+
+<!--Línea de seperación entre el título de la página y el contenido-->
+<Divider Class="separate-line-register" />
+
+<!--Contenedor que contiene el formulario de registro/actualización-->
+<Div Class="container-register">
+    <Form>
+        <fieldset class="form-grid">
+            <Validations @ref="validations" Mode="ValidationMode.Auto" Model="currentActivity">
+
+                <Validation Validator="@ValidationRule.IsNotEmpty">
+                    <Field Class="form-field">
+                        <FieldLabel For="descripcion">Descripción</FieldLabel>
+                        <!--Input de cadenas-->
+                        <TextEdit Class="form-control" ElementId="descripcion" @bind-Text=currentActivity.DescripcionActividad />
+                    </Field>
+                </Validation>
+
+                <Validation Validator="ValidationRule.IsSelected">
+                    <Field Class="form-field">
+                        <FieldLabel For="actividadCumplida">¿Se cumplió la actividad?</FieldLabel>
+                        <!--Combobox-->
+                        <Select Class="form-select" TValue="bool" ElementId="actividadCumplida" SelectedValue="@currentActivity.ActividadCumplida" SelectedValueChanged="@OnSelectedValueChanged">
+                            <SelectItem TValue="bool" Value=true>Sí</SelectItem>
+                            <SelectItem TValue="bool" Value=false>No</SelectItem>
+                        </Select>
+                    </Field>
+                </Validation>
+
+                <Field Class="form-field">
+                    <FieldLabel For="fechaCumplimientoActividad">Fecha de cumplimiento</FieldLabel>
+                    <!--Input para poner fechas-->
+                    <DateEdit TValue="DateTimeOffset?" ElementId="fechaCumplimientoActividad" @bind-Date=currentActivity.FechaCumplimiento Disabled=complianceDateDisableInput />
+                </Field>
+
+                <Field Class="form-field">
+                    <FieldLabel For="cantidadLograda">Cantidad lograda</FieldLabel>
+                    <!--Input de números-->
+                    <NumericEdit TValue="decimal" Class="form-control" ElementId="cantidadLograda" @bind-Value=currentActivity.CantidadLograda />
+                </Field>
+
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
+                        <Select Class="form-select" TValue="Guid" ElementId="creadorAsociado" @bind-SelectedValue=currentActivity.CreadorId>
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var u in usuarios)
+                            {
+                                <SelectItem TValue="Guid" Value="@u.Id">
+                                    @u.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="estrategiaAsociada">Estrategia asociada</FieldLabel>
+                        <Select Class="form-select" TValue="Guid" ElementId="estrategiaAsociada" @bind-SelectedValue=currentActivity.EstrategiaId>
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var es in estrategias)
+                            {
+                                <SelectItem TValue="Guid" Value="@es.Id">
+                                    @es.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="periodoEscolarAsociado">Período escolar asociado</FieldLabel>
+                        <Select Class="form-select" TValue="Guid" ElementId="periodoEscolarAsociado" @bind-SelectedValue=currentActivity.PeriodoId>
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var p in periodos)
+                            {
+                                <SelectItem TValue="Guid" Value="@p.Id">
+                                    @p.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="carreraAsociada">Carrera asociada</FieldLabel>
+                        <Select Class="form-select" TValue="Guid" ElementId="carreraAsociada" @bind-SelectedValue=currentActivity.CarreraId>
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var c in carreras)
+                            {
+                                <SelectItem TValue="Guid" Value="@c.Id">
+                                    @c.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+            </Validations>
+            <Field Class="form-field">
+                <FieldLabel For="fechaRecordatorio">Fecha de actulización</FieldLabel>
+                <DateEdit TValue="DateTime?" Disabled="@(!remiderActivateActivity)" ElementId="fechaRecordatorio" @bind-Date=FechaRecordatorio />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="horaRecordatorio">Hora de actulización</FieldLabel>
+                <TimeEdit TValue="TimeSpan?" Disabled="@(!remiderActivateActivity)" ElementId="horaRecordatorio" @bind-Time=HoraRecordatorio />
+            </Field>
+        </fieldset>
+        <Div Style="display: flex; align-items: center; justify-content: center; font-family:IndivisaFont;">
+            <!--CheckBox-->
+            <Check TValue="bool" @bind-Checked="remiderActivateActivity" Disabled="@(AuthState.Role == "Maestro" || AuthState.Role == "Investigador")">Activar recordatorio de modificación de la actividad</Check>
+        </Div>
+    </Form>
+
+    <!--Contenedor de botónes-->
+    <Div Class="form-submit">
+        <Button Style="font-family:IndivisaFont;
+                           background-color: #002855;
+                           color: #ffffff;
+                           width:50%;
+                           box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                           text-transform: uppercase;"
+                Clicked="submit">
+            @buttonText
+        </Button>
+        <Button Style="font-family:IndivisaFont;
+                           background-color: #002855;
+                           color: #ffffff;
+                           width:50%;
+                           box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                           text-transform: uppercase;"
+                Clicked="goBack">
+            Cancelar
+        </Button>
+    </Div>
+</Div>
+
+<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, false)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessageAndRedirectViewPage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, true)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+
+@code {
+    [Parameter]
+    public Guid? activityId { get; set; }
+
+    private List<UsuarioComboDTO> usuarios = new();
+    private List<EstrategiaComboDTO> estrategias = new();
+    private List<PeriodoEscolarComboDTO> periodos = new();
+    private List<CarreraComboDTO> carreras = new();
+
+    // Variable que sirve para válidar que el checkbox este activado
+    private bool remiderActivateActivity { get; set; } = false;
+
+    private Activity currentActivity = new();   // actividad en edición o nuevo
+    private string pageTitle = "";
+    private string buttonText = "";
+
+    private string destinatario = "";
+    private string authenticatedEmail = "";
+    private DateTime? FechaRecordatorio { get; set; } = null;
+    private TimeSpan? HoraRecordatorio { get; set; } = null;
+    private string asunto = "";
+    private string mensaje = "";
+
+    bool complianceDateDisableInput = true;
+
+    private Validations validations;
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    private Modal modalToShowErrorMessage;
+
+    private Modal modalToShowErrorMessageAndRedirectViewPage;
+
+    private void ValidateGuidSelection(ValidatorEventArgs e)
+    {
+        if (e.Value is Guid guid && guid == Guid.Empty)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            usuarios = await UsuarioApiService.GetComboAsync();
+            estrategias = await EstrategiaApiService.GetComboAsync();
+            periodos = await PeriodoEscolarApiService.GetComboAsync();
+            carreras = await CarreraApiService.GetComboAsync();
+
+            if (activityId is not null && activityId != Guid.Empty)
+            {
+                var responseToGetId = await ActividadApiService.GetByIdAsync(activityId.Value);
+
+                if (!responseToGetId.Success)
+                {
+                    switch (responseToGetId.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        default:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                var dto = responseToGetId.Data;
+
+                currentActivity = new Activity
+                {
+                    Id = dto!.Id,
+                    DescripcionActividad = dto.DescripcionActividad,
+                    CantidadLograda = dto.CantidadLograda,
+                    FechaCumplimiento = dto.FechaCumplimiento,
+                    ActividadCumplida = dto.ActividadCumplida,
+                    EstrategiaId = dto.EstrategiaId,
+                    CreadorId = dto.CreadorId,
+                    PeriodoId = dto.PeriodoId,
+                    CarreraId = dto.CarreraId,
+                };
+
+                pageTitle = "Editar Actividad";
+                buttonText = "Actualizar";
+            }
+            else
+            {
+                currentActivity = new Activity();
+                pageTitle = "Crear Actividad";
+                buttonText = "Crear";
+            }
+        
+
+        } 
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessageAndRedirectViewPage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+
+    private async Task submit()
+    {
+        if (await validations.ValidateAll())
+        {
+            await saveActivity();
+        }
+    }
+
+
+    private async Task saveActivity()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var dto = new ActividadCreateUpdateDto
+            {
+                DescripcionActividad = currentActivity.DescripcionActividad,
+                CantidadLograda = currentActivity.CantidadLograda,
+                FechaCumplimiento = currentActivity.FechaCumplimiento,
+                ActividadCumplida = currentActivity.ActividadCumplida,
+                EstrategiaId = currentActivity.EstrategiaId,
+                CreadorId = currentActivity.CreadorId,
+                PeriodoId = currentActivity.PeriodoId,
+                CarreraId = currentActivity.CarreraId,
+            };
+
+            if (activityId is null || activityId == Guid.Empty)
+            {
+                var response = await ActividadApiService.CreateAsync(dto);
+
+                if (!response.Success)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                if (HoraRecordatorio != null && FechaRecordatorio != null)
+                {
+                    await EnviarCorreo();
+                }
+            }
+            else
+            {
+                var response = await ActividadApiService.UpdateAsync(currentActivity.Id, dto);
+
+                if (!response.Success)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.NotFound:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        case HttpStatusCode.Forbidden:
+                            errorMessage = "No puedes modificar ni eliminar actividades que no son de tu propiedad.";
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        default:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                if (HoraRecordatorio != null && FechaRecordatorio != null)
+                {
+                    await EnviarCorreo();
+                }
+            }
+
+            NavManager.NavigateTo("/home/vistaActividades");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+
+    public string GetEmailTemplate(string fileName)
+    {
+        var path = Path.Combine("Shared", "templates", fileName);
+        return File.ReadAllText(path);
+    }
+
+
+    private async Task EnviarCorreo()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userClaims = authState.User;
+
+        if (userClaims.Identity!.IsAuthenticated)
+        {
+            authenticatedEmail = userClaims.Claims.FirstOrDefault(c => c.Type == "preferred_username")?.Value ?? "";
+        }
+
+        destinatario = authenticatedEmail;
+
+        asunto = $"Correo enviado para modificar la actividad '{currentActivity.DescripcionActividad}'";
+
+        string bodyHTML = GetEmailTemplate("ReminderEmail.razor");
+
+        bodyHTML = bodyHTML.Replace("{{FECHA}}", FechaRecordatorio!.Value.ToString("dd/MM/yyyy"))
+                   .Replace("{{HORA}}", HoraRecordatorio.ToString())
+                   .Replace("{{ANIO}}", DateTime.Now.Year.ToString());
+
+        mensaje = bodyHTML;
+
+        await EmailService.SendEmailAsync(destinatario, asunto, mensaje);
+    }
+
+    private void OnSelectedValueChanged(bool value)
+    {
+        currentActivity.ActividadCumplida = value;
+
+        if (value)
+        {
+            complianceDateDisableInput = false;
+        }
+        else
+        {
+            complianceDateDisableInput = true;
+        }
+    }
+
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home/vistaActividades");
+    }
+
+    private Task HideModal(Modal modal, bool value)
+    {
+        if (value)
+        {
+            NavManager.NavigateTo("/home/vistaActividades");
+            return modal.Hide();
+        }
+        else
+        {
+            return modal.Hide();
+        }
+    }
+}

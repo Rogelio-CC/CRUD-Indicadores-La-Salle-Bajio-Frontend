@@ -1,0 +1,234 @@
+﻿@page "/home/vistaRoles"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@inject RoleApiService RoleApiService
+@inject AuthStateService AuthState
+
+
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Tables.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<PageTitle>Lista de roles</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<Div Class="header-section">
+    <h1 class="title-general">Lista de roles</h1>
+    <Div Class="header-buttons">
+        <Button Class="add-button" Clicked="@addRole">
+            Agregar rol
+        </Button>
+        <Button Class="add-button" Clicked="@goBack">
+            Regresar al inicio
+        </Button>
+    </Div>
+</Div>
+
+<Divider Class="separate-line" />
+
+<Div Class="search-container">
+    <Span Class="search-icon">
+        <i class="fas fa-search"></i>
+    </Span>
+    <TextEdit Placeholder="Busca por nombre" Class="search-bar" Text="@searchText" TextChanged="@OnSearchChanged" />
+</Div>
+
+<Div Class="table-container">
+    <Table Bordered ResponsiveMode="TableResponsiveMode.Mobile" align="left" Class="all-table">
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Nombre del rol
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Permisos
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Acciones
+                </TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach(var role in filteredRoles)
+            {
+                <TableRow>
+                    <TableRowCell MobileModeCaption="Nombre del rol">@role.Nombre</TableRowCell>
+                    <TableRowCell MobileModeCaption="Permisos">@role.Permisos</TableRowCell>
+                    <TableRowCell>
+                        <Div Class="buttons-container">
+                            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-left: 15px;" Clicked="() => editRole(role.Id)">
+                                Editar
+                            </Button>
+                            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff; margin-left: 15px;" Clicked="() => confirmDelete(role.Id)">
+                                Eliminar
+                            </Button>
+                        </Div>
+                    </TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader Style="background-color: #002855;">
+            <ModalTitle Style="font-family:IndivisaFontBold; color: #ffffff;">Eliminación de un rol</ModalTitle>
+            <CloseButton Style="background-color: #ffffff; opacity: 1;" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar este rol?</FieldLabel>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => HideModal(modalRef)">No</Button>
+            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff;" Clicked="@deleteRole">Si</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+@code {
+
+    private List<Role> roleList = new();
+
+    private string searchText = string.Empty;
+    private List<Role> filteredRoles = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRoles();
+    }
+
+    private async Task LoadRoles()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await RoleApiService.GetAllAsync();
+
+            roleList = response.Data!.OrderBy(r => r.Nombre).ToList();
+
+            filteredRoles = roleList;
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;   
+        }
+    }
+
+
+    private void OnSearchChanged(string value)
+    {
+        searchText = value;
+
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            filteredRoles = roleList;
+        }
+        else
+        {
+            filteredRoles = roleList
+                .Where(a =>
+                    a.Nombre.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
+    private void addRole()
+    {
+        NavManager.NavigateTo("/home/vistaRoles/creacionRol");
+    }
+
+    private Guid roleToDelete;
+
+    private void editRole(Guid id)
+    {
+        NavManager.NavigateTo($"/home/vistaRoles/creacionRol/{id}");
+    }
+
+    private Task confirmDelete(Guid id)
+    {
+        roleToDelete = id;
+        return modalRef.Show();
+    }
+
+    private async Task deleteRole()
+    {
+        var response = await RoleApiService.DeleteAsync(roleToDelete);
+
+        if (!response.Success)
+        {
+            errorMessage = response.ErrorMessage ?? "No se pudo eliminar el rol";
+            modalToShowErrorMessage?.Show();
+            return;
+        }
+
+        await LoadRoles();
+        await modalRef.Hide();
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo($"/home");
+    }
+
+    private Modal modalRef;
+    private Modal modalToShowErrorMessage;
+
+    private Task HideModal(Modal modal)
+    {
+        return modal.Hide();
+    }
+
+}
+

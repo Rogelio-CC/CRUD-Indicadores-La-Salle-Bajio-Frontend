@@ -1,0 +1,14 @@
+﻿/*Este archivo CSS contiene laa diferentes tipografías de la Salle*/
+@font-face {
+    font-family: 'IndivisaFont';
+    src: url('/indivisa_fonts/ttf/indivisa-text-sans-regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'IndivisaFontBold';
+    src: url('/indivisa_fonts/ttf/indivisa-text-serif-bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}

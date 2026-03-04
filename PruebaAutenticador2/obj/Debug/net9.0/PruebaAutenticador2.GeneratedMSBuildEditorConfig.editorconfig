@@ -1,0 +1,221 @@
+is_global = true
+build_property.TargetFramework = net9.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = PruebaAutenticador2
+build_property.RootNamespace = PruebaAutenticador2
+build_property.ProjectDir = C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\rogel\Downloads\todo\Indicadores_Salle_Conexión_Back_Front\Indicadores_salle_con_clases\PruebaAutenticador2
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 9.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/App.razor]
+build_metadata.AdditionalFiles.TargetPath = QXBwLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/ErrorStatusHttpPages/NotFoundRole.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3JTdGF0dXNIdHRwUGFnZXNcTm90Rm91bmRSb2xlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/ErrorStatusHttpPages/NotFoundUser.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3JTdGF0dXNIdHRwUGFnZXNcTm90Rm91bmRVc2VyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/ReusableComponents/Footer.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmV1c2FibGVDb21wb25lbnRzXEZvb3Rlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/ReusableComponents/Navbar.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmV1c2FibGVDb21wb25lbnRzXE5hdmJhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_Activity.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9BY3Rpdml0eS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_Comment.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9Db21tZW50LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_Faculty.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9GYWN1bHR5LnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_Group_Indicator.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9Hcm91cF9JbmRpY2F0b3IucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_Guideline.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9HdWlkZWxpbmUucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_Indicator.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9JbmRpY2F0b3IucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_Major.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9NYWpvci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_Role.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9Sb2xlLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_SchoolTerm.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9TY2hvb2xUZXJtLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_Strategy.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9TdHJhdGVneS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Create_Update_User.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ3JlYXRlX1VwZGF0ZV9Vc2VyLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Activities.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9BY3Rpdml0aWVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Comments.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9Db21tZW50cy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Faculties.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9GYWN1bHRpZXMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Group_Indicators.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9Hcm91cF9JbmRpY2F0b3JzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Guidelines.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9HdWlkZWxpbmVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Indicators.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9JbmRpY2F0b3JzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Majors.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9NYWpvcnMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Roles.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9Sb2xlcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_SchoolTerms.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9TY2hvb2xUZXJtcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Strategies.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9TdHJhdGVnaWVzLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/CRUD_Users.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcQ1JVRF9Vc2Vycy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Detail_View_Activity.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcRGV0YWlsX1ZpZXdfQWN0aXZpdHkucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Detail_View_Comment.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcRGV0YWlsX1ZpZXdfQ29tbWVudC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Detail_View_Faculty.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcRGV0YWlsX1ZpZXdfRmFjdWx0eS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Detail_View_Guideline.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcRGV0YWlsX1ZpZXdfR3VpZGVsaW5lLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Detail_View_Indicator.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcRGV0YWlsX1ZpZXdfSW5kaWNhdG9yLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Detail_View_Strategy.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcRGV0YWlsX1ZpZXdfU3RyYXRlZ3kucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Detail_View_User.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcRGV0YWlsX1ZpZXdfVXNlci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Login_Page.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcTG9naW5fUGFnZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Principal_Interface.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcUHJpbmNpcGFsX0ludGVyZmFjZS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/Redirect.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcUmVkaXJlY3QucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/View_Calendar.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcVmlld19DYWxlbmRhci5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/View_Graphics.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcVmlld19HcmFwaGljcy5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Views/View_Profile_User.razor]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVmlld3NcVmlld19Qcm9maWxlX1VzZXIucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Shared/Login.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Shared/LoginDisplay.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ2luRGlzcGxheS5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Shared/Logout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXExvZ291dC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Shared/RedirectToLogin.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFJlZGlyZWN0VG9Mb2dpbi5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Shared/SurveyPrompt.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXFN1cnZleVByb21wdC5yYXpvcg==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Shared/templates/ReminderEmail.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXHRlbXBsYXRlc1xSZW1pbmRlckVtYWlsLnJhem9y
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/_Imports.razor]
+build_metadata.AdditionalFiles.TargetPath = X0ltcG9ydHMucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Shared/MainLayout.razor]
+build_metadata.AdditionalFiles.TargetPath = U2hhcmVkXE1haW5MYXlvdXQucmF6b3I=
+build_metadata.AdditionalFiles.CssScope = b-18tlx7flmf
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/rogel/Downloads/todo/Indicadores_Salle_Conexión_Back_Front/Indicadores_salle_con_clases/PruebaAutenticador2/Pages/_Host.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX0hvc3QuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 

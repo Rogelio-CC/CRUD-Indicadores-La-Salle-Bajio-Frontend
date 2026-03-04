@@ -1,0 +1,186 @@
+﻿@page "/home/vistaFacultades/detalleFacultad/{facultyId:guid}"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@inject FacultadApiService FacultadApiService
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@inject AuthStateService AuthState
+@using System.Net
+
+<link rel="stylesheet" href="css/DetailV.css" />
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+
+<PageTitle>Detalle de la facultad</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<h1>Detalles de la facultad</h1>
+
+<Divider Class="separate-line-detail" />
+
+<Div Class="container-detail">
+    <Form>
+        <fieldset class="form-grid">
+            <!-- Fila 1 -->
+            <Field Class="form-field">
+                <FieldLabel For="nombreDeLaFacultad">Nombre de la facultad</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentFaculty.Nombre" ReadOnly="true" ElementId="nombreDeLaFacultad" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="mision">Misión</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentFaculty.Mision" ReadOnly="true" ElementId="mision" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="vision">Vision</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentFaculty.Vision" ReadOnly="true" ElementId="vision" />
+            </Field>
+
+            <!-- Fila 2 -->
+            <Field Class="form-field">
+                <FieldLabel For="slogan">Slogan</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentFaculty.Slogan" ReadOnly="true" ElementId="slogan" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="politicaAsociada">Política asociada</FieldLabel> 
+                <TextEdit Class="form-control" Text="@currentFaculty.PoliticaAsociada" ReadOnly="true" ElementId="politicaAsociada" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="fechaDeEmision">Fecha de emisión</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentFaculty.FechaEmision.ToString("dd/MM/yyyy")" ReadOnly="true" ElementId="fechaDeEmision" />
+            </Field>
+
+            <!-- Fila 3 -->
+            <Field Class="form-field">
+                <FieldLabel For="fechaDeEdicion">Fecha de edición</FieldLabel>
+                <TextEdit Class="form-control" Text="@(currentFaculty.FechaEdicion?.ToString("dd/MM/yyyy") ?? "No hay fecha")" ReadOnly="true" ElementId="fechaDeEdicion" />
+            </Field>
+        </fieldset>
+    </Form>
+    
+    <Div Class="form-submit">
+        <Button Style="font-family:IndivisaFont;
+                       background-color: #002855;
+                       color: #ffffff;
+                       width:96%;
+                       box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                       text-transform: uppercase;"
+                Clicked="goBack">
+            Regresar
+        </Button>
+    </Div>
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+@code {
+    [Parameter]
+    public Guid? facultyId { get; set; }
+
+    private Faculty currentFaculty = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    private Modal modalToShowErrorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            if (facultyId is not null && facultyId != Guid.Empty)
+            {
+                var responseToGetId = await FacultadApiService.GetByIdAsync(facultyId.Value);
+
+                if (!responseToGetId.Success)
+                {
+                    switch (responseToGetId.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                var faculty = responseToGetId.Data;
+
+                currentFaculty = new Faculty
+                {
+                    Id = faculty!.Id,
+                    Nombre = faculty.Nombre,
+                    Mision = faculty.Mision,
+                    Vision = faculty.Vision,
+                    Slogan = faculty.Slogan,
+                    PoliticaAsociada = faculty.PoliticaAsociada,
+                    FechaEmision = faculty.FechaEmision,
+                    FechaEdicion = faculty.FechaEdicion,
+                };
+            }
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home/vistaFacultades");
+
+    }
+
+    private Task HideModal(Modal modal)
+    {
+        NavManager.NavigateTo("/home/vistaFacultades");
+        return modal.Hide();
+    }
+}

@@ -1,0 +1,386 @@
+﻿@page "/home/vistaEstrategias/creacionEstrategia"
+@page "/home/vistaEstrategias/creacionEstrategia/{strategyId:guid}"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@inject EstrategiaApiService EstrategiaApiService
+@inject UsuarioApiService UsuarioApiService
+@inject PeriodoEscolarApiService PeriodoEscolarApiService
+@inject IndicadorApiService IndicadorApiService
+@inject CarreraApiService CarreraApiService
+@using PruebaAutenticador2.Services
+@using PruebaAutenticador2.Shared.DTOS.Estrategia
+@using PruebaAutenticador2.Shared.DTOS.ListaCombos
+@using PruebaAutenticador2.Classes
+@using System.ComponentModel.DataAnnotations
+@inject AuthStateService AuthState
+@using System.Net
+
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/AllForms.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<PageTitle>@pageTitle</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<h1>Estrategia</h1>
+
+<Divider Class="separate-line-register" />
+
+<Div Class="container-register">
+    <Form>
+        <fieldset class="form-grid">
+            <Validations @ref="validations" Mode="ValidationMode.Auto" Model="currentStrategy">
+                <Validation Validator="ValidationRule.IsNotEmpty">
+                    <Field Class="form-field">
+                        <FieldLabel For="descripcion">Descripción</FieldLabel>
+                        <TextEdit Class="form-control" ElementId="descripcion" @bind-Text=currentStrategy.DescripcionEstrategia />
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="indicadorAsociado">Indicador asociado</FieldLabel>
+                        <Select Class="form-select" TValue="Guid" ElementId="indicadorAsociado" @bind-SelectedValue=currentStrategy.IndicadorId>
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var i in indicadores)
+                            {
+                                <SelectItem TValue="Guid" Value="@i.Id">
+                                    @i.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
+                        <Select Class="form-select" TValue="Guid" ElementId="creadorAsociado" @bind-SelectedValue=currentStrategy.CreadorId>
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var cr in usuarios)
+                            {
+                                <SelectItem TValue="Guid" Value="@cr.Id">
+                                    @cr.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="periodoEscolarAsociado">Período escolar asociado</FieldLabel>
+                        <Select Class="form-select" TValue="Guid" ElementId="periodoEscolarAsociado" @bind-SelectedValue=currentStrategy.PeriodoId>
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var p in periodos)
+                            {
+                                <SelectItem TValue="Guid" Value="@p.Id">
+                                    @p.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="carreraAsociada">Carrera asociada</FieldLabel>
+                        <Select Class="form-select" TValue="Guid" ElementId="carreraAsociada" @bind-SelectedValue=currentStrategy.CarreraId>
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var c in carreras)
+                            {
+                                <SelectItem TValue="Guid" Value="@c.Id">
+                                    @c.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+            </Validations>
+        </fieldset>
+    </Form>
+
+    <Div Class="form-submit">
+        <Button Style="font-family:IndivisaFont;
+                   background-color: #002855;
+                   color: #ffffff;
+                   width:50%;
+                   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                   text-transform: uppercase;"
+                Clicked="submit">
+            @buttonText
+        </Button>
+        <Button Style="font-family:IndivisaFont;
+                   background-color: #002855;
+                   color: #ffffff;
+                   width:50%;
+                   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                   text-transform: uppercase;"
+                Clicked="goBack">
+            Cancelar
+        </Button>
+    </Div>
+
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, false)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessageAndRedirectViewPage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, true)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+@code {
+    [Parameter]
+    public Guid? strategyId { get; set; }
+
+    private List<UsuarioComboDTO> usuarios = new();
+    private List<IndicadorComboDTO> indicadores = new();
+    private List<CarreraComboDTO> carreras = new();
+    private List<PeriodoEscolarComboDTO> periodos = new();
+
+    private Strategy currentStrategy = new();
+    private string pageTitle = "";
+    private string buttonText = "";
+
+    private Validations validations;
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    private Modal modalToShowErrorMessage;
+
+    private Modal modalToShowErrorMessageAndRedirectViewPage;
+
+    private void ValidateGuidSelection(ValidatorEventArgs e)
+    {
+        if (e.Value is Guid guid && guid == Guid.Empty)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            usuarios = await UsuarioApiService.GetComboAsync();
+            indicadores = await IndicadorApiService.GetComboAsync();
+            carreras = await CarreraApiService.GetComboAsync();
+            periodos = await PeriodoEscolarApiService.GetComboAsync();
+
+            if (strategyId is not null && strategyId != Guid.Empty)
+            {
+                var responseToGetId = await EstrategiaApiService.GetByIdAsync(strategyId.Value);
+
+                if (!responseToGetId.Success)
+                {
+                    switch (responseToGetId.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+
+                            break;
+
+                        default:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                var dto = responseToGetId.Data;
+
+                currentStrategy = new Strategy
+                {
+                    Id = dto!.Id,
+                    DescripcionEstrategia = dto.DescripcionEstrategia,
+                    IndicadorId = dto.IndicadorId,
+                    CreadorId = dto.CreadorId,
+                    PeriodoId = dto.PeriodoId,
+                    CarreraId = dto.CarreraId,
+                };
+
+                pageTitle = "Editar directriz";
+                buttonText = "Actualizar";
+            }
+            else
+            {
+                currentStrategy = new Strategy();
+                pageTitle = "Crear directriz";
+                buttonText = "Crear";
+            }
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessageAndRedirectViewPage.Show();
+        } 
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task submit()
+    {
+        if (await validations.ValidateAll())
+        {
+            await saveStrategy();
+        }
+    }
+
+    private async Task saveStrategy()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var dto = new EstrategiaCreateUpdateDto
+            {
+                DescripcionEstrategia = currentStrategy.DescripcionEstrategia,
+                IndicadorId = currentStrategy.IndicadorId,
+                CreadorId = currentStrategy.CreadorId,
+                PeriodoId = currentStrategy.PeriodoId,
+                CarreraId = currentStrategy.CarreraId,
+            };
+
+            if (strategyId is null || strategyId == Guid.Empty){
+
+                var response = await EstrategiaApiService.CreateAsync(dto);
+                
+                if (!response.Success)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+            }
+            else{
+                var response = await EstrategiaApiService.UpdateAsync(currentStrategy.Id, dto);
+
+                if (!response.Success)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.NotFound:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        case HttpStatusCode.Forbidden:
+                            errorMessage = "No puedes modificar ni eliminar estrategias que no son de tu propiedad.";
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        default:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+            }
+
+            NavManager.NavigateTo("/home/vistaEstrategias");
+
+        } finally
+        {
+            isLoading = false;
+        }
+        
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home/vistaEstrategias");
+    }
+
+    private Task HideModal(Modal modal, bool value)
+    {
+        if (value)
+        {
+            NavManager.NavigateTo("/home/vistaEstrategias");
+            return modal.Hide();
+        }
+        else
+        {
+            return modal.Hide();
+        }
+    }
+}

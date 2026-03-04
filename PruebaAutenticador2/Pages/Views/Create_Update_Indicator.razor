@@ -1,0 +1,834 @@
+﻿@page "/home/vistaIndicadores/creacionIndicador"
+@page "/home/vistaIndicadores/creacionIndicador/{indicatorId:guid}"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@inject EmailService EmailService
+@inject IndicadorApiService IndicadorApiService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using PruebaAutenticador2.Classes
+@using System.ComponentModel.DataAnnotations
+@using PruebaAutenticador2.Services;
+@using PruebaAutenticador2.Shared.DTOS.ListaCombos;
+@using PruebaAutenticador2.Shared.DTOS.Indicador;
+@using PruebaAutenticador2.Shared.DTOS.Evidencia;
+@inject PeriodoEscolarApiService PeriodoEscolarApiService
+@inject UsuarioApiService UsuarioApiService
+@inject GrupoIndicadoresApiService GrupoIndicadoresApiService
+@inject CarreraApiService CarreraApiService
+@inject DirectrizApiService DirectrizApiService
+@inject EvidenciaApiService EvidenciaApiService
+@inject AuthStateService AuthState
+@inject IJSRuntime JS
+@using System.Net
+
+
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/ViewEvidences.css" />
+<link rel="stylesheet" href="css/AllForms.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<PageTitle>@pageTitle</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<h1>Indicador</h1>
+
+<Divider Class="separate-line-register" />
+
+    <Div Class="container-register">
+        <Form>
+            <fieldset class="form-grid">
+                <Validations @ref="validations" Mode="ValidationMode.Auto" Model="currentIndicator">
+                    <Validation Validator="ValidationRule.IsNotEmpty">
+                        <Field Class="form-field">
+                            <FieldLabel For="descripcion">Descripción</FieldLabel>
+                            <TextEdit Class="form-control" ElementId="descripcion" @bind-Text="currentIndicator.DescripcionIndicador" />
+                        </Field>
+                    </Validation>
+
+                    <Field Class="form-field">
+                        <FieldLabel For="estandar">Estándar (se calculará cuando se hagan los cambios)</FieldLabel>
+                        <NumericEdit TValue="decimal" @bind-Value="currentIndicator.Estandar" Class="form-control" ElementId="estandar" ReadOnly />
+                    </Field>
+
+
+                    <Validation Validator="ValidationRule.IsSelected">
+                        <!--Nuevo código (solicitado por el cliente).-->
+                        <Field Class="form-field">
+                            <FieldLabel For="indicadorCumplido">¿Se cumplió el indicador?</FieldLabel>
+                            <Select Class="form-select" Disabled="@(currentIndicator.Id == Guid.Empty)" TValue="bool" ElementId="indicadorCumplido" SelectedValue="@currentIndicator.IndicadorCompletado" SelectedValueChanged="@OnSelectedValueChanged">
+                                <SelectItem TValue="bool" Value=true>Sí</SelectItem>
+                                <SelectItem TValue="bool" Value=false>No</SelectItem>
+                            </Select>
+                        </Field>
+                    </Validation>
+                   
+
+                    <Validation Validator="ValidationRule.IsSelected">
+                        <Field Class="form-field">
+                            <FieldLabel For="frecuenciaControl">Control de frecuencia</FieldLabel>
+                            <Select Class="form-select" TValue="string" ElementId="frecuenciaControl" @bind-SelectedValue="currentIndicator.FrecuenciaControl">
+                                <SelectItem TValue="string" Value="string.Empty">Selecciona alguna de las opciones</SelectItem>
+                                <SelectItem TValue="string" Value="@("Anual")">Anual</SelectItem>
+                                <SelectItem TValue="string" Value="@("Mensual")">Mensual</SelectItem>
+                                <SelectItem TValue="string" Value="@("Semanal")">Semanal</SelectItem>
+                                <SelectItem TValue="string" Value="@("Diario")">Diario</SelectItem>
+                            </Select>
+                        </Field>
+                    </Validation>
+
+                    <Field Class="form-field">
+                        <FieldLabel For="fechaCumplimientoIndicador">Fecha de cumplimiento</FieldLabel>
+                        <DateEdit TValue="DateTimeOffset?" ElementId="fechaCumplimientoIndicador" Disabled=disabledComplimentDateInput @bind-Date=currentIndicator.FechaCumplimiento />
+                    </Field>
+
+                    <Validation Validator="ValidateGuidSelection">
+                        <Field Class="form-field">
+                            <FieldLabel For="directrizAsociado">Directriz asociado</FieldLabel>
+                            <Select Class="form-select" TValue="Guid" ElementId="directrizAsociado" @bind-SelectedValue="currentIndicator.DirectrizId">
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var d in directrices)
+                            {
+                                <SelectItem TValue="Guid" Value="@d.Id">
+                                    @d.Nombre
+                                </SelectItem>
+                            }
+                            </Select>
+                        </Field>
+                    </Validation>
+
+                @if(currentIndicator.Id == Guid.Empty)
+                {
+                    <Validation Validator="ValidationRule.IsSelected">
+                        <!--Nuevo código (solicitado por el cliente).-->
+                        <Field Class="form-field">
+                            <FieldLabel For="cantidadEvidenciasNecesarias">Cantidad de evidencias necesarias</FieldLabel>
+                            <NumericEdit TValue="int" Disabled=disableAmountOfEvidenceInput @bind-Value="currentIndicator.CantidadEvidencias" Class="form-control" ElementId="cantidadEvidenciasNecesarias" />
+                        </Field>
+                    </Validation>
+                }
+                else
+                {
+                    <!--Nuevo código (solicitado por el cliente).-->
+                    <Field Class="form-field">
+                        <FieldLabel For="cantidadEvidenciasNecesarias">Cantidad de evidencias necesarias</FieldLabel>
+                        <NumericEdit TValue="int" Disabled=disableAmountOfEvidenceInput @bind-Value="currentIndicator.CantidadEvidencias" Class="form-control" ElementId="cantidadEvidenciasNecesarias" />
+                    </Field>
+                }
+
+                    <Validation Validator="ValidateGuidSelection">
+                        <Field Class="form-field">
+                            <FieldLabel For="grupoAsociado">Grupo asociado</FieldLabel>
+                            <Select Class="form-select" TValue="Guid" ElementId="grupoAsociado" @bind-SelectedValue="currentIndicator.GrupoId">
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var gr in gruposIndicadores)
+                            {
+                                <SelectItem TValue="Guid" Value="@gr.Id">
+                                    @gr.Nombre
+                                </SelectItem>
+                            }
+                            </Select>
+                        </Field>
+                    </Validation>
+
+                    <!--Nuevo código (solicitado por el cliente).-->
+                    <Field Class="form-field">
+                        <FieldLabel for="nuevasEvidencias">@evidenceText</FieldLabel>
+                    <FileEdit Changed="@OnFilesChanged" Disabled="@(currentIndicator.Id == Guid.Empty)" Multiple Class="form-control" ElementId="nuevasEvidencias" />
+                    </Field>
+
+                    <Validation Validator="ValidateGuidSelection">
+                        <Field Class="form-field">
+                            <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
+                            <Select Class="form-select" TValue="Guid" ElementId="creadorAsociado" @bind-SelectedValue="currentIndicator.CreadorId">
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var cr in usuarios)
+                            {
+                                <SelectItem TValue="Guid" Value="@cr.Id">
+                                    @cr.Nombre
+                                </SelectItem>
+                            }
+                            </Select>
+                        </Field>
+                    </Validation>
+
+                    <!--Nuevo código (solicitado por el cliente).-->
+                    <Field Class="container-evidencias">
+                        <FieldLabel Class="label-evidencias" For="evidencias">Lista de evidencias</FieldLabel>
+                        @if (evidenciasTemp.Any())
+                        {
+                            <ul class="list-evidencias">
+                            @foreach (var e in evidenciasTemp.Where(x => !x.MarcarEvidenciaParaEliminar))
+                            {
+                                <li class="item-evidencia @(e.EsNuevaEvidencia ? "temporal" : "")">
+                                    <i class="bi bi-file-earmark-text-fill"></i>
+
+                                    <span>@e.NombreArchivo</span>
+
+                                    @if (e.EsNuevaEvidencia)
+                                    {
+                                        <span class="tipo-evidencia">(pendiente de guardar)</span>
+                                    }
+
+                                    <Button Clicked="() => confirmDelete(e)">Eliminar</Button>
+                                </li>
+                            }
+
+                            </ul>
+                        }
+                        else
+                        {
+                            <p style="color: #b22222;">No se han subido evidencias aún.</p>
+                        }
+
+                    </Field>
+                    <Validation Validator="ValidateGuidSelection">
+                        <Field Class="form-field">
+                            <FieldLabel For="periodoEscolarAsociado">Período escolar asociado</FieldLabel>
+                            <Select Class="form-select" TValue="Guid" ElementId="periodoEscolarAsociado" @bind-SelectedValue="currentIndicator.PeriodoId">
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var p in periodos)
+                            {
+                                <SelectItem TValue="Guid" Value="@p.Id">
+                                    @p.Nombre
+                                </SelectItem>
+                            }
+                            </Select>
+                        </Field>
+                    </Validation>
+
+                    <!--Nuevo código (solicitado por el cliente)-->
+                    <Field Class="form-field">
+                        <FieldLabel For="accionCorrectiva">Acción correctiva</FieldLabel>
+                        <TextEdit Class="form-control" ElementId="accionCorrectiva" Disabled=disabledInputs @bind-Text="currentIndicator.AccionCorrectiva" />
+                    </Field>
+
+                    <Validation Validator="ValidateGuidSelection">
+                        <Field Class="form-field">
+                            <FieldLabel For="carreraAsociada">Carrera asociada</FieldLabel>
+                            <Select Class="form-select" TValue="Guid" ElementId="carreraAsociada" @bind-SelectedValue="currentIndicator.CarreraId">
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var c in carreras)
+                            {
+                                <SelectItem TValue="Guid" Value="@c.Id">
+                                    @c.Nombre
+                                </SelectItem>
+                            }
+                            </Select>
+                        </Field>
+                    </Validation>
+                    
+                    <!--Nuevo código (solicitado por el cliente)-->
+                    <Field Class="form-field">
+                        <FieldLabel For="resopnsableAC">Responsable de la acción correctiva</FieldLabel>
+                        <Select Class="form-select" TValue="Guid?" ElementId="resopnsableAC" Disabled=disabledInputs @bind-SelectedValue="currentIndicator.ResponsableAccionCorrectivaId">
+                        <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                        @foreach (var ra in usuarios)
+                        {
+                            <SelectItem TValue="Guid" Value="@ra.Id">
+                                @ra.Nombre
+                            </SelectItem>
+                        }
+                        </Select>
+                    </Field>
+                </Validations>
+
+                <Field Class="form-field">
+                    <FieldLabel For="fechaRecordatorio">Fecha de actulización</FieldLabel>
+                    <DateEdit TValue="DateTime?" Disabled="@(!remiderActivateIndicator)" ElementId="fechaRecordatorio" @bind-Date=FechaRecordatorio />
+                </Field>
+                <Field Class="form-field">
+                    <FieldLabel For="horaRecordatorio">Hora de actulización</FieldLabel>
+                    <TimeEdit TValue="TimeSpan?" Disabled="@(!remiderActivateIndicator)" ElementId="horaRecordatorio" @bind-Time=HoraRecordatorio />
+                </Field>
+            </fieldset>
+            <Div Style="display: flex; align-items: center; justify-content: center; font-family:IndivisaFont;">
+                <Check TValue="bool" @bind-Checked="remiderActivateIndicator">Activar recordatorio de modificación del indicador</Check>
+            </Div>
+        </Form>
+
+   
+        <Div Class="form-submit">
+            @if (currentIndicator.Id == Guid.Empty)
+        {
+            <Button Style="font-family:IndivisaFont;
+                                       background-color: #002855;
+                                       color: #ffffff;
+                                       width:50%;
+                                       box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                                       text-transform: uppercase;"
+                    Clicked="confirmSubmitAlreadyIndicator">
+                @buttonText
+            </Button>
+        }
+        else
+        {
+            <Button Style="font-family:IndivisaFont;
+                                           background-color: #002855;
+                                           color: #ffffff;
+                                           width:50%;
+                                           box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                                           text-transform: uppercase;"
+                    Clicked="submit">
+                @buttonText
+            </Button>
+        }
+            <Button Style="font-family:IndivisaFont;
+                                   background-color: #002855;
+                                   color: #ffffff;
+                                   width:50%;
+                                   box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                                   text-transform: uppercase;"
+                    Clicked="goBack">
+                Cancelar
+            </Button>
+        </Div>
+
+    </Div>
+
+<Modal @ref="@modalRefByMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">No puedes tener más evidencias subidas que cantidad de evidencias necesarias. Tambíen no estan permitidos valores negativos.</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalRefByMessage, false)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="modalRefByDeleteEvidence">
+    <ModalContent Centered>
+        <ModalHeader Style="background-color: #002855;">
+            <ModalTitle Style="font-family:IndivisaFontBold; color: #ffffff;">Eliminación de una evidencia</ModalTitle>
+            <CloseButton Style="background-color: #ffffff; opacity: 1;" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar esta evidencia?</FieldLabel>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => HideModal(modalRefByDeleteEvidence, false)">No</Button>
+            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff;" Clicked="@RemoveEvidence">Si</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="modalRefByIndicatorSubmitedAlready">
+    <ModalContent Centered>
+        <ModalHeader Style="background-color: #002855;">
+            <ModalTitle Style="font-family:IndivisaFontBold; color: #ffffff;">¿Quieres dejar el valor de cantidad de evidencias así?</ModalTitle>
+            <CloseButton Style="background-color: #ffffff; opacity: 1;" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel Style="font-family:IndivisaFont;">No se podra actualizar ese valor después.</FieldLabel>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => HideModal(modalRefByIndicatorSubmitedAlready, false)">No</Button>
+            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff;" Clicked="@submit">Si</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, false)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessageAndRedirectViewPage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, true)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+
+@code {
+    [Parameter]
+    public Guid? indicatorId { get; set; }
+
+    private List<UsuarioComboDTO> usuarios = new();
+    private List<PeriodoEscolarComboDTO> periodos = new();
+    private List<DirectrizComboDTO> directrices = new();
+    private List<CarreraComboDTO> carreras = new();
+    private List<GrupoIndicadoresComboDTO> gruposIndicadores = new();
+    private List<EvidenciaTemporal> evidenciasTemp = new();
+    private EvidenciaTemporal evidenciaT;
+
+    private bool remiderActivateIndicator { get; set; } = false;
+
+    private Indicator currentIndicator = new();
+    private string pageTitle = "";
+    private string buttonText = "";
+    private string evidenceText = "";
+
+    private string destinatario = "";
+    private string authenticatedEmail = "";
+    private DateTime? FechaRecordatorio { get; set; } = null;
+    private TimeSpan? HoraRecordatorio { get; set; } = null;
+    private string asunto = "";
+    private string mensaje = "";
+
+    bool disabledInputs = true;
+    bool disabledComplimentDateInput = true;
+    bool disableAmountOfEvidenceInput = false;
+
+    private Validations validations;
+    private Modal modalRefByMessage;
+    private Modal modalRefByIndicatorSubmitedAlready;
+    private Modal modalRefByDeleteEvidence;
+    private string? errorMessage;
+    private Modal modalToShowErrorMessage;
+    private Modal modalToShowErrorMessageAndRedirectViewPage;
+    private bool isLoading = false;
+
+    private void ValidateGuidSelection(ValidatorEventArgs e)
+    {
+        if (e.Value is Guid guid && guid == Guid.Empty)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            usuarios = await UsuarioApiService.GetComboAsync();
+            periodos = await PeriodoEscolarApiService.GetComboAsync();
+            carreras = await CarreraApiService.GetComboAsync();
+            usuarios = await UsuarioApiService.GetComboAsync();
+            gruposIndicadores = await GrupoIndicadoresApiService.GetComboAsync();
+            directrices = await DirectrizApiService.GetComboAsync();
+
+            if (indicatorId is not null && indicatorId != Guid.Empty)
+            {
+                var responseToGetId = await IndicadorApiService.GetByIdAsync(indicatorId.Value);
+
+                if (!responseToGetId.Success)
+                {
+                    switch (responseToGetId.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+
+                            break;
+
+                        default:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                var dto = responseToGetId.Data;
+
+                disableAmountOfEvidenceInput = true;
+
+                currentIndicator = new Indicator
+                {
+                    Id = dto!.Id,
+                    DescripcionIndicador = dto.DescripcionIndicador,
+                    Estandar = dto.Estandar,
+                    FrecuenciaControl = dto.FrecuenciaControl,
+                    CantidadEvidencias = dto.CantidadEvidencias,
+                    IndicadorCompletado = dto.IndicadorCompletado,
+                    AccionCorrectiva = dto.AccionCorrectiva,
+                    FechaCumplimiento = dto.FechaCumplimiento,
+                    DirectrizId = dto.DirectrizId,
+                    GrupoId = dto.GrupoId,
+                    CreadorId = dto.CreadorId,
+                    ResponsableAccionCorrectivaId = dto.ResponsableAccionCorrectivaId,
+                    PeriodoId = dto.PeriodoId,
+                    CarreraId = dto.CarreraId
+                };
+                await LoadEvidences();
+                OnSelectedValueChanged(currentIndicator.IndicadorCompletado);
+                pageTitle = "Editar indicador";
+                buttonText = "Actualizar";
+                evidenceText = "Agregar evidencias";
+            }
+            else
+            {
+                currentIndicator = new Indicator();
+                pageTitle = "Crear indicador";
+                buttonText = "Crear";
+                evidenceText = "Agregar evidencias (primero crea un indicador)";
+
+            }
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessageAndRedirectViewPage.Show();
+        } 
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private Task confirmSubmitAlreadyIndicator()
+    {
+        return modalRefByIndicatorSubmitedAlready.Show();
+    }
+
+    private async Task submit()
+    {
+        if (await validations.ValidateAll())
+        {
+            if(currentIndicator.CantidadEvidencias >= evidenciasTemp.Count())
+            {
+                await saveIndicator();
+            }
+            else
+            {
+                await modalRefByMessage.Show();
+                
+            }
+
+        }
+    }
+
+    private async Task saveIndicator()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var dto = new IndicadorCreateUpdateDto
+            {
+                DescripcionIndicador = currentIndicator.DescripcionIndicador,
+                Estandar = currentIndicator.Estandar,
+                FrecuenciaControl = currentIndicator.FrecuenciaControl,
+                CantidadEvidencias = currentIndicator.CantidadEvidencias,
+                IndicadorCompletado = currentIndicator.IndicadorCompletado,
+                AccionCorrectiva = currentIndicator.AccionCorrectiva,
+                FechaCumplimiento = currentIndicator.FechaCumplimiento,
+                DirectrizId = currentIndicator.DirectrizId,
+                GrupoId = currentIndicator.GrupoId,
+                CreadorId = currentIndicator.CreadorId,
+                ResponsableAccionCorrectivaId = currentIndicator.ResponsableAccionCorrectivaId,
+                PeriodoId = currentIndicator.PeriodoId,
+                CarreraId = currentIndicator.CarreraId
+            };
+
+            if (indicatorId is null || indicatorId == Guid.Empty)
+            {
+                var indicadorCreado = await IndicadorApiService.CreateAsync(dto);
+
+                if (!indicadorCreado.Success)
+                {
+                    switch (indicadorCreado.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = indicadorCreado.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = indicadorCreado.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = indicadorCreado.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                //if (indicadorCreado == null)
+                    //return;
+
+                currentIndicator.Id = indicadorCreado.Data!.Id;
+
+                if (HoraRecordatorio != null && FechaRecordatorio != null)
+                {
+                    await EnviarCorreo();
+                }
+            }
+            else
+            {
+                var response = await IndicadorApiService.UpdateAsync(currentIndicator.Id, dto);
+
+                if (!response.Success)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.NotFound:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        case HttpStatusCode.Forbidden:
+                            errorMessage = "No puedes modificar ni eliminar indicadores que no son de tu propiedad.";
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        default:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                // eliminar evidencias marcadas
+                foreach (var e in evidenciasTemp.Where(x => x.MarcarEvidenciaParaEliminar && !x.EsNuevaEvidencia))
+                {
+                    var responseToDeleteEvidence = await EvidenciaApiService.DeleteAsync(currentIndicator.Id, e.Id!.Value);
+
+                    if (!responseToDeleteEvidence.Success)
+                    {
+                        switch (responseToDeleteEvidence.StatusCode)
+                        {
+                            case HttpStatusCode.NotFound:
+                                errorMessage = responseToDeleteEvidence.ErrorMessage;
+                                await modalToShowErrorMessageAndRedirectViewPage.Show();
+                                break;
+
+                            default:
+                                errorMessage = responseToDeleteEvidence.ErrorMessage;
+                                await modalToShowErrorMessageAndRedirectViewPage.Show();
+                                break;
+                        }
+
+                        return;
+                    }
+                }
+
+                // subir nuevas evidencias
+                foreach (var e in evidenciasTemp.Where(x => x.EsNuevaEvidencia))
+                {
+                    var responseToUploadEvidences = await EvidenciaApiService.UploadAsync(currentIndicator.Id, e.file!);
+
+                    if (!responseToUploadEvidences.Success)
+                    {
+                        switch (responseToUploadEvidences.StatusCode)
+                        {
+                            case HttpStatusCode.BadRequest:
+                                errorMessage = responseToUploadEvidences.ErrorMessage;
+                                await modalToShowErrorMessage.Show();
+                                break;
+
+                            default:
+                                errorMessage = responseToUploadEvidences.ErrorMessage;
+                                await modalToShowErrorMessageAndRedirectViewPage.Show();
+                                break;
+                        }
+
+                        return;
+                    }
+                }
+
+                if (HoraRecordatorio != null && FechaRecordatorio != null)
+                {
+                    await EnviarCorreo();
+                }
+            }
+
+            NavManager.NavigateTo("/home/vistaIndicadores");
+
+        }
+        finally
+        {
+            isLoading = false;
+        }
+
+    }
+
+    private async Task LoadEvidences()
+    {
+        var reales = await EvidenciaApiService.GetAllAsync(currentIndicator.Id);
+
+        if (!reales.Success)
+        {
+            errorMessage = reales.ErrorMessage;
+            modalToShowErrorMessage?.Show();
+            return;
+        }
+
+        evidenciasTemp = reales.Data!.Select(e => new EvidenciaTemporal
+        {
+            Id = e.Id,
+            NombreArchivo = e.NombreArchivo,
+            Tipo = e.Tipo,
+            EsNuevaEvidencia = false,
+            MarcarEvidenciaParaEliminar = false
+        }).ToList();
+    }
+
+    private async Task OnFilesChanged(FileChangedEventArgs e)
+    {
+        foreach (var file in e.Files)
+        {
+            evidenciasTemp.Add(new EvidenciaTemporal
+            {
+                Id = null,
+                NombreArchivo = file.Name,
+                Tipo = file.Type,
+                EsNuevaEvidencia = true,
+                file = file
+            });
+        }
+    }
+
+
+    private void RemoveEvidence()
+    {
+        if (evidenciaT.EsNuevaEvidencia)
+        {
+            evidenciasTemp.Remove(evidenciaT);
+        }
+        else
+        {
+            evidenciaT.MarcarEvidenciaParaEliminar = true;
+        }
+
+        HideModal(modalRefByDeleteEvidence, false);
+    }
+
+
+    private Task confirmDelete(EvidenciaTemporal evi)
+    {
+        evidenciaT = evi;
+        return modalRefByDeleteEvidence.Show();
+    }
+
+    public string GetEmailTemplate(string fileName)
+    {
+        var path = Path.Combine("Shared", "templates", fileName);
+        return File.ReadAllText(path);
+    }
+
+
+    private async Task EnviarCorreo()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var userClaims = authState.User;
+
+        if (userClaims.Identity!.IsAuthenticated)
+        {
+            authenticatedEmail = userClaims.Claims.FirstOrDefault(c => c.Type == "preferred_username")?.Value ?? "";
+        }
+
+        destinatario = authenticatedEmail;
+
+        asunto = $"Correo enviado para modificar el indicador '{currentIndicator.DescripcionIndicador}'";
+
+        string bodyHTML = GetEmailTemplate("ReminderEmail.razor");
+
+        bodyHTML = bodyHTML.Replace("{{FECHA}}", FechaRecordatorio!.Value.ToString("dd/MM/yyyy"))
+                   .Replace("{{HORA}}", HoraRecordatorio.ToString())
+                   .Replace("{{ANIO}}", DateTime.Now.Year.ToString());
+
+        mensaje = bodyHTML;
+
+        await EmailService.SendEmailAsync(destinatario, asunto, mensaje);
+    }
+
+
+    private void OnSelectedValueChanged(bool value)
+    {
+        currentIndicator.IndicadorCompletado = value;
+
+        if (value)
+        {
+            disabledInputs = true;
+            disabledComplimentDateInput = false;
+
+            // Limpias lo que ya no aplica
+            currentIndicator.AccionCorrectiva = string.Empty;
+            currentIndicator.ResponsableAccionCorrectivaId = null;
+        }
+        else
+        {
+            disabledInputs = false;
+            disabledComplimentDateInput = true;
+
+            // Limpias lo que ya no aplica
+            currentIndicator.FechaCumplimiento = null;
+        }
+    }
+
+    private void goBack()
+    {
+        evidenciasTemp.Clear();
+        NavManager.NavigateTo("/home/vistaIndicadores");
+    }
+
+    private Task HideModal(Modal modal, bool value)
+    {
+        if (value)
+        {
+            NavManager.NavigateTo("/home/vistaIndicadores");
+            return modal.Hide();
+        }
+        else
+        {
+            return modal.Hide();
+        }
+    }
+
+}

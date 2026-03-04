@@ -1,0 +1,12 @@
+﻿@page "/usuario-no-encontrado"
+@attribute [Authorize]
+
+<link rel="stylesheet" href="css/Fonts.css" />
+
+<Heading Size="HeadingSize.Is5" Style="font-family:IndivisaFontBold;">Hubo un problema a la hora de encontrar al usuario.</Heading>
+<Heading Size="HeadingSize.Is6" Style="font-family:IndivisaFont;">Puede ser por las siguientes causas:</Heading>
+<ListGroup>
+    <ListGroupItem Border="Blazorise.Border.Is0" Style="font-family:IndivisaFont;">Servidor Caído.</ListGroupItem>
+    <ListGroupItem Border="Blazorise.Border.Is0" Style="font-family:IndivisaFont;">El usuario no existe en nuestro sistema.</ListGroupItem>
+    <ListGroupItem Border="Blazorise.Border.Is0" Style="font-family:IndivisaFont;">Un error inesperado del servidor.</ListGroupItem>
+</ListGroup>

@@ -1,0 +1,26 @@
+﻿@using PruebaAutenticador2.Services
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@inject AuthStateService AuthState
+@inject TokenStorageService tokenStorageService
+
+<link rel="stylesheet" href="css/Custom-button-logout.css" />
+
+<AuthorizeView>
+    <Authorized>
+        <Button Class="custom-button-logout" Clicked="LogoutAsync">Cerrar sesión</Button>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    private async Task LogoutAsync()
+    {
+        // // 1. Eliminar JWT del localStorage
+        await tokenStorageService.RemoveTokenAsync();
+        AuthState.Logout();
+        Nav.NavigateTo("MicrosoftIdentity/Account/SignOut", true);
+    }
+}
+
+
+

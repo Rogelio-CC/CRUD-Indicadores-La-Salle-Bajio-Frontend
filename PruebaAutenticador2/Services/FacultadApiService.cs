@@ -1,0 +1,227 @@
+﻿using PruebaAutenticador2.Classes;
+using PruebaAutenticador2.Shared.DTOS.ListaCombos;
+using System.Net;
+
+namespace PruebaAutenticador2.Services
+{
+    public class FacultadApiService
+    {
+        private readonly HttpClient _http;
+
+        public FacultadApiService(HttpClient http)
+        {
+            _http = http;
+        }
+
+        /* public async Task<List<Faculty>> GetAllAsync()
+        {
+            return await _http.GetFromJsonAsync<List<Faculty>>("api/facultades")
+           ?? new List<Faculty>();
+        } */
+
+        /* public async Task<Faculty?> GetByIdAsync(Guid id)
+        {
+            return await _http.GetFromJsonAsync<Faculty>($"api/facultades/{id}");
+        } */
+
+        /* public async Task CreateAsync(Faculty faculty)
+        {
+            await _http.PostAsJsonAsync("api/facultades", faculty);
+        } */
+
+        /* public async Task UpdateAsync(Guid id, Faculty faculty)
+        {
+            await _http.PutAsJsonAsync($"api/facultades/{id}", faculty);
+        } */
+
+        /* public async Task DeleteAsync(Guid id)
+        {
+            await _http.DeleteAsync($"api/facultades/{id}");
+        } */
+
+        public async Task<ApiResponse<List<Faculty>>> GetAllAsync()
+        {
+            var result = new ApiResponse<List<Faculty>>();
+
+            try
+            {
+                var response = await _http.GetAsync("api/facultades");
+                result.StatusCode = response.StatusCode;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    result.Success = true;
+                    result.Data = await response.Content.ReadFromJsonAsync<List<Faculty>>();
+                }
+            }
+            catch (HttpRequestException)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.ServiceUnavailable;
+                result.ErrorMessage = "No se pudo conectar con el servidor.";
+            }
+            catch (Exception)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.InternalServerError;
+                result.ErrorMessage = "Error inesperado.";
+            }
+
+
+            return result;
+        }
+
+        public async Task<ApiResponse<Faculty?>> GetByIdAsync(Guid id)
+        {
+            var result = new ApiResponse<Faculty>();
+
+            try
+            {
+                var response = await _http.GetAsync($"api/facultades/{id}");
+
+                result.StatusCode = response.StatusCode;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    result.Success = true;
+                    result.Data = await response.Content.ReadFromJsonAsync<Faculty>();
+                }
+                else
+                {
+                    result.Success = false;
+                    result.ErrorMessage = await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (HttpRequestException)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.ServiceUnavailable;
+                result.ErrorMessage = "No se pudo conectar con el servidor.";
+            }
+            catch (Exception)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.InternalServerError;
+                result.ErrorMessage = "Error inesperado.";
+            }
+
+            return result!;
+        }
+
+        public async Task<ApiResponse<bool>> CreateAsync(Faculty Faculty)
+        {
+            var result = new ApiResponse<bool>();
+
+            try
+            {
+                var response = await _http.PostAsJsonAsync("api/facultades", Faculty);
+
+                result.StatusCode = response.StatusCode;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    result.Success = true;
+                    result.Data = true;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.ErrorMessage = await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (HttpRequestException)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.ServiceUnavailable;
+                result.ErrorMessage = "No se pudo conectar con el servidor.";
+            }
+            catch (Exception)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.InternalServerError;
+                result.ErrorMessage = "Error inesperado.";
+            }
+
+            return result;
+        }
+
+        public async Task<ApiResponse<bool>> UpdateAsync(Guid id, Faculty Faculty)
+        {
+            var result = new ApiResponse<bool>();
+            try
+            {
+                var response = await _http.PutAsJsonAsync($"api/facultades/{id}", Faculty);
+
+                result.StatusCode = response.StatusCode;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    result.Success = true;
+                    result.Data = true;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.ErrorMessage = await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (HttpRequestException)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.ServiceUnavailable;
+                result.ErrorMessage = "No se pudo conectar con el servidor.";
+            }
+            catch (Exception)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.InternalServerError;
+                result.ErrorMessage = "Error inesperado.";
+            }
+
+            return result;
+        }
+
+        public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
+        {
+            var result = new ApiResponse<bool>();
+
+            try
+            {
+                var response = await _http.DeleteAsync($"api/facultades/{id}");
+
+                result.StatusCode = response.StatusCode;
+
+                if (response.IsSuccessStatusCode)
+                {
+                    result.Success = true;
+                    result.Data = true;
+                }
+                else
+                {
+                    result.Success = false;
+                    result.ErrorMessage = await response.Content.ReadAsStringAsync();
+                }
+            }
+            catch (HttpRequestException)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.ServiceUnavailable;
+                result.ErrorMessage = "No se pudo conectar con el servidor.";
+            }
+            catch (Exception)
+            {
+                result.Success = false;
+                result.StatusCode = HttpStatusCode.InternalServerError;
+                result.ErrorMessage = "Error inesperado.";
+            }
+
+            return result;
+        }
+
+        public async Task<List<FacultadComboDTO>> GetComboAsync()
+        {
+            return await _http.GetFromJsonAsync<List<FacultadComboDTO>>("api/facultades/combo")
+                   ?? new();
+        }
+    }
+}

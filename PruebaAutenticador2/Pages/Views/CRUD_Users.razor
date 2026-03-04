@@ -1,0 +1,253 @@
+﻿@page "/home/vistaUsuarios"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@inject UsuarioApiService UsuarioApiService
+@using PruebaAutenticador2.Shared.DTOS.Usuarios
+@inject AuthStateService AuthState
+
+
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Tables.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<PageTitle>Lista de usuarios</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<Div Class="header-section">
+    <h1 class="title-general">Lista de usuarios</h1>
+    <Div Class="header-buttons">
+        <Button Class="add-button" Clicked="@addUser">
+            Agregar usuario
+        </Button>
+        <Button Class="add-button" Clicked="@goBack">
+            Regresar al inicio
+        </Button>
+    </Div>
+</Div>
+
+<Divider Class="separate-line" />
+
+<Div Class="search-container">
+    <Span Class="search-icon">
+        <i class="fas fa-search"></i>
+    </Span>
+    <TextEdit Placeholder="Busca por nombre" Class="search-bar" Text="@searchText" TextChanged="@OnSearchChanged" />
+</Div>
+
+<Div Class="table-container">
+    <Table Bordered ResponsiveMode="TableResponsiveMode.Mobile" align="left" Class="all-table">
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Nombre del usuario
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Tipo de usuario
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Rol asociado
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Acciones
+                </TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var user in filteredUsers)
+            {
+                <TableRow>
+                    <TableRowCell MobileModeCaption="Nombre del usuario">@user.NombreUsuario</TableRowCell>
+                    <TableRowCell MobileModeCaption="Tipo de usuario">@user.TipoUsuario</TableRowCell>
+                    <TableRowCell MobileModeCaption="Rol asociado">@user.Rol</TableRowCell>
+
+                    <TableRowCell>
+                        <Div Class="buttons-container">
+                            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;"
+                                    Clicked="() => viewUser(user.Id)">
+                                Detalles
+                            </Button>
+
+                            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-left: 15px;"
+                                    Clicked="() => editUser(user.Id)"
+                                    >
+                                Editar
+                            </Button>
+
+                            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff; margin-left: 15px;"
+                                    Clicked="() => confirmDelete(user.Id)"
+                                    >
+                                Eliminar
+                            </Button>
+                        </Div>
+                    </TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader Style="background-color: #002855;">
+            <ModalTitle Style="font-family:IndivisaFontBold; color: #ffffff;">Eliminación de un usuario</ModalTitle>
+            <CloseButton Style="background-color: #ffffff; opacity: 1;" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar este usuario?</FieldLabel>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => HideModal(modalRef)">No</Button>
+            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff;" Clicked="@deleteUser">Si</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+@code {
+
+    private List<UsuarioDto> userList = new();
+
+    private string searchText = string.Empty;
+    private List<UsuarioDto> filteredUsers = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadUsers();
+    }
+
+    private async Task LoadUsers()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await UsuarioApiService.GetAllAsync();
+
+            userList = response.Data!.OrderBy(r => r.NombreUsuario).ToList();
+
+            filteredUsers = userList;
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void OnSearchChanged(string value)
+    {
+        searchText = value;
+
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            filteredUsers = userList;
+        }
+        else
+        {
+            filteredUsers = userList
+                .Where(a =>
+                    a.NombreUsuario.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
+    private void addUser()
+    {
+        NavManager.NavigateTo("/home/vistaUsuarios/creacionUsuario");
+    }
+
+    private Guid userToDelete; // para mantener el ID del usuario a borrar
+
+    private void viewUser(Guid id)
+    {
+        NavManager.NavigateTo($"/home/vistaUsuarios/detalleUsuario/{id}");
+    }
+
+    private void editUser(Guid id)
+    {
+        NavManager.NavigateTo($"/home/vistaUsuarios/creacionUsuario/{id}");
+    }
+
+    private Task confirmDelete(Guid id)
+    {
+        userToDelete = id;
+        return modalRef.Show();
+    }
+
+    private async Task deleteUser()
+    {
+        var response = await UsuarioApiService.DeleteAsync(userToDelete);
+
+        if (!response.Success)
+        {
+            errorMessage = response.ErrorMessage ?? "No se pudo eliminar el usuario";
+            modalToShowErrorMessage?.Show();
+            return;
+        }
+
+        await LoadUsers();
+        await modalRef.Hide();
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home");
+    }
+
+    private Modal modalRef;
+    private Modal modalToShowErrorMessage;
+
+    private Task HideModal(Modal modal)
+    {
+        return modal.Hide();
+    }
+}

@@ -1,0 +1,12 @@
+﻿@import "Fonts.css";
+
+.custom-button-login {
+    display: inline-block; /*Muestra el botón (enlace) en forma de una sola linea de bloque*/
+    padding: 6.7px 10px; /*Relleno interno de 6.7px de arriba, izquierda y derecha. 10px para la parte de abajo*/
+    background-color: #002855;
+    color: #ffffff;
+    font-family: IndivisaFont;
+    text-decoration: none; /*No se muestra el color azul que aparece cuando el cursor esta encina del botón (enlace)*/
+    font-size: 20px;
+    width: 100%;
+}

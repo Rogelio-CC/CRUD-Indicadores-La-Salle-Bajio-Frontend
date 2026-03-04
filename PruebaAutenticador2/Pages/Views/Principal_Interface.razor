@@ -1,0 +1,532 @@
+﻿<!--Ruta de la interfaz-->
+@* @page "/{role}" *@
+@page "/home"
+@attribute [Authorize]
+@inject AuthStateService AuthState
+
+<!--Importación de librería/servicio de navegación-->
+@inject NavigationManager NavManager;
+@using PruebaAutenticador2.Classes;
+@using PruebaAutenticador2.Services
+@inject IJSRuntime JS
+
+<!--Importaciones de estilos CSS-->
+<link rel="stylesheet" href="css/Nabvar.css"/>
+<link rel="stylesheet" href="css/Welcome.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<!--Título principal de la pestaña-->
+<PageTitle>Interfaz principal</PageTitle>
+
+<Layout>
+    <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+    <LoginDisplay />
+
+    @if (AuthState.Role == "Administrador")
+    {
+        <Div Class="container-section">
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(1))">
+                    <CardBody>
+                        <i class="icon fa fa-user"></i>
+                        <CardTitle Size="4">
+                            Usuarios
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(2))">
+                    <CardBody>
+                        <i class="icon fa fa-user-shield"></i>
+                        <CardTitle Size="4">
+                            Roles
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(3))">
+                    <CardBody>
+                        <i class="icon fa fa-university"></i>
+                        <CardTitle Size="4">
+                            Facultades
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(4))">
+                    <CardBody>
+                        <i class="icon fa fa-graduation-cap"></i>
+                        <CardTitle Size="4">
+                            Carreras
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(5))">
+                    <CardBody>
+                        <i class="icon fa fa-address-book"></i>
+                        <CardTitle Size="4">
+                            Directrices
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(6))">
+                    <CardBody>
+                        <i class="icon fa fa-chart-bar"></i>
+                        <CardTitle Size="4">
+                            Indicadores
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(7))">
+                    <CardBody>
+                        <i class="icon fa fa-lightbulb"></i>
+                        <CardTitle Size="4">
+                            Estrategias
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(8))">
+                    <CardBody>
+                        <i class="icon fa fa-tasks"></i>
+                        <CardTitle Size="4">
+                            Actividades
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(9))">
+                    <CardBody>
+                        <i class="icon fa fa-calendar-alt"></i>
+                        <CardTitle Size="4">
+                            Períodos escolares
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(10))">
+                    <CardBody>
+                        <i class="icon fa fa-comments"></i>
+                        <CardTitle Size="4">
+                            Comentarios
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+        </Div>
+    }
+    else if (AuthState.Role == "Jefe_de_Pregrado")
+    {
+        <Div Class="container-section">
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-user"></i>
+                        <CardTitle Size="4">
+                            Usuarios
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-user-shield"></i>
+                        <CardTitle Size="4">
+                            Roles
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+               <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-university"></i>
+                        <CardTitle Size="4">
+                            Facultades
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-graduation-cap"></i>
+                        <CardTitle Size="4">
+                            Carreras
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-address-book"></i>
+                        <CardTitle Size="4">
+                            Directrices
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(6))">
+                    <CardBody>
+                        <i class="icon fa fa-chart-bar"></i>
+                        <CardTitle Size="4">
+                            Indicadores
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(7))">
+                    <CardBody>
+                        <i class="icon fa fa-lightbulb"></i>
+                        <CardTitle Size="4">
+                            Estrategias
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(8))">
+                    <CardBody>
+                        <i class="icon fa fa-tasks"></i>
+                        <CardTitle Size="4">
+                            Actividades
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-calendar-alt"></i>
+                        <CardTitle Size="4">
+                            Períodos escolares
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-comments"></i>
+                        <CardTitle Size="4">
+                            Comentarios
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+        </Div>
+    }
+    else if (AuthState.Role == "Director")
+    {
+        <Div Class="container-section">
+            <CardDeck>
+               <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-user"></i>
+                        <CardTitle Size="4">
+                            Usuarios
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+               <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-user-shield"></i>
+                        <CardTitle Size="4">
+                            Roles
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-university"></i>
+                        <CardTitle Size="4">
+                            Facultades
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+               <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-graduation-cap"></i>
+                        <CardTitle Size="4">
+                            Carreras
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(5))">
+                    <CardBody>
+                        <i class="icon fa fa-address-book"></i>
+                        <CardTitle Size="4">
+                            Directrices
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(6))">
+                    <CardBody>
+                        <i class="icon fa fa-chart-bar"></i>
+                        <CardTitle Size="4">
+                            Indicadores
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(7))">
+                    <CardBody>
+                        <i class="icon fa fa-lightbulb"></i>
+                        <CardTitle Size="4">
+                            Estrategias
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(8))">
+                    <CardBody>
+                        <i class="icon fa fa-tasks"></i>
+                        <CardTitle Size="4">
+                            Actividades
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-calendar-alt"></i>
+                        <CardTitle Size="4">
+                            Períodos escolares
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(10))">
+                    <CardBody>
+                        <i class="icon fa fa-comments"></i>
+                        <CardTitle Size="4">
+                            Comentarios
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+        </Div>
+    }
+    else if (AuthState.Role == "Maestro" || AuthState.Role == "Investigador")
+    {
+        <Div Class="container-section">
+            <CardDeck>
+               <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-user"></i>
+                        <CardTitle Size="4">
+                            Usuarios
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-user-shield"></i>
+                        <CardTitle Size="4">
+                            Roles
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+              <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-university"></i>
+                        <CardTitle Size="4">
+                            Facultades
+                        </CardTitle>
+                    </CardBody>
+               </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-graduation-cap"></i>
+                        <CardTitle Size="4">
+                            Carreras
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-address-book"></i>
+                        <CardTitle Size="4">
+                            Directrices
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+               <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-chart-bar"></i>
+                        <CardTitle Size="4">
+                            Indicadores
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+               <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-lightbulb"></i>
+                        <CardTitle Size="4">
+                            Estrategias
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card @onclick="@(() => nextScreen(8))">
+                    <CardBody>
+                        <i class="icon fa fa-tasks"></i>
+                        <CardTitle Size="4">
+                            Actividades
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+               <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-calendar-alt"></i>
+                        <CardTitle Size="4">
+                            Períodos escolares
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+
+            <CardDeck>
+                <Card class="card-disabled">
+                    <CardBody>
+                        <i class="icon fa fa-comments"></i>
+                        <CardTitle Size="4">
+                            Comentarios
+                        </CardTitle>
+                    </CardBody>
+                </Card>
+            </CardDeck>
+        </Div>
+    }
+    else
+    {
+        <Paragraph>No tienes los permisos necesarios para acceder.</Paragraph>
+    }
+
+    <PruebaAutenticador2.Pages.ReusableComponents.Footer />
+</Layout>
+
+@code {
+    private void nextScreen(int screen)
+    {
+
+        switch (screen)
+        {
+            case 1:
+                NavManager.NavigateTo("/home/vistaUsuarios");
+                break;
+            case 2:
+                NavManager.NavigateTo("/home/vistaRoles");
+                break;
+            case 3:
+                NavManager.NavigateTo("/home/vistaFacultades");
+                break;
+            case 4:
+                NavManager.NavigateTo("/home/vistaCarreras");
+                break;
+            case 5:
+                NavManager.NavigateTo("/home/vistaDirectrices");
+                break;
+            case 6:
+                NavManager.NavigateTo("/home/vistaIndicadores");
+                break;
+            case 7:
+                NavManager.NavigateTo("/home/vistaEstrategias");
+                break;
+            case 8:
+                NavManager.NavigateTo("/home/vistaActividades");
+                break;
+            case 9:
+                NavManager.NavigateTo("/home/vistaPeriodosEscolares");
+                break;
+            case 10:
+                NavManager.NavigateTo("/home/vistaComentarios");
+                break;
+            default:
+                break;
+
+
+        }
+    }
+}
+

@@ -1,0 +1,88 @@
+﻿@page "/redirect"
+@attribute [Authorize]
+@using PruebaAutenticador2.Services
+@inject AuthenticationStateProvider AuthProvider
+@inject AuthApiService AuthApi
+@inject AuthStateService AuthState
+@inject NavigationManager Nav
+@inject TokenStorageService tokenStorageService;
+
+
+<Div Style="position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;">
+    <Div Class="spinner-border text-white"/>
+</Div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        // Si NO está autenticado, Azure lanza login automáticamente
+        if (!user.Identity?.IsAuthenticated ?? true)
+        {
+            Nav.NavigateTo("/");
+            return;
+        }
+
+        var email =  user.FindFirst("preferred_username")?.Value ?? user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+
+        if (string.IsNullOrEmpty(email))
+        {
+            Nav.NavigateTo("/usuario-no-encontrado");
+            return;
+        }
+
+        var loginResponse = await AuthApi.LoginAsync(email);
+
+        if (loginResponse == null)
+        {
+            Nav.NavigateTo("/usuario-no-encontrado");
+            return;
+        }
+
+        // Guardar en memoria
+        AuthState.SetToken(loginResponse.Token);
+        await tokenStorageService.SetTokenAsync(loginResponse.Token);
+
+        // Extraer rol del token
+        var rol = JwtHelper.GetRole(loginResponse.Token);
+
+        //Extraer Id del usuario
+        var idUser = JwtHelper.GetIdUser(loginResponse.Token);
+
+        if (string.IsNullOrEmpty(rol) || 
+            rol != "Administrador" && 
+            rol != "Jefe_de_Pregrado" && 
+            rol != "Director" && 
+            rol != "Investigador" && 
+            rol != "Maestro")
+        {
+            Nav.NavigateTo("/rol-no-identificado");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(idUser))
+        {
+            Nav.NavigateTo("/usuario-no-encontrado");
+            return;
+        }
+
+        // Guardar rol en memoria (opcional pero útil)
+        AuthState.SetRole(rol);
+        AuthState.SetIdUser(idUser);
+
+        Nav.NavigateTo("/home");
+    }
+
+}

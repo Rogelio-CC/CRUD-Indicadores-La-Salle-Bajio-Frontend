@@ -1,0 +1,53 @@
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Routing
+@using PruebaAutenticador2.Services
+@using PruebaAutenticador2.Shared
+@inject IJSRuntime JS
+@inject NavigationManager Nav
+@inject AuthStateService AuthState
+@inject TokenStorageService tokenStorageService
+
+<link rel="stylesheet" href="css/Fonts.css" />
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
+        </Found>
+        <NotFound>
+            <PageTitle>No encontrado</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert" style="font: IndivisaFontBold;">Elemento o ruta no encontrado</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
+
+@code {
+    DotNetObjectReference<App>? objRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        objRef = DotNetObjectReference.Create(this);
+
+        await JS.InvokeVoidAsync("authStorageListener", objRef);
+    }
+
+    [JSInvokable]
+    public async Task OnTokenRemoved()
+    {
+        await tokenStorageService.RemoveTokenAsync();
+        AuthState.Logout();
+        Nav.NavigateTo("/MicrosoftIdentity/Account/SignOut", true);
+        await Task.CompletedTask;
+    }
+}
+
+
+
+
+
+

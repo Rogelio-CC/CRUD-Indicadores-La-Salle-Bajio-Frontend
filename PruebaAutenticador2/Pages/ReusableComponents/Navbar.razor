@@ -1,0 +1,104 @@
+﻿@inject NavigationManager NavManager
+@using System.Globalization
+
+<Bar Class="navbar-perzonalized">
+    <BarBrand>
+        <Div Class="left-elements">
+            <img src="Images/icono_lasallebajio_BLANCO.png" alt="Universidad La Salle Bajío" @onclick="goBackHome" class="logo-size" />
+            <h3 class="role-title">Puesto: @role</h3>
+        </Div>
+        <!-- Botón de Hamburguesa (solo visible en móvil) -->
+        <Button Class="hamburger-button" Clicked="ToggleMobileMenu">
+            <Icon Name="IconName.List" Style="color: #ffffff;" IconSize="IconSize.x2" />
+        </Button>
+    </BarBrand>
+    <Div Class="right-elements">
+        <Button Class="icon-button"
+                Clicked="goToCalendar">
+            <Icon Name="IconName.Calendar" Style="color: #ffffff;" IconSize="IconSize.x2" />
+        </Button>
+        <Div Class=outline-image @onclick="ShowModal">
+            <img src="https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png" alt="Imagen circular" />
+        </Div>
+    </Div>
+
+    <!-- Menú móvil (oculto por defecto) -->
+    <div class="mobile-menu @(ShowMobileMenu ? "active" : "")">
+        <h3 class="title-mobile">@role</h3>
+        <Button Class="mobile-menu-item" Clicked="goBackHome">
+            <img src="Images/icono_lasallebajio_BLANCO.png" alt="Universidad La Salle Bajío" class="logo-size" />
+            <Span Style="font-family: IndivisaFont;">Inicio</Span>
+        </Button>
+        <Button Class="mobile-menu-item" Clicked="goToCalendar">
+            <Icon Name="IconName.Calendar" Style="color: #ffffff;" />
+            <Span Style="font-family: IndivisaFont;">Calendario</Span>
+        </Button>
+        <Button Class="mobile-menu-item" Clicked="ShowModal">
+            <Icon Name="IconName.User" Style="color: #ffffff;" />
+            <Span>Perfil</Span>
+        </Button>
+    </div>
+</Bar>
+
+<Modal @ref="@modalRef" Class="profile-modal">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Div Class="profile-header">
+                <img src="Images/logo_salle.png" alt="Logo Universidad La Salle" />
+                <h3>Bienvenido</h3>
+            </Div>
+            <Div Class="profile-actions">
+                <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Block="true" Clicked="viewProfile">
+                    Ver perfil
+                </Button>
+                <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Block="true" Clicked="HideModal">
+                    Cerrar ventana
+                </Button>
+                <Logout />
+            </Div>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+@code {
+    [Parameter]
+    public required string role { get; set; }
+
+    private void viewProfile(){
+        NavManager.NavigateTo("/home/verPerfil");
+    }
+
+    private void goBackHome(){
+        NavManager.NavigateTo("/home");
+    }
+
+    private void goToCalendar(){
+        NavManager.NavigateTo("/home/verCalendario");
+
+    }
+
+    private Modal modalRef;
+
+    private Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task HideModal()
+    {
+        return modalRef.Hide();
+    }
+    private bool ShowMobileMenu = false;
+
+    private void ToggleMobileMenu()
+    {
+        ShowMobileMenu = !ShowMobileMenu;
+    }
+
+    // Cierra el menú al hacer clic en un ítem (opcional)
+    private void CloseMobileMenu()
+    {
+        ShowMobileMenu = false;
+    }
+}

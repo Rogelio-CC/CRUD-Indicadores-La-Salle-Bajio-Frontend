@@ -1,0 +1,267 @@
+﻿@page "/home/vistaIndicadores"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@using PruebaAutenticador2.Services
+@using PruebaAutenticador2.Shared.DTOS.Indicador
+@inject IndicadorApiService IndicadorApiService
+@inject AuthStateService AuthState
+
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Tables.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<PageTitle>Lista de indicadores</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<Div Class="header-section">
+    <h1 class="title-general">Lista de indicadores</h1>
+    <Div Class="header-buttons">
+        <Button Class="add-button" Clicked="@viewGroupOfIndicators">
+            Ver grupos de indicadores
+        </Button>
+        <Button Class="add-button" Clicked="@addIndicator">
+            Agregar indicador
+        </Button>
+        <Button Class="add-button" Clicked="@goBack">
+            Regresar al inicio
+        </Button>
+    </Div>
+</Div>
+
+<Divider Class="separate-line" />
+
+<Div Class="search-container">
+    <Span Class="search-icon">
+        <i class="fas fa-search"></i>
+    </Span>
+    <TextEdit Placeholder="Busca por directriz" Class="search-bar" Text="@searchText" TextChanged="@OnSearchChanged" />
+</Div>
+
+<Div Class="table-container">
+    <Table Bordered ResponsiveMode="TableResponsiveMode.Mobile" align="left" Class="all-table">
+        <TableHeader>
+            <TableRow>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Directriz asociado
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Descripción
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Estándar
+                </TableHeaderCell>
+                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
+                    Acciones
+                </TableHeaderCell>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            @foreach (var indicator in filteredIndicators)
+            {
+                <TableRow>
+                    <TableRowCell MobileModeCaption="Directriz asociado">@indicator.Directriz</TableRowCell>
+                    <TableRowCell MobileModeCaption="Descripción">@indicator.DescripcionIndicador</TableRowCell>
+                    <TableRowCell MobileModeCaption="Estándar">@indicator.Estandar%</TableRowCell>
+                    <TableRowCell>
+                        <Div Class="buttons-container">
+                            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => viewIndicator(indicator.Id)">
+                                Detalles
+                            </Button>
+                            @if (CanEditOrDelete(indicator.CreadorId))
+                            {
+                                <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-left: 15px;" Clicked="() => editIndicator(indicator.Id)">
+                                    Editar
+                                </Button>
+                                <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff; margin-left: 15px;" Clicked="() => confirmDelete(indicator.Id)">
+                                    Eliminar
+                                </Button>
+                            }
+                        </Div>
+                    </TableRowCell>
+                </TableRow>
+            }
+        </TableBody>
+    </Table>
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+
+<Modal @ref="modalRef">
+    <ModalContent Centered>
+        <ModalHeader Style="background-color: #002855;">
+            <ModalTitle Style="font-family:IndivisaFontBold; color: #ffffff;">Eliminación de un indicador</ModalTitle>
+            <CloseButton Style="background-color: #ffffff; opacity: 1;" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar este indicador?</FieldLabel>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => HideModal(modalRef)">No</Button>
+            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff;" Clicked="@deleteIndicator">Si</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+@code {
+
+    private List<IndicadorDto> indicatorList = new();
+
+    private string searchText = string.Empty;
+    private List<IndicadorDto> filteredIndicators = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadIndicators();
+    }
+
+    private async Task LoadIndicators()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var response = await IndicadorApiService.GetAllAsync();
+
+            indicatorList = response.Data!.OrderBy(r => r.DescripcionIndicador).ToList();
+
+            filteredIndicators = indicatorList;
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void OnSearchChanged(string value)
+    {
+        searchText = value;
+
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            filteredIndicators = indicatorList;
+        }
+        else
+        {
+            filteredIndicators = indicatorList
+                .Where(a =>
+                    a.Directriz.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+    }
+
+    private bool CanEditOrDelete(Guid creadorId)
+    {
+        if (AuthState.Role == "Administrador") return true;
+
+        if (AuthState.IdUser == null) return false;
+
+        return creadorId.ToString() == AuthState.IdUser;
+    }
+
+    private void viewGroupOfIndicators()
+    {
+        NavManager.NavigateTo("/home/vistaIndicadores/vistaGruposIndicadores");
+    }
+
+
+    private void addIndicator()
+    {
+        NavManager.NavigateTo("/home/vistaIndicadores/creacionIndicador");
+    }
+
+    private Guid indicatorToDelete;
+
+    private void viewIndicator(Guid id)
+    {
+        NavManager.NavigateTo($"/home/vistaIndicadores/detalleIndicador/{id}");
+    }
+
+    private void editIndicator(Guid id)
+    {
+        NavManager.NavigateTo($"/home/vistaIndicadores/creacionIndicador/{id}");
+    }
+
+    private Task confirmDelete(Guid id)
+    {
+        indicatorToDelete = id;
+        return modalRef.Show();
+    }
+
+    private async Task deleteIndicator()
+    {
+        var response = await IndicadorApiService.DeleteAsync(indicatorToDelete);
+
+        if (!response.Success)
+        {
+            errorMessage = response.ErrorMessage ?? "No se pudo eliminar el indicador";
+            modalToShowErrorMessage?.Show();
+            return;
+        }
+
+        await LoadIndicators();
+        await modalRef.Hide();
+    }
+
+    private Modal modalRef;
+    private Modal modalToShowErrorMessage;
+
+    private Task HideModal(Modal modal)
+    {
+        return modal.Hide();
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home");
+    }
+
+
+}

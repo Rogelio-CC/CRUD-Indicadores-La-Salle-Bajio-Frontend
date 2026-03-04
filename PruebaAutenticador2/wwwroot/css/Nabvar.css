@@ -1,0 +1,255 @@
+﻿@import "Fonts.css";
+
+.navbar-perzonalized {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /*Espaciado entre elementos*/
+    background-color: #002855;
+    padding: 15px 30px;
+}
+
+.logo-size {
+    height: 40px;
+    cursor: pointer;
+}
+
+.role-title {
+    font-family: IndivisaFont;
+    font-size: 1.2rem;
+    color: white;
+    margin-top: 5px;
+    text-transform: capitalize; /*Tranforma la primera letra de una palabra en mayúscula*/
+}
+
+.left-elements {
+    display: flex;
+    align-items: start;
+    gap: 20px;
+}
+
+.outline-image {
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+}
+
+    .outline-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        cursor: pointer;
+    }
+
+.right-elements {
+    display: flex;
+    align-items: end;
+    gap: 20px;
+}
+
+
+.profile-modal .modal-content {
+    border-radius: 10px;
+}
+
+.profile-header {
+    text-align: center;
+    padding: 10px;
+}
+
+    .profile-header h3 {
+        color: #002855;
+        margin: 10px 0;
+        font-family: IndivisaFontBold;
+    }
+
+    .profile-header img {
+        width: 150px;
+    }
+
+.profile-actions {
+    margin-top: 10px;
+}
+
+
+.icon-button {
+    background: none;
+    border: none;
+    color: white;
+}
+
+/*Contenedor de notificaciones */
+.notification-container {
+    position: relative;
+    display: inline-block;
+}
+
+/*Badge de notificaciones no leídas */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    background-color: #CF152D;
+    color: white;
+    border-radius: 90px;
+    width: 20px;
+    height: 25px;
+}
+
+/* Menú desplegable de notificaciones */
+.notification-dropdown {
+    position: absolute;
+    right: 0;
+    top: 100%;
+    width: 350px;
+    max-height: 500px;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    margin-top: 10px;
+}
+
+.notification-header h5 {
+    margin: 0;
+    font-family: IndivisaFont;
+}
+
+.notification-list {
+    padding: 0;
+}
+
+.notification-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+    .notification-item.unread {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+
+    .notification-item:hover {
+        background-color: #f0f4ff;
+    }
+
+.notification-title {
+    color: #002855;
+    margin-bottom: 5px;
+    font-family: IndivisaFontBold;
+}
+
+.notification-message {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 5px;
+    font-family: IndivisaFont;
+}
+
+.notification-time {
+    font-size: 0.8rem;
+    color: #888;
+    text-align: right;
+    font-family: IndivisaFont;
+}
+
+.notification-footer {
+    padding: 10px;
+    border-top: 1px solid #eee;
+}
+
+/* Botón de hamburguesa (oculto en escritorio) */
+.hamburger-button {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Menú móvil (oculto por defecto) */
+.mobile-menu {
+    display: none;
+    flex-direction: column;
+    position: absolute; /*Posiciona el contenedor al frente de otros elementos, en vez de bajarlos.*/
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #002855;
+    z-index: 1000; /*Muestra los elementos por encima de otros elementos*/
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+    .mobile-menu.active {
+        display: flex;
+    }
+
+.mobile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0.5rem;
+    color: white;
+    background: none;
+    border: none;
+    text-align: left;
+}
+
+.mobile-badge {
+    background: red;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    margin-left: auto;
+}
+
+.title-mobile {
+    display: none;
+}
+
+
+/* Responsividad para celulares */
+@media (min-width: 320px) and (max-width: 576px) {
+    .left-elements {
+        gap: 5px;
+    }
+
+    .role-title {
+        font-size: 1rem;
+    }
+
+    .logo-size {
+        height: 25px;
+    }
+
+    .hamburger-button {
+        display: block;
+    }
+
+    .right-elements {
+        display: none;
+    }
+
+    .left-elements {
+        display: none;
+    }
+
+    .notification-dropdown {
+        top: 170px;
+        right: unset; /*Elimina el valor previo de Right (Right: 0)*/
+        max-height: 70vh;
+        overflow-y: auto;
+    }
+
+    .title-mobile {
+        display: inline-block;
+        text-align: center;
+        color: white;
+        font-size: 20px;
+        text-transform: capitalize;
+        font-family: IndivisaFontBold;
+    }
+}

@@ -1,0 +1,173 @@
+﻿@page "/home/vistaDirectrices/detalleDirectriz/{guidelineId:guid}"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@using PruebaAutenticador2.Classes;
+@using PruebaAutenticador2.Services
+@inject DirectrizApiService DirectrizApiService
+@inject AuthStateService AuthState
+@using System.Net
+
+<link rel="stylesheet" href="css/DetailV.css" />
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+
+<PageTitle>Detalle de la directriz</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<h1>Detalles de la directriz</h1>
+
+<Divider Class="separate-line-detail" />
+
+<Div Class="container-detail">
+    <Form>
+        <fieldset class="form-grid">
+            <!-- Fila 1 -->
+            <Field Class="form-field">
+                <FieldLabel For="descripcion">Descripción</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentGuideline.Descripcion" ReadOnly="true" ElementId="descripcion" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="facultadAsociada">Facultad asociada</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentGuideline.Facultad" ReadOnly="true" ElementId="facultadAsociada" />
+            </Field>
+
+            <!-- Fila 2 -->
+            <Field Class="form-field">
+                <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentGuideline.Creador" ReadOnly="true" ElementId="creadorAsociado" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="periodoEscolarAsociado">Período Escolar asociado</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentGuideline.Periodo" ReadOnly="true" ElementId="periodoEscolarAsociado" />
+            </Field>
+        </fieldset>
+    </Form>
+    
+    <Div Class="form-submit">
+        <Button Style="font-family:IndivisaFont;
+                       background-color: #002855;
+                       color: #ffffff;
+                       width:96%;
+                       box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                       text-transform: uppercase;"
+                Clicked="goBack">
+            Regresar
+        </Button>
+    </Div>
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+@code {
+    [Parameter]
+    public Guid? guidelineId { get; set; }
+
+    private Guideline currentGuideline = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    private Modal modalToShowErrorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            if (guidelineId is not null && guidelineId != Guid.Empty)
+            {
+                var responseToGetId = await DirectrizApiService.GetByIdAsync(guidelineId.Value);
+
+                if (!responseToGetId.Success)
+                {
+                    switch (responseToGetId.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                var dto = responseToGetId.Data;
+
+                currentGuideline = new Guideline
+                {
+                    Id = dto!.Id,
+                    Descripcion = dto.Descripcion,
+                    FacultadId = dto.FacultadId,
+                    Facultad = dto.Facultad,
+                    CreadorId = dto.CreadorId,
+                    Creador = dto.Creador,
+                    PeriodoId = dto.PeriodoId,
+                    Periodo = dto.Periodo
+                };
+            }
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home/vistaDirectrices");
+
+    }
+
+    private Task HideModal(Modal modal)
+    {
+        NavManager.NavigateTo("/home/vistaDirectrices");
+        return modal.Hide();
+    }
+}

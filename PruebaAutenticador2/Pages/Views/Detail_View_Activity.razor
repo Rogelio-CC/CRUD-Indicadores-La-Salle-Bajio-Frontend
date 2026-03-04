@@ -1,0 +1,212 @@
+﻿<!--Ruta de la interfaz-->
+@page "/home/vistaActividades/detalleActividad/{activityId:guid}"
+@attribute [Authorize]
+
+<!--Importación de librería/servicio de navegación-->
+@inject NavigationManager NavManager
+@inject ActividadApiService ActividadApiService
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@using System.Net
+@inject AuthStateService AuthState
+
+<!--Importación de librería/servicio de navegación-->
+<link rel="stylesheet" href="css/DetailV.css" />
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+
+<!--Título principal de la pestaña-->
+<PageTitle>Detalle de la actividad</PageTitle>
+
+<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<!--Título principal de la pantalla-->
+<h1>Detalles de la actividad</h1>
+
+<!--Línea de seperación entre el título de la página y el contenido-->
+<Divider Class="separate-line-detail" />
+
+<!--Contenedor que contiene el formulario de detalles-->
+<Div Class="container-detail">
+    <Form>
+        <fieldset class="form-grid">
+            <!-- Fila 1 de agrupación de inputs y labels-->
+            <Field Class="form-field">
+                <FieldLabel For="descripcion">Descripción</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentActivity.DescripcionActividad" ReadOnly="true" ElementId="descripcion" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="cantidadLograda">Cantidad lograda</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentActivity.CantidadLograda.ToString()" ReadOnly="true" ElementId="cantidadLograda" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="estrategiaAsociada">Estrategia asociada</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentActivity.Estrategia" ReadOnly="true" ElementId="estrategiaAsociada" />
+            </Field>
+
+            <!-- Fila 2 de agrupación de inputs y labels-->
+            <Field Class="form-field">
+                <FieldLabel For="creadorAAsociado">Creador asociado</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentActivity.Creador" ReadOnly="true" ElementId="creadorAAsociado" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="fechaDeCreación">Fecha de creación</FieldLabel>
+                <TextEdit Class="form-control" Text=@currentActivity.FechaEmision.ToString("dd/MM/yyyy") ReadOnly="true" ElementId="fechaDeCreación" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="fechaDeCumplimiento">Fecha de cumplimiento</FieldLabel>
+                <TextEdit Class="form-control" Text="@(currentActivity.FechaCumplimiento?.ToString("dd/MM/yyyy") ?? "")" ReadOnly="true" ElementId="fechaDeCumplimiento" />
+            </Field>
+
+            <!-- Fila 1 de agrupación de inputs y labels-->
+            <Field Class="form-field">
+                <FieldLabel For="actividadCumplida">¿Se cumplió la actividad?</FieldLabel>
+                <TextEdit Class="form-control" Text="@(currentActivity.ActividadCumplida ? "Sí" : "No")" ReadOnly="true" ElementId="actividadCumplida" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="periodoEscolarAsociado">Período Escolar asociado</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentActivity.Periodo" ReadOnly="true" ElementId="periodoEscolarAsociado" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="carreraAsociada">Carrera asociada</FieldLabel>
+                <TextEdit Class="form-control" Text="@currentActivity.Carrera" ReadOnly="true" ElementId="carreraAsociada" />
+            </Field>
+        </fieldset>
+    </Form>
+    <!--Pequeño contenedor para el botón "Regresar" -->
+    <Div Class="form-submit">
+        <Button Style="font-family:IndivisaFont;
+                       background-color: #002855;
+                       color: #ffffff;
+                       width:96%;
+                       box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                       text-transform: uppercase;"
+                Clicked="goBack">
+            Regresar
+        </Button>
+    </Div>
+</Div>
+
+<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+@code {
+    [Parameter]
+    public Guid? activityId { get; set; }
+
+    private Activity currentActivity = new();
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    private Modal modalToShowErrorMessage;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            if (activityId is not null && activityId != Guid.Empty)
+            {
+                var responseToGetId = await ActividadApiService.GetByIdAsync(activityId.Value);
+
+                if (!responseToGetId.Success)
+                {
+                    switch (responseToGetId.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                var dto = responseToGetId.Data;
+
+                currentActivity = new Activity
+                {
+                    Id = dto!.Id,
+                    DescripcionActividad = dto.DescripcionActividad,
+                    CantidadLograda = dto.CantidadLograda,
+                    FechaEmision = dto.FechaEmision,
+                    FechaCumplimiento = dto.FechaCumplimiento,
+                    ActividadCumplida = dto.ActividadCumplida,
+                    EstrategiaId = dto.EstrategiaId,
+                    Estrategia = dto.Estrategia,
+                    CreadorId = dto.CreadorId,
+                    Creador = dto.Creador,
+                    PeriodoId = dto.PeriodoId,
+                    Periodo = dto.Periodo,
+                    CarreraId = dto.CarreraId,
+                    Carrera = dto.Carrera,
+                };
+            }
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    //Función para regresar a la pantalla principal
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home/vistaActividades");
+
+    }
+
+    private Task HideModal(Modal modal)
+    {
+        NavManager.NavigateTo("/home/vistaActividades");
+        return modal.Hide();
+    }
+}

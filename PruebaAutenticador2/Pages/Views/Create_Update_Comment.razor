@@ -1,0 +1,350 @@
+﻿@page "/home/vistaComentarios/creacionComentario"
+@page "/home/vistaComentarios/creacionComentario/{commentId:guid}"
+@attribute [Authorize]
+@inject NavigationManager NavManager
+@inject ComentarioApiService ComentarioApiService
+@inject UsuarioApiService UsuarioApiService
+@using PruebaAutenticador2.Classes
+@using PruebaAutenticador2.Services
+@using PruebaAutenticador2.Shared.DTOS.ListaCombos
+@using PruebaAutenticador2.Shared.DTOS.Comentario
+@using System.ComponentModel.DataAnnotations
+@inject AuthStateService AuthState
+@using System.Net
+
+<link rel="stylesheet" href="css/Nabvar.css" />
+<link rel="stylesheet" href="css/AllForms.css" />
+<link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/Footer.css" />
+
+<PageTitle>@pageTitle</PageTitle>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+<h1>Comentario</h1>
+
+<Divider Class="separate-line-register" />
+
+<Div Class="container-register">
+    <Form>
+        <fieldset class="form-grid">
+            <Validations @ref="validations" Mode="ValidationMode.Auto" Model="currentComment">
+                <Validation Validator="ValidationRule.IsNotEmpty">
+                    <Field Class="form-field">
+                        <FieldLabel For="contenido">Contenido</FieldLabel>
+                        <TextEdit Class="form-control" ElementId="contenido" @bind-Text=currentComment.Contenido />
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
+                        <Select Class="form-select" TValue="Guid" ElementId="creadorAsociado" @bind-SelectedValue=currentComment.CreadorId>
+                            <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            @foreach (var u in usuarios)
+                            {
+                                <SelectItem TValue="Guid" Value="@u.Id">
+                                    @u.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidationRule.IsSelected">
+                    <Field Class="form-field">
+                        <FieldLabel For="tipoObjetivo">Tipo de objetivo</FieldLabel>
+                        <Select Class="form-select" TValue="string" ElementId="tipoObjetivo" @bind-SelectedValue=currentComment.TipoObjetivo>
+                            <SelectItem TValue="string" Value="string.Empty">Selecciona alguna de las opciones</SelectItem>
+                            <SelectItem TValue="string" Value="@("Directriz")">Directriz</SelectItem>
+                            <SelectItem TValue="string" Value="@("Estrategia")">Estrategia</SelectItem>
+                            <SelectItem TValue="string" Value="@("Actividad")">Actividad</SelectItem>
+                        </Select>
+                    </Field>
+                </Validation>
+            </Validations>
+        </fieldset>
+    </Form>
+
+    <Div Class="form-submit">
+        <Button Style="font-family:IndivisaFont;
+                       background-color: #002855;
+                       color: #ffffff;
+                       width:50%;
+                       box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                       text-transform: uppercase;"
+                Clicked="submit">
+            @buttonText
+        </Button>
+        <Button Style="font-family:IndivisaFont;
+                       background-color: #002855;
+                       color: #ffffff;
+                       width:50%;
+                       box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
+                       text-transform: uppercase;"
+                Clicked="goBack">
+            Cancelar
+        </Button>
+    </Div>
+
+</Div>
+
+<PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
+@if (isLoading)
+{
+    <Div Style="position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.4);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                z-index: 9999;">
+        <Div Class="spinner-border text-white">
+            <Span Class="visually-hidden">Cargando...</Span>
+        </Div>
+    </Div>
+}
+
+<Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, false)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+<Modal @ref="@modalToShowErrorMessageAndRedirectViewPage" Style="border-radius: 10px;">
+    <ModalContent Centered="true">
+        <ModalBody>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, true)">
+                Ok
+            </Button>
+        </ModalBody>
+    </ModalContent>
+</Modal>
+
+
+
+@code {
+    [Parameter]
+    public Guid? commentId { get; set; }
+
+    private Comment currentComment = new();
+    private string pageTitle = "";
+    private string buttonText = "";
+
+    private List<UsuarioComboDTO> usuarios = new();
+
+    private Validations validations;
+
+    private bool isLoading = false;
+
+    private string? errorMessage;
+
+    private Modal modalToShowErrorMessage;
+
+    private Modal modalToShowErrorMessageAndRedirectViewPage;
+
+
+    private void ValidateGuidSelection(ValidatorEventArgs e)
+    {
+        if (e.Value is Guid guid && guid == Guid.Empty)
+        {
+            e.Status = ValidationStatus.Error;
+        }
+        else
+        {
+            e.Status = ValidationStatus.Success;
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            usuarios = await UsuarioApiService.GetComboAsync();
+
+            if (commentId is not null && commentId != Guid.Empty)
+            {
+                var responseToGetId = await ComentarioApiService.GetByIdAsync(commentId.Value);
+
+                if (!responseToGetId.Success)
+                {
+                    switch (responseToGetId.StatusCode)
+                    {
+                        case HttpStatusCode.NotFound:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+
+                            break;
+
+                        default:
+                            errorMessage = responseToGetId.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                var dto = responseToGetId.Data;
+                
+                currentComment = new Comment
+                {
+                    Id = dto!.Id,
+                    Contenido = dto.Contenido,
+                    TipoObjetivo = dto.TipoObjetivo,
+                    CreadorId = dto.CreadorId,
+                };
+
+                    pageTitle = "Editar comentario";
+                    buttonText = "Actualizar";
+
+            }
+            else
+            {
+                currentComment = new Comment();
+                pageTitle = "Crear comentario";
+                buttonText = "Crear";
+            }
+
+        
+        } 
+        catch (Exception)
+        {
+            errorMessage = "No se pudo conectar con el servidor.";
+            await modalToShowErrorMessageAndRedirectViewPage.Show();
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private async Task submit()
+    {
+        if (await validations.ValidateAll())
+        {
+            await saveComment();
+        }
+    }
+
+    private async Task saveComment()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            var dto = new ComentarioCreateUpdateDto
+            {
+                Contenido = currentComment.Contenido,
+                TipoObjetivo = currentComment.TipoObjetivo,
+                CreadorId = currentComment.CreadorId,
+            };
+
+            if (commentId is null || commentId == Guid.Empty){
+
+
+                var response = await ComentarioApiService.CreateAsync(dto);
+
+                if (!response.Success)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+            }
+            else{
+
+                var response = await ComentarioApiService.UpdateAsync(currentComment.Id, dto);
+
+                if (!response.Success)
+                {
+                    switch (response.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.Conflict:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        case HttpStatusCode.NotFound:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        case HttpStatusCode.Forbidden:
+                            errorMessage = "No puedes modificar ni eliminar comentarios que no son de tu propiedad.";
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+
+                        default:
+                            errorMessage = response.ErrorMessage;
+                            await modalToShowErrorMessageAndRedirectViewPage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+            }
+                
+
+            NavManager.NavigateTo("/home/vistaComentarios");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+       
+    }
+
+    private void goBack()
+    {
+        NavManager.NavigateTo("/home/vistaComentarios");
+    }
+
+    private Task HideModal(Modal modal, bool value)
+    {
+        if (value)
+        {
+            NavManager.NavigateTo("/home/vistaComentarios");
+            return modal.Hide();
+        }
+        else
+        {
+            return modal.Hide();
+        }
+    }
+}
+
