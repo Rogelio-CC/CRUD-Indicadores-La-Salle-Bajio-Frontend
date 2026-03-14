@@ -1,6 +1,8 @@
-﻿@page "/home/vistaDirectrices/creacionDirectriz"
+﻿<!-- La estructura .razor de CreateUpdateGuideline es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaDirectrices/creacionDirectriz"
 @page "/home/vistaDirectrices/creacionDirectriz/{guidelineId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Classes;
 @using PruebaAutenticador2.Services;
@@ -13,7 +15,6 @@
 @inject PeriodoEscolarApiService PeriodoEscolarApiService
 @inject AuthStateService AuthState
 @using System.Net
-
 
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/AllForms.css" />
@@ -151,6 +152,8 @@
 </Modal>
 
 @code {
+    // La estructura de CreateUpdateComment es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? guidelineId { get; set; }
 

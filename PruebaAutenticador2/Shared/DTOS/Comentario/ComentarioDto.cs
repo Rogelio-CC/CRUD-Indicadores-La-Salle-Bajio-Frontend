@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Comentario
 {
+    // DTO para representar información de un comentario
     public class ComentarioDto
     {
         public Guid Id { get; set; }

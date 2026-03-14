@@ -12,11 +12,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<CalendarEvent>> GetAllAsync()
-        {
-            return await _http.GetFromJsonAsync<List<CalendarEvent>>("api/eventosCalendario") ?? new List<CalendarEvent>();
-        } */
-
+        // Método para obtener todos los eventos del calendario
         public async Task<ApiResponse<List<CalendarEvent>>> GetAllAsync()
         {
             var result = new ApiResponse<List<CalendarEvent>>();

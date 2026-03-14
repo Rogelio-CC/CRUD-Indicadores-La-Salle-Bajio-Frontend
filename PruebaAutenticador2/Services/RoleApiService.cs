@@ -13,32 +13,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<Role>> GetAllAsync()
-        {
-            return await _http.GetFromJsonAsync<List<Role>>("api/roles")
-           ?? new List<Role>();
-        } */
-
-        /* public async Task<Role?> GetByIdAsync(Guid id)
-        {
-            return await _http.GetFromJsonAsync<Role>($"api/roles/{id}");
-        } */
-
-        /* public async Task CreateAsync(Role role)
-        {
-            await _http.PostAsJsonAsync("api/roles", role);
-        } */
-
-        /* public async Task UpdateAsync(Guid id, Role role)
-        {
-            await _http.PutAsJsonAsync($"api/roles/{id}", role);
-        } */
-
-        /* public async Task DeleteAsync(Guid id)
-        {
-            await _http.DeleteAsync($"api/roles/{id}");
-        } */
-
+        // Método para obtener todos los roles
         public async Task<ApiResponse<List<Role>>> GetAllAsync()
         {
             var result = new ApiResponse<List<Role>>();
@@ -71,6 +46,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener un rol por su ID
         public async Task<ApiResponse<Role?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<Role?>();
@@ -108,6 +84,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
+        // Método para crear un nuevo rol
         public async Task<ApiResponse<bool>> CreateAsync(Role role)
         {
             var result = new ApiResponse<bool>();
@@ -145,6 +122,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para actualizar un rol existente
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, Role role)
         {
             var result = new ApiResponse<bool>();
@@ -181,6 +159,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar un rol por su ID
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -218,6 +197,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener una lista de roles en formato de combo (ID y nombre) para su uso en interfaces
         public async Task<List<RolComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<RolComboDTO>>("api/roles/combo")

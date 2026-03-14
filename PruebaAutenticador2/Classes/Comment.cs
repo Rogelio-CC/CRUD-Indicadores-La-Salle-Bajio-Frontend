@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Classes
 {
+    // Atributos de la clase Comentario
     public class Comment
     {
         public Guid Id { get; set; }

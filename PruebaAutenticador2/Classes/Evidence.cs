@@ -1,6 +1,7 @@
 ﻿
 public class Evidence
 {
+    // Atributos de la clase Evidencia
     public Guid Id { get; set; }
     public string NombreArchivo { get; set; } = null!;
     public string Tipo { get; set; } = null!;

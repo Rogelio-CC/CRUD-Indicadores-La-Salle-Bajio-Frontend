@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Classes
 {
+    // Atributos de la clase Período Escolar
     public class SchoolTerm
     {
         public Guid Id { get; set; } = Guid.NewGuid();

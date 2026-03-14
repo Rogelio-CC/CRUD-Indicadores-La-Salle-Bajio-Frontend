@@ -1,5 +1,7 @@
-﻿@page "/home/vistaEstrategias/detalleEstrategia/{strategyId:guid}"
+﻿<!-- La estructura .razor de DetailViewStrategy es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaEstrategias/detalleEstrategia/{strategyId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject EstrategiaApiService EstrategiaApiService
 @using PruebaAutenticador2.Classes
@@ -99,6 +101,8 @@
 </Modal>
 
 @code {
+    // La estructura de DetailViewStrategy es la misma que DetailViewActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? strategyId { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Directriz
 {
+    // DTO para representar la información de una directriz
     public class DirectrizDto
     {
         public Guid Id { get; set; }

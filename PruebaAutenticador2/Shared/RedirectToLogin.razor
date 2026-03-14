@@ -1,6 +1,8 @@
-﻿@inject NavigationManager Navigation
+﻿<!--Importaciones de librerías/servicios-->
+@inject NavigationManager Navigation
 
 @code {
+    // Componente que redirige automáticamente a la página de inicio ("/") al ser inicializado, utilizado para redirigir a los usuarios no autenticados a la pantalla de inicio de sesión.
     protected override void OnInitialized()
     {
         Navigation.NavigateTo("/");

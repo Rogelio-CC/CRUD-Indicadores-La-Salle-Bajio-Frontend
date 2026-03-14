@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Indicador
 {
+    // DTO para crear o actualizar un indicador
     public class IndicadorCreateUpdateDto
     {
         public string DescripcionIndicador { get; set; } = null!;

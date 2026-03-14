@@ -14,32 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<GroupOfIndicators>> GetAllAsync()
-        {
-            return await _http.GetFromJsonAsync<List<GroupOfIndicators>>("api/grupo-indicadores")
-           ?? new List<GroupOfIndicators>();
-        } */
-
-        /* public async Task<GroupOfIndicators?> GetByIdAsync(Guid id)
-        {
-            return await _http.GetFromJsonAsync<GroupOfIndicators>($"api/grupo-indicadores/{id}");
-        } */
-
-        /* public async Task CreateAsync(GroupOfIndicators goi)
-        {
-            await _http.PostAsJsonAsync("api/grupo-indicadores", goi);
-        } */
-
-        /* public async Task UpdateAsync(Guid id, GroupOfIndicators goi)
-        {
-            await _http.PutAsJsonAsync($"api/grupo-indicadores/{id}", goi);
-        } */
-
-        /* public async Task DeleteAsync(Guid id)
-        {
-            await _http.DeleteAsync($"api/grupo-indicadores/{id}");
-        } */
-
+        // Método para obtener todos los grupos de indicadores
         public async Task<ApiResponse<List<GroupOfIndicators>>> GetAllAsync()
         {
             var result = new ApiResponse<List<GroupOfIndicators>>();
@@ -72,6 +47,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener un grupo de indicadores por su ID
         public async Task<ApiResponse<GroupOfIndicators?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<GroupOfIndicators?>();
@@ -109,6 +85,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
+        // Método para crear un nuevo grupo de indicadores
         public async Task<ApiResponse<bool>> CreateAsync(GroupOfIndicators goi)
         {
             var result = new ApiResponse<bool>();
@@ -146,6 +123,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para actualizar un grupo de indicadores existente
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, GroupOfIndicators goi)
         {
             var result = new ApiResponse<bool>();
@@ -182,6 +160,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar un grupo de indicadores por su ID
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -219,6 +198,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener una lista de grupos de indicadores en formato de combo (ID y nombre) para su uso en interfaces
         public async Task<List<GrupoIndicadoresComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<GrupoIndicadoresComboDTO>>("api/grupo-indicadores/combo")

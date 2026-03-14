@@ -1,7 +1,6 @@
-﻿using PruebaAutenticador2.Shared.DTOS.Evidencia;
-
-namespace PruebaAutenticador2.Shared.DTOS.Indicador
+﻿namespace PruebaAutenticador2.Shared.DTOS.Indicador
 {
+    // DTO para representar información de un indicador
     public class IndicadorDto
     {
         public Guid Id { get; set; }

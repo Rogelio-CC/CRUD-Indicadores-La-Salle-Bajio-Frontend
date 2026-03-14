@@ -14,39 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<UsuarioDto>> GetAllAsync()
-        {
-           return await _http.GetFromJsonAsync<List<UsuarioDto>>("api/usuarios/dto") ?? new List<UsuarioDto>();
-        } */
-
-        /* public async Task<UsuarioDto?> GetByIdAsync(Guid id)
-        {
-            return await _http.GetFromJsonAsync<UsuarioDto>($"api/usuarios/dto/{id}");
-        } */
-
-        /* public async Task<bool> CreateAsync(UsuarioCreateUpdateDto dto)
-        {
-            var response = await _http.PostAsJsonAsync("api/usuarios/dto", dto);
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> UpdateAsync(Guid id, UsuarioCreateUpdateDto dto)
-        {
-            var response = await _http.PutAsJsonAsync($"api/usuarios/dto/{id}", dto);
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> DeleteAsync(Guid id)
-        {
-            var response = await _http.DeleteAsync($"api/usuarios/{id}");
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<UsuarioDto?> GetByEmailAsync(string email)
-        {
-            return await _http.GetFromJsonAsync<UsuarioDto>($"api/usuarios/email/{email}");
-        } */
-
+        // Método para obtener todos los usuarios
         public async Task<ApiResponse<List<UsuarioDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<UsuarioDto>>();
@@ -80,6 +48,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener un usuario por su ID
         public async Task<ApiResponse<UsuarioDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<UsuarioDto?>();
@@ -117,6 +86,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
+        // Método para crear un nuevo usuario
         public async Task<ApiResponse<bool>> CreateAsync(UsuarioCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -154,6 +124,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para actualizar un usuario existente
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UsuarioCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -190,6 +161,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar un usuario por su ID
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -227,6 +199,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener un usuario por su correo electrónico
         public async Task<ApiResponse<UsuarioDto?>> GetByEmailAsync(string email)
         {
             var result = new ApiResponse<UsuarioDto?>();
@@ -264,6 +237,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener una lista de usuarios en formato combo (ID y nombre) para su uso en interfaces
         public async Task<List<UsuarioComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<UsuarioComboDTO>>("api/usuarios/combo")

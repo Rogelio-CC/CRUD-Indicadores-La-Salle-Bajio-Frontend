@@ -1,8 +1,9 @@
 ﻿<!--Ruta de la interfaz-->
 @page "/home/vistaActividades/detalleActividad/{activityId:guid}"
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
 @attribute [Authorize]
 
-<!--Importación de librería/servicio de navegación-->
+<!--Importación de librerías/servicios-->
 @inject NavigationManager NavManager
 @inject ActividadApiService ActividadApiService
 @using PruebaAutenticador2.Classes
@@ -10,7 +11,7 @@
 @using System.Net
 @inject AuthStateService AuthState
 
-<!--Importación de librería/servicio de navegación-->
+<!--Importaciones de estilos CSS-->
 <link rel="stylesheet" href="css/DetailV.css" />
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/Footer.css" />
@@ -92,6 +93,7 @@
 <!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
 <PruebaAutenticador2.Pages.ReusableComponents.Footer />
 
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
 @if (isLoading)
 {
     <Div Style="position: fixed;
@@ -111,6 +113,7 @@
     </Div>
 }
 
+<!-- Modal para mostrar el mensaje de error -->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -124,17 +127,23 @@
 
 
 @code {
+    // Parámetro que se recibe desde la URL para identificar la actividad a mostrar
     [Parameter]
     public Guid? activityId { get; set; }
 
+    // Variable para almacenar la actividad actual que se va a mostrar en la pantalla
     private Activity currentActivity = new();
 
+    // Variable para controlar la visualización de la pantalla de carga mientras se obtienen los datos de la actividad
     private bool isLoading = false;
 
+    // Variable para almacenar el mensaje de error en caso de que ocurra un error al obtener los datos de la actividad
     private string? errorMessage;
 
+    // Referencia al componente Modal para mostrar el mensaje de error
     private Modal modalToShowErrorMessage;
 
+    // Método que se ejecuta cada vez que se establecen los parámetros del componente (en este caso, cada vez que se navega a esta página con un nuevo activityId)
     protected override async Task OnParametersSetAsync()
     {
         try
@@ -144,8 +153,10 @@
 
             if (activityId is not null && activityId != Guid.Empty)
             {
+                // Se hace una llamada al servicio API para obtener los detalles de la actividad utilizando el ID proporcionado en la URL
                 var responseToGetId = await ActividadApiService.GetByIdAsync(activityId.Value);
 
+                // Si la respuesta no es exitosa, se maneja el error según el código de estado HTTP devuelto por la API
                 if (!responseToGetId.Success)
                 {
                     switch (responseToGetId.StatusCode)
@@ -164,7 +175,7 @@
                     return;
                 }
 
-                var dto = responseToGetId.Data;
+                var dto = responseToGetId.Data; // Se obtiene el DTO de la respuesta y se asigna a la variable "dto"
 
                 currentActivity = new Activity
                 {
@@ -186,6 +197,7 @@
             }
 
         }
+        // Si ocurre cualquier excepción durante el proceso de obtención de los datos de la actividad, se muestra un mensaje de error genérico indicando que no se pudo conectar con el servidor
         catch (Exception)
         {
             errorMessage = "No se pudo conectar con el servidor.";
@@ -193,7 +205,7 @@
         }
         finally
         {
-            isLoading = false;
+            isLoading = false; // Se establece isLoading en false para ocultar la pantalla de carga una vez que se han obtenido los datos o se ha producido un error.
         }
     }
 
@@ -204,6 +216,7 @@
 
     }
 
+    // Función para ocultar el modal de mensaje de error
     private Task HideModal(Modal modal)
     {
         NavManager.NavigateTo("/home/vistaActividades");

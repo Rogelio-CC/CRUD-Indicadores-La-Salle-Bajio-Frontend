@@ -1,6 +1,8 @@
-﻿@page "/home/vistaIndicadores/creacionIndicador"
+﻿<!-- La estructura .razor de CreateUpdateComment es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaIndicadores/creacionIndicador"
 @page "/home/vistaIndicadores/creacionIndicador/{indicatorId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject EmailService EmailService
 @inject IndicadorApiService IndicadorApiService
@@ -20,7 +22,6 @@
 @inject AuthStateService AuthState
 @inject IJSRuntime JS
 @using System.Net
-
 
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/ViewEvidences.css" />
@@ -54,7 +55,6 @@
 
 
                     <Validation Validator="ValidationRule.IsSelected">
-                        <!--Nuevo código (solicitado por el cliente).-->
                         <Field Class="form-field">
                             <FieldLabel For="indicadorCumplido">¿Se cumplió el indicador?</FieldLabel>
                             <Select Class="form-select" Disabled="@(currentIndicator.Id == Guid.Empty)" TValue="bool" ElementId="indicadorCumplido" SelectedValue="@currentIndicator.IndicadorCompletado" SelectedValueChanged="@OnSelectedValueChanged">
@@ -101,7 +101,6 @@
                 @if(currentIndicator.Id == Guid.Empty)
                 {
                     <Validation Validator="ValidationRule.IsSelected">
-                        <!--Nuevo código (solicitado por el cliente).-->
                         <Field Class="form-field">
                             <FieldLabel For="cantidadEvidenciasNecesarias">Cantidad de evidencias necesarias</FieldLabel>
                             <NumericEdit TValue="int" Disabled=disableAmountOfEvidenceInput @bind-Value="currentIndicator.CantidadEvidencias" Class="form-control" ElementId="cantidadEvidenciasNecesarias" />
@@ -110,7 +109,6 @@
                 }
                 else
                 {
-                    <!--Nuevo código (solicitado por el cliente).-->
                     <Field Class="form-field">
                         <FieldLabel For="cantidadEvidenciasNecesarias">Cantidad de evidencias necesarias</FieldLabel>
                         <NumericEdit TValue="int" Disabled=disableAmountOfEvidenceInput @bind-Value="currentIndicator.CantidadEvidencias" Class="form-control" ElementId="cantidadEvidenciasNecesarias" />
@@ -132,7 +130,7 @@
                         </Field>
                     </Validation>
 
-                    <!--Nuevo código (solicitado por el cliente).-->
+                    <!-- Se cargan evidencias "temporales" para, cuando se presione el botón Aceptar, guardarlos posteriormente como evidencias permanentes -->
                     <Field Class="form-field">
                         <FieldLabel for="nuevasEvidencias">@evidenceText</FieldLabel>
                     <FileEdit Changed="@OnFilesChanged" Disabled="@(currentIndicator.Id == Guid.Empty)" Multiple Class="form-control" ElementId="nuevasEvidencias" />
@@ -153,7 +151,7 @@
                         </Field>
                     </Validation>
 
-                    <!--Nuevo código (solicitado por el cliente).-->
+                    <!-- Se muestra, en una lista, las evidencias temporales que se van agregando. Al final y cuando se presione el botón Aceptar, pasan a ser evidencias permanentes -->
                     <Field Class="container-evidencias">
                         <FieldLabel Class="label-evidencias" For="evidencias">Lista de evidencias</FieldLabel>
                         @if (evidenciasTemp.Any())
@@ -171,6 +169,7 @@
                                         <span class="tipo-evidencia">(pendiente de guardar)</span>
                                     }
 
+                                    <!-- Botón que elimina la evidencia temporal para que no se guarde posteriormente como una evidencia permanente -->
                                     <Button Clicked="() => confirmDelete(e)">Eliminar</Button>
                                 </li>
                             }
@@ -179,6 +178,7 @@
                         }
                         else
                         {
+                        <!-- Mensaje que se muestra en caso de no haberse agregado alguna evidencia temporal aún -->
                             <p style="color: #b22222;">No se han subido evidencias aún.</p>
                         }
 
@@ -198,7 +198,6 @@
                         </Field>
                     </Validation>
 
-                    <!--Nuevo código (solicitado por el cliente)-->
                     <Field Class="form-field">
                         <FieldLabel For="accionCorrectiva">Acción correctiva</FieldLabel>
                         <TextEdit Class="form-control" ElementId="accionCorrectiva" Disabled=disabledInputs @bind-Text="currentIndicator.AccionCorrectiva" />
@@ -219,7 +218,6 @@
                         </Field>
                     </Validation>
                     
-                    <!--Nuevo código (solicitado por el cliente)-->
                     <Field Class="form-field">
                         <FieldLabel For="resopnsableAC">Responsable de la acción correctiva</FieldLabel>
                         <Select Class="form-select" TValue="Guid?" ElementId="resopnsableAC" Disabled=disabledInputs @bind-SelectedValue="currentIndicator.ResponsableAccionCorrectivaId">
@@ -287,6 +285,7 @@
 
     </Div>
 
+<!-- Modal para mostrar mensaje en caso de que las evidencia subidas sean más que la cantidad de evidencias necesarias -->
 <Modal @ref="@modalRefByMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -298,6 +297,7 @@
     </ModalContent>
 </Modal>
 
+<!-- Modal para mostrar si se dese borrar la evidencia temporal actual -->
 <Modal @ref="modalRefByDeleteEvidence">
     <ModalContent Centered>
         <ModalHeader Style="background-color: #002855;">
@@ -316,6 +316,7 @@
     </ModalContent>
 </Modal>
 
+<!-- Modal para mostrar aviso de dejar la cantidad de evidencia actual. Posteriormente, no se podrá modificar -->
 <Modal @ref="modalRefByIndicatorSubmitedAlready">
     <ModalContent Centered>
         <ModalHeader Style="background-color: #002855;">
@@ -334,6 +335,7 @@
     </ModalContent>
 </Modal>
 
+
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -344,6 +346,7 @@
         </ModalBody>
     </ModalContent>
 </Modal>
+
 
 <Modal @ref="@modalToShowErrorMessageAndRedirectViewPage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
@@ -379,6 +382,8 @@
 
 
 @code {
+    // La estructura de CreateUpdateComment es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? indicatorId { get; set; }
 
@@ -468,7 +473,7 @@
 
                 var dto = responseToGetId.Data;
 
-                disableAmountOfEvidenceInput = true;
+                disableAmountOfEvidenceInput = true; // si el indicador ya existe, no se permite modificar la cantidad de evidencias necesarias, para evitar inconsistencias con las evidencias ya subidas anteriormente.
 
                 currentIndicator = new Indicator
                 {
@@ -487,7 +492,11 @@
                     PeriodoId = dto.PeriodoId,
                     CarreraId = dto.CarreraId
                 };
+                // Se cargan las evidencias "temporales" para mostrarlas en la lista de evidencias. 
+                // Posteriormente, cuando se presione el botón Aceptar, se comparan con las evidencias permanentes para saber cuáles eliminar, cuáles agregar y cuáles dejar igual.
                 await LoadEvidences();
+                // Si el indicador ya se cumplió, se deshabilitan los inputs que ya no aplican y 
+                // se habilita el input de fecha de cumplimiento, en caso contrario, se mantiene la configuración inicial de los inputs.
                 OnSelectedValueChanged(currentIndicator.IndicadorCompletado);
                 pageTitle = "Editar indicador";
                 buttonText = "Actualizar";
@@ -514,6 +523,7 @@
         }
     }
 
+    // Modal para confirmar que se desea dejar la cantidad de evidencias necesarias así, ya que después no se podrá modificar ese valor.
     private Task confirmSubmitAlreadyIndicator()
     {
         return modalRefByIndicatorSubmitedAlready.Show();
@@ -587,10 +597,7 @@
                     return;
                 }
 
-                //if (indicadorCreado == null)
-                    //return;
-
-                currentIndicator.Id = indicadorCreado.Data!.Id;
+                currentIndicator.Id = indicadorCreado.Data!.Id; // se asigna el Id generado al indicador actual para posteriormente usarlo al subir las evidencias asociadas a ese indicador.
 
                 if (HoraRecordatorio != null && FechaRecordatorio != null)
                 {
@@ -698,6 +705,7 @@
 
     }
 
+    // Método para cargar las evidencias asociadas al indicador actual y convertirlas a evidencias "temporales" para mostrarlas en la lista de evidencias.
     private async Task LoadEvidences()
     {
         var reales = await EvidenciaApiService.GetAllAsync(currentIndicator.Id);
@@ -719,6 +727,8 @@
         }).ToList();
     }
 
+    // Método que se ejecuta cuando se suben nuevas evidencias a través del componente FileEdit. 
+    // Se agregan a la lista de evidencias temporales con la propiedad EsNuevaEvidencia en true para diferenciarlas de las evidencias permanentes que ya estaban asociadas al indicador.
     private async Task OnFilesChanged(FileChangedEventArgs e)
     {
         foreach (var file in e.Files)
@@ -734,7 +744,7 @@
         }
     }
 
-
+    // Método que se ejecuta cuando se desea eliminar una evidencia temporal a través del botón "Eliminar" que se muestra en cada evidencia de la lista.
     private void RemoveEvidence()
     {
         if (evidenciaT.EsNuevaEvidencia)
@@ -749,7 +759,8 @@
         HideModal(modalRefByDeleteEvidence, false);
     }
 
-
+    // Método para mostrar el modal de confirmación de eliminación de una evidencia temporal. 
+    // Se recibe la evidencia temporal que se desea eliminar para mostrar su nombre en el mensaje del modal y para saber cuál eliminar o marcar para eliminación cuando se confirme la acción.
     private Task confirmDelete(EvidenciaTemporal evi)
     {
         evidenciaT = evi;
@@ -761,7 +772,6 @@
         var path = Path.Combine("Shared", "templates", fileName);
         return File.ReadAllText(path);
     }
-
 
     private async Task EnviarCorreo()
     {
@@ -788,7 +798,7 @@
         await EmailService.SendEmailAsync(destinatario, asunto, mensaje);
     }
 
-
+    // Método que se ejecuta cuando se marca o desmarca el checkbox de indicador completado.
     private void OnSelectedValueChanged(bool value)
     {
         currentIndicator.IndicadorCompletado = value;

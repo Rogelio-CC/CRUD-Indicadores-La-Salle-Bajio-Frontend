@@ -1,6 +1,8 @@
-﻿@page "/home/vistaPeriodosEscolares/creacionPeriodoEscolar"
+﻿<!-- La estructura .razor de CreateUpdateSchoolTerm es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaPeriodosEscolares/creacionPeriodoEscolar"
 @page "/home/vistaPeriodosEscolares/creacionPeriodoEscolar/{schoolTermId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Classes;
 @using PruebaAutenticador2.Services;
@@ -115,6 +117,8 @@
 </Modal>
 
 @code {
+    // La estructura de CreateUpdateSchoolTerm es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? schoolTermId { get; set; }
 

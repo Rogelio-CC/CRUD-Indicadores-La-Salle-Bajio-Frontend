@@ -1,5 +1,9 @@
-﻿@page "/home/verPerfil"
+﻿<!--Ruta de la interfaz-->
+@page "/home/verPerfil"
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
 @attribute [Authorize]
+
+<!--Importación de librerías/servicios-->
 @inject NavigationManager NavManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @using PruebaAutenticador2.Services
@@ -8,19 +12,25 @@
 @using PruebaAutenticador2.Classes
 @using System.Net
 
+<!--Importaciones de estilos CSS-->
 <link rel="stylesheet" href="css/Fonts.css" />
 <link rel="stylesheet" href="css/Form_Profile.css" />
 
+<!--Título principal de la pestaña-->
 <PageTitle>Perfil del usuario</PageTitle>
 
+<!--Contenedor general de la vista del perfil del usuario-->
 <Div Class="view-profile-page">
+    <!--Contenedor de la sección izquierda (imagen) de la vista del perfil del usuario-->
     <Div Class="left-section">
         <Div class="image-left">
             <img src="https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png" alt="Imagen circular" />
         </Div>
     </Div>
 
+    <!--Contenedor de la sección derecha (inputs con información del usuario) de la vista del perfil del usuario-->
     <Div Class="right-section">
+        <!--Contenedor de los inputs-->
         <Container Class="container-form">
             <Form>
                 <fieldset>
@@ -57,6 +67,7 @@
     </Div>
 </Div>
 
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
 @if (isLoading)
 {
     <Div Style="position: fixed;
@@ -76,6 +87,7 @@
     </Div>
 }
 
+<!-- Modal para mostrar mensaje de error" -->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -90,15 +102,13 @@
 
 @code {
 
+    //Variables para almacenar la información del usuario, el estado de carga y el mensaje de error
     private UsuarioDto currentUser = new();
-
     private bool isLoading = false;
-
     private string? errorMessage;
-
     private Modal modalToShowErrorMessage;
 
-    //Este método se ejecuta al inicializar el componente y obtiene el correo del usuario únicamente
+    // Al inicializar la página, se verifica si el usuario está autenticado y se intenta cargar su perfil utilizando su correo electrónico
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -110,7 +120,7 @@
             return;
         }
 
-        // Claim más común
+        // Intentar obtener el correo del usuario desde el claim "preferred_username" o "email"
         var email = user.FindFirst("preferred_username")?.Value ?? user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
 
         if (string.IsNullOrEmpty(email))
@@ -119,9 +129,11 @@
             return;
         }
 
+        // Cargar el perfil del usuario utilizando el correo obtenido
         await LoadUserProfile(email);
     }
 
+    // Método para cargar el perfil del usuario utilizando su correo electrónico
     private async Task LoadUserProfile(string email)
     {
         try
@@ -129,7 +141,7 @@
             isLoading = true;
             StateHasChanged();
 
-            var emailUser = await UsuarioApiService.GetByEmailAsync(email);
+            var emailUser = await UsuarioApiService.GetByEmailAsync(email); // Llamada al servicio para obtener la información del usuario por correo electrónico
 
             if (!emailUser.Success)
             {
@@ -163,12 +175,13 @@
         }
     }
 
+    // Método para regresar a la página principal
     private void goBack()
-    {
-        // Cancelar cambios y regresar a la pantalla principal 
+    { 
         NavManager.NavigateTo("/home");
     }
 
+    // Método para ocultar el modal y regresar a la página principal
     private Task HideModal(Modal modal)
     {
         NavManager.NavigateTo("/home");

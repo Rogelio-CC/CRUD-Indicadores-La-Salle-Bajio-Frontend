@@ -1,11 +1,12 @@
-﻿@page "/home/vistaRoles"
+﻿<!-- La estructura .razor de CRUDRoles es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaRoles"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Classes
 @using PruebaAutenticador2.Services
 @inject RoleApiService RoleApiService
 @inject AuthStateService AuthState
-
 
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/Tables.css" />
@@ -127,7 +128,8 @@
 
 
 @code {
-
+    // La estructura de CRUDRoles es la misma que CRUDActivities, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     private List<Role> roleList = new();
 
     private string searchText = string.Empty;

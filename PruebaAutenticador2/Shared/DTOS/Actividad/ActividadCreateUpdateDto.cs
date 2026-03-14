@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Actividad
 {
+    // DTO (Data Transfer Object) para crear o actualizar una actividad
     public class ActividadCreateUpdateDto
     {
         public Guid Id { get; set; }

@@ -1,7 +1,7 @@
-﻿using Blazorise;
-
+﻿
 namespace PruebaAutenticador2.Classes
 {
+    // Atributos de la clase Usuario
     public class User
     {
         public Guid Id { get; set; }

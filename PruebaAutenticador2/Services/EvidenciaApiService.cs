@@ -1,8 +1,5 @@
 ﻿using Blazorise;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Http;
 using PruebaAutenticador2.Classes;
-using PruebaAutenticador2.Shared.DTOS.Directriz;
 using PruebaAutenticador2.Shared.DTOS.Evidencia;
 using System.Net;
 
@@ -17,35 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<EvidenciaDto>> GetAllAsync(Guid indicadorId)
-        {
-            return await _http.GetFromJsonAsync<List<EvidenciaDto>>($"api/indicadores/{indicadorId}/evidencias")
-                   ?? new List<EvidenciaDto>();
-        } */
-
-         /* public async Task<bool> UploadAsync(Guid indicadorId, IFileEntry file)
-        {
-            using var stream = file.OpenReadStream(file.Size);
-            using var content = new MultipartFormDataContent();
-            content.Add(new StreamContent(stream), "file", file.Name);
-
-            var response = await _http.PostAsync($"api/indicadores/{indicadorId}/evidencias", content);
-
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> DeleteAsync(Guid indicadorId, Guid evidenciaId)
-        {
-            var response = await _http.DeleteAsync($"api/indicadores/{indicadorId}/evidencias/{evidenciaId}");
-
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<byte[]> DownloadAsync(Guid indicadorId, Guid evidenciaId)
-        {
-            return await _http.GetByteArrayAsync($"api/indicadores/{indicadorId}/evidencias/{evidenciaId}/download");
-        } */
-
+        // Método para obtener todas las evidencias asociadas a un indicador específico
         public async Task<ApiResponse<List<EvidenciaDto>>> GetAllAsync(Guid indicadorId)
         {
             var result = new ApiResponse<List<EvidenciaDto>>();
@@ -84,6 +53,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para subir una nueva evidencia asociada a un indicador específico
         public async Task<ApiResponse<bool>> UploadAsync(Guid indicadorId, IFileEntry file)
         {
 
@@ -91,6 +61,8 @@ namespace PruebaAutenticador2.Services
 
             try
             {
+                // Se crea un Stream a partir del archivo seleccionado por el usuario y se prepara el contenido para la solicitud HTTP utilizando MultipartFormDataContent,
+                // que es necesario para enviar archivos a través de HTTP.
                 using var stream = file.OpenReadStream(file.Size);
                 using var content = new MultipartFormDataContent();
                 content.Add(new StreamContent(stream), "file", file.Name);
@@ -126,6 +98,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar una evidencia específica asociada a un indicador específico
         public async Task<ApiResponse<bool>> DeleteAsync(Guid indicadorId, Guid evidenciaId)
         {
             var result = new ApiResponse<bool>();
@@ -163,6 +136,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para descargar una evidencia específica asociada a un indicador específico, que retorna el contenido del archivo como un arreglo de bytes.
         public async Task<byte[]> DownloadAsync(Guid indicadorId, Guid evidenciaId)
         {
             return await _http.GetByteArrayAsync($"api/indicadores/{indicadorId}/evidencias/{evidenciaId}/download");

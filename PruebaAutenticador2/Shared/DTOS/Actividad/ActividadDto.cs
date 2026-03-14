@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Actividad
 {
+    // DTO para representar la información de una actividad
     public class ActividadDto
     {
         public Guid Id { get; set; }

@@ -1,6 +1,8 @@
-﻿@page "/home/vistaIndicadores/vistaGruposIndicadores/creacionGrupoIndicadores"
+﻿<!-- La estructura .razor de CreateUpdateGroupOfIndicator es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaIndicadores/vistaGruposIndicadores/creacionGrupoIndicadores"
 @page "/home/vistaIndicadores/vistaGruposIndicadores/creacionGrupoIndicadores/{GOIsId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject GrupoIndicadoresApiService GrupoIndicadoresApiService
 @using PruebaAutenticador2.Classes
@@ -109,6 +111,8 @@
 </Modal>
 
 @code {
+    // La estructura de CreateUpdateComment es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? GOIsId { get; set; }
 

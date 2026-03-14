@@ -1,5 +1,7 @@
-﻿@page "/home/vistaUsuarios"
+﻿<!-- La estructura .razor de CRUDUsers es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaUsuarios"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Classes
 @using PruebaAutenticador2.Services
@@ -143,7 +145,8 @@
 
 
 @code {
-
+    // La estructura de CRUDUsers es la misma que CRUDActivities, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     private List<UsuarioDto> userList = new();
 
     private string searchText = string.Empty;

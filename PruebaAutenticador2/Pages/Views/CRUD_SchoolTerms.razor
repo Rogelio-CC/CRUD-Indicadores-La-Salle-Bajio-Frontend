@@ -1,5 +1,7 @@
-﻿@page "/home/vistaPeriodosEscolares"
+﻿<!-- La estructura .razor de CRUDSchoolTerms es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaPeriodosEscolares"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Classes;
 @using PruebaAutenticador2.Services;
@@ -130,7 +132,8 @@
 
 
 @code {
-
+    // La estructura de CRUDSchoolTerms es la misma que CRUDActivities, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     private List<SchoolTerm> schoolTermList = new();
 
     private string searchText = string.Empty;

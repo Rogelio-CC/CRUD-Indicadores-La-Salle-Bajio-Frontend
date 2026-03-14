@@ -1,5 +1,8 @@
 ﻿@import "Fonts.css";
 
+/* Estilos generales para el dashboard de gráficos y búsqueda de datos */
+
+/* Título principal del dashboard de gráficos y búsqueda de datos */
 h1 {
     margin: 30px 30px 20px;
     font-size: 2em;
@@ -9,6 +12,7 @@ h1 {
     text-align: center;
 }
 
+/* Línea separadora del dashboard de gráficos y búsqueda de datos */
 .separate-line-detail {
     width: 96%;
     border: 3px solid #002855;
@@ -16,6 +20,7 @@ h1 {
     margin: 0 auto;
 }
 
+/* Contenedor del dashboard de gráficos y búsqueda de datos */
 .container-search {
     width: 50%;
     box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.10);
@@ -25,10 +30,11 @@ h1 {
     justify-self: center;
 }
 
+/* Formulario de búsqueda de datos */
 form {
     padding: 2rem;
 }
-
+    /* Etiquetas del formulario de búsqueda de datos */
     form label {
         display: block;
         color: #002855;
@@ -38,6 +44,7 @@ form {
         text-transform: uppercase;
     }
 
+/* Contenedor de los inputs del formulario de búsqueda de datos */
 .form-search {
     display: flex;
     flex-direction: column;
@@ -45,11 +52,13 @@ form {
     margin-bottom: 1rem;
 }
 
+/* Contenedor de cada campo del formulario de búsqueda de datos */
 .form-field-search {
     display: flex;
     flex-direction: column;
 }
 
+/* Estilos para los campos de selección del formulario de búsqueda de datos */
 .form-select-search {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     border: 2px solid #002855;
@@ -60,6 +69,7 @@ form {
     text-align: start;
 }
 
+/* Estilos para los campos de texto del formulario de búsqueda de datos */
 .form-control {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     border: 2px solid #002855;
@@ -70,11 +80,12 @@ form {
     text-align: start;
 }
 
+/* Contenedor del botón de búsqueda del formulario de búsqueda de datos */
 .form-submit {
     text-align: center;
 }
 
-/* Grid tipo BI */
+/* Grid tipo BI para visualización de los dashboards */
 .dashboard-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -89,7 +100,7 @@ form {
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s ease;
 }
-
+    /* Efecto hover para las cards del dashboard */
     .dashboard-card:hover {
         transform: translateY(-3px);
     }
@@ -103,6 +114,7 @@ form {
     text-align: center;
 }
 
+/* Estilos del mensaje de error en caso de que no se ingresen los datos de entrada en el formulario */
 .text-center {
     text-align: center;
     font-family: IndivisaFontBold;
@@ -113,6 +125,7 @@ form {
     color: #6c757d;
 }
 
+/* Contenedor de cada gráfica del dashboard */
 .container-graphics {
     width: 96%;
     box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.10);
@@ -124,6 +137,7 @@ form {
     justify-self: center;
 }
 
+/* Contenedor del título principal del dashboard de gráficos y búsqueda de datos */
 .title-container {
     font-family: IndivisaFontBold;
     color: #002855;

@@ -1,5 +1,7 @@
 ﻿@import "Fonts.css";
 
+/* Estilos para el botón de cerrar sesión (logout) */
+
 .custom-button-logout {
     display: block; /*Muestra el botón (enlace) en forma de bloque*/
     background-color: #002855;
@@ -13,7 +15,7 @@
     text-align: center;
     border-radius: 4px;
 }
-
+    /* Efecto hover para el botón de cerrar sesión (logout) */
     .custom-button-logout:hover {
         cursor: pointer;
         color: #ffffff;

@@ -1,14 +1,13 @@
 ﻿<!--Ruta de la interfaz-->
-@* @page "/{role}" *@
 @page "/home"
 @attribute [Authorize]
-@inject AuthStateService AuthState
 
-<!--Importación de librería/servicio de navegación-->
+<!--Importación de librerías/servicios-->
+@inject AuthStateService AuthState;
 @inject NavigationManager NavManager;
 @using PruebaAutenticador2.Classes;
-@using PruebaAutenticador2.Services
-@inject IJSRuntime JS
+@using PruebaAutenticador2.Services;
+@inject IJSRuntime JS;
 
 <!--Importaciones de estilos CSS-->
 <link rel="stylesheet" href="css/Nabvar.css"/>
@@ -19,9 +18,13 @@
 <PageTitle>Interfaz principal</PageTitle>
 
 <Layout>
+    <!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
     <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
+
+    <!--Se muestra el correo del usuario autenticado-->
     <LoginDisplay />
 
+    <!--Se mostrará la misma pantalla, pero bloqueando algunas secciones dependiendo del tipo de rol-->
     @if (AuthState.Role == "Administrador")
     {
         <Div Class="container-section">
@@ -480,13 +483,16 @@
     }
     else
     {
+        <!--Si se logra llegar aquí sin un rol identificado, mandará este mensaje-->
         <Paragraph>No tienes los permisos necesarios para acceder.</Paragraph>
     }
-
+    <!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
     <PruebaAutenticador2.Pages.ReusableComponents.Footer />
+
 </Layout>
 
 @code {
+    // Método para navegar a la pantalla correspondiente según el número de pantalla seleccionado en la interfaz principal.
     private void nextScreen(int screen)
     {
 

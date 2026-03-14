@@ -1,5 +1,7 @@
-﻿@page "/home/vistaComentarios"
+﻿<!-- La estructura .razor de CRUDComments es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaComentarios"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject ComentarioApiService ComentarioApiService
 @using PruebaAutenticador2.Classes
@@ -137,7 +139,8 @@
 
 
 @code {
-
+    // La estructura de CRUDComments es la misma que CRUDActivities, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     private List<ComentarioDto> commentList = new();
 
     private string searchText = string.Empty;

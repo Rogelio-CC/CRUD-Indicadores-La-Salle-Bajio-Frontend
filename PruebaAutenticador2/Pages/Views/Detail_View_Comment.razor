@@ -1,5 +1,7 @@
-﻿@page "/home/vistaComentarios/detalleComentario/{commentId:guid}"
+﻿<!-- La estructura .razor de DetailViewComment es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaComentarios/detalleComentario/{commentId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject ComentarioApiService ComentarioApiService
 @using PruebaAutenticador2.Classes
@@ -92,6 +94,8 @@
 
 
 @code {
+    // La estructura de DetailViewComment es la misma que DetailViewActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? commentId { get; set; }
 

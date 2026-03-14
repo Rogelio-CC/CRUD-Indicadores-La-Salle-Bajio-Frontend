@@ -1,4 +1,5 @@
-﻿@using PruebaAutenticador2.Services
+﻿<!--Importaciones de librerías/servicios-->
+@using PruebaAutenticador2.Services
 @inherits LayoutComponentBase
 @inject NavigationManager Navigation
 @inject TokenStorageService TokenStorage
@@ -6,14 +7,17 @@
 @inject TokenWatcherService TokenWatcher
 @implements IDisposable
 
+<!--Importaciones de componentes de Radzen-->
 <HeadContent>
     <RadzenTheme Theme="material" />
 </HeadContent>
 
 <RadzenComponents />
 
+<!--Importaciones de estilo CSS-->
 <link rel="stylesheet" href="css/Fonts.css" />
 
+<!-- Estructura principal del layout, con un ErrorBoundary para manejar errores inesperados y un modal para mostrar el mensaje de sesión expirada --> 
 <div class="page" style="overflow-x: hidden;">
     <main>
         <article>
@@ -35,6 +39,7 @@
     </main>
 </div>
 
+<!-- Modal para mostrar el mensaje de sesión expirada -->
 @if (showSessionExpireModal)
 {
     <Modal @ref="@modalToShowTokenExpired" Style="border-radius: 10px;">
@@ -47,16 +52,23 @@
 }
 
 @code {
+    // Variable para controlar la visibilidad del modal de sesión expirada
     private bool showSessionExpireModal = false;
+
+    // Referencia al ErrorBoundary para poder recargar la página en caso de error
     private ErrorBoundary? errorBoundary;
+
+    // Referencia al Modal para mostrar el mensaje de sesión expirada
     private Modal? modalToShowTokenExpired;
 
+    // Método para recargar la página en caso de error
     private void Reload()
     {
         errorBoundary?.Recover();
         Navigation.NavigateTo(Navigation.Uri);
     }
 
+    // Método para inicializar el componente, cargando el token desde el almacenamiento y configurando el estado de autenticación
     protected override async Task OnInitializedAsync()
     {
         var token = await TokenStorage.GetTokenAsync();
@@ -67,6 +79,7 @@
         }
     }
 
+    // Método para iniciar el TokenWatcher y suscribirse al evento de token expirado
     protected override void OnInitialized()
     {
         TokenWatcher.Start();
@@ -74,6 +87,7 @@
         TokenWatcher.OnTokenExpired += HandleTokenExpired;
     }
 
+    // Método para manejar el evento de token expirado, mostrando un modal y redirigiendo al usuario a la pantalla de inicio de sesión después de unos segundos
     private void HandleTokenExpired()
     {
         InvokeAsync(() =>
@@ -90,6 +104,7 @@
         });
     }
 
+    // Método para limpiar la suscripción al evento de token expirado cuando el componente se destruye
     public void Dispose()
     {
         TokenWatcher.OnTokenExpired -= HandleTokenExpired;

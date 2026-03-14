@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNetCore.Components.Authorization
+﻿<!--Importaciones de librerías/servicios-->
+@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.Routing
 @using Microsoft.AspNetCore.Routing
 @using PruebaAutenticador2.Services
@@ -8,8 +9,10 @@
 @inject AuthStateService AuthState
 @inject TokenStorageService tokenStorageService
 
+<!--Importaciones de estilos CSS-->
 <link rel="stylesheet" href="css/Fonts.css" />
 
+<!--Estrctura principal de App (componente usado en MainLayout)-->
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
@@ -25,24 +28,30 @@
 </CascadingAuthenticationState>
 
 @code {
+    // Referencia al objeto de la aplicación para poder ser llamado desde JavaScript
     DotNetObjectReference<App>? objRef;
 
+    // Método para limpiar la referencia al objeto de la aplicación cuando el componente se destruye, evitando posibles fugas de memoria
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        // Solo se ejecuta la lógica de registro del listener en el primer renderizado del componente, evitando múltiples registros si el componente se vuelve a renderizar por alguna razón.
         if (!firstRender) return;
 
+        // Crear una referencia al objeto de la aplicación para que pueda ser llamado desde JavaScript
         objRef = DotNetObjectReference.Create(this);
 
+        // Registrar el listener de almacenamiento en JavaScript, pasando la referencia al objeto de la aplicación para que pueda llamar al método OnTokenRemoved cuando se detecte un cambio en el almacenamiento.
         await JS.InvokeVoidAsync("authStorageListener", objRef);
     }
 
+    // Método que se llama desde JavaScript cuando se detecta que el token ha sido eliminado del almacenamiento (por ejemplo, en otra pestaña del navegador), para cerrar sesión en la aplicación actual y redirigir al usuario a la pantalla de inicio de sesión.
     [JSInvokable]
     public async Task OnTokenRemoved()
     {
         await tokenStorageService.RemoveTokenAsync();
         AuthState.Logout();
         Nav.NavigateTo("/MicrosoftIdentity/Account/SignOut", true);
-        await Task.CompletedTask;
+        await Task.CompletedTask; // Método completado, no se necesita realizar ninguna acción adicional después de cerrar sesión y redirigir al usuario.
     }
 }
 

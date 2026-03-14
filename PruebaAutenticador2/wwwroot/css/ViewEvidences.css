@@ -1,4 +1,6 @@
 ﻿/*Código CSS que aplica unicamente a las vista de los documentos subidos en Detail_View_Indicator*/
+
+/* Etiquetas de las evidencias */
 .label-evidencias {
     color: #002855;
     font-family: IndivisaFontBold;
@@ -6,10 +8,12 @@
     text-transform: uppercase;
 }
 
+/* Contenedor de las evidencias subidas por el usuario */
 .container-evidencias {
     justify-items: start;
 }
 
+/* Estilos para la lista de evidencias subidas por el usuario */
 .list-evidencias {
     list-style: none;
     padding-left: 0;
@@ -20,6 +24,7 @@
     font-family: IndivisaFont;
 }
 
+/* Estilos para cada elemento de la lista de evidencias subidas por el usuario */
 .item-evidencia {
     margin-bottom: 8px;
     background: #f7f9fb;
@@ -30,30 +35,31 @@
     flex-direction: row;
     align-items: center;
 }
-
+    /* Estilos para los enlaces de cada elemento de la lista de evidencias subidas por el usuario */
     .item-evidencia a {
         text-decoration: none;
         color: #002855;
         font-weight: 600;
     }
-
+        /* Efecto para los enlaces de cada elemento de la lista de evidencias subidas por el usuario al pasar el cursor por encima */
         .item-evidencia a:hover {
             text-decoration: underline;
         }
 
+/* Estilos para el tipo de evidencia de cada elemento de la lista de evidencias subidas por el usuario */
 .tipo-evidencia {
     margin-left: 8px;
     color: #555;
     font-size: 0.9em;
 }
 
+/* Estilos para el estado de las evidencias subidas por el usuario */
 .estado-evidencias {
     margin-top: 10px;
     font-weight: 600;
     font-family: IndivisaFont;
     text-align: center;
 }
-/*Código CSS que aplica unicamente a las vista de los documentos subidos en Detail_View_Indicator*/
 
 /* Responsividad para móviles (anchura )*/
 @media (min-width: 320px) and (max-width: 768px) {

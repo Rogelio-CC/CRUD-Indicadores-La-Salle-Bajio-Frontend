@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Carrera
 {
+    // DTO para representar la información de una carrera
     public class CarreraDto
     {
         public Guid Id { get; set; }

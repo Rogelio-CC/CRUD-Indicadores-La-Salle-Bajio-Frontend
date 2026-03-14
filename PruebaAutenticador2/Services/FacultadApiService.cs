@@ -13,32 +13,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<Faculty>> GetAllAsync()
-        {
-            return await _http.GetFromJsonAsync<List<Faculty>>("api/facultades")
-           ?? new List<Faculty>();
-        } */
-
-        /* public async Task<Faculty?> GetByIdAsync(Guid id)
-        {
-            return await _http.GetFromJsonAsync<Faculty>($"api/facultades/{id}");
-        } */
-
-        /* public async Task CreateAsync(Faculty faculty)
-        {
-            await _http.PostAsJsonAsync("api/facultades", faculty);
-        } */
-
-        /* public async Task UpdateAsync(Guid id, Faculty faculty)
-        {
-            await _http.PutAsJsonAsync($"api/facultades/{id}", faculty);
-        } */
-
-        /* public async Task DeleteAsync(Guid id)
-        {
-            await _http.DeleteAsync($"api/facultades/{id}");
-        } */
-
+        // Método para obtener todas las facultades
         public async Task<ApiResponse<List<Faculty>>> GetAllAsync()
         {
             var result = new ApiResponse<List<Faculty>>();
@@ -71,6 +46,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener una facultad por su ID
         public async Task<ApiResponse<Faculty?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<Faculty>();
@@ -108,6 +84,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
+        // Método para crear una nueva facultad
         public async Task<ApiResponse<bool>> CreateAsync(Faculty Faculty)
         {
             var result = new ApiResponse<bool>();
@@ -145,6 +122,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para actualizar una facultad existente
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, Faculty Faculty)
         {
             var result = new ApiResponse<bool>();
@@ -181,6 +159,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar una facultad por su ID
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -218,6 +197,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener una lista de facultades en formato de combo (ID y nombre) para su uso en interfaces
         public async Task<List<FacultadComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<FacultadComboDTO>>("api/facultades/combo")

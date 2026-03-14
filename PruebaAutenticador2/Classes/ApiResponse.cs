@@ -2,6 +2,7 @@
 
 namespace PruebaAutenticador2.Classes
 {
+    // Clase genérica para representar la respuesta de una API
     public class ApiResponse<T>
     {
         public bool Success { get; set; }

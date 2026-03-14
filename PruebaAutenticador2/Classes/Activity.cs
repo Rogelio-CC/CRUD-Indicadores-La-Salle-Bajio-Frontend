@@ -2,11 +2,11 @@
 {
     public class Activity
     {
+        // Atributos de la clase Actividad
         public Guid Id { get; set; }
         public string DescripcionActividad { get; set; } = null!;
         public decimal CantidadLograda { get; set; } = 0;
         public DateTime FechaEmision { get; set; }
-
         public DateTimeOffset? FechaCumplimiento { get; set; }
         public bool ActividadCumplida { get; set; }
 

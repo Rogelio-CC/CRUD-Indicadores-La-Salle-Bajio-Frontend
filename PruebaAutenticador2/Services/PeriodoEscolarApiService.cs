@@ -13,32 +13,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<SchoolTerm>> GetAllAsync()
-        {
-            return await _http.GetFromJsonAsync<List<SchoolTerm>>("api/periodos-escolares")
-           ?? new List<SchoolTerm>();
-        } */
-
-        /* public async Task<SchoolTerm?> GetByIdAsync(Guid id)
-        {
-            return await _http.GetFromJsonAsync<SchoolTerm>($"api/periodos-escolares/{id}");
-        } */
-
-        /* public async Task CreateAsync(SchoolTerm schoolTerm)
-        {
-            await _http.PostAsJsonAsync("api/periodos-escolares", schoolTerm);
-        } */
-
-        /* public async Task UpdateAsync(Guid id, SchoolTerm schoolTerm)
-        {
-            await _http.PutAsJsonAsync($"api/periodos-escolares/{id}", schoolTerm);
-        } */
-
-       /*  public async Task DeleteAsync(Guid id)
-        {
-            await _http.DeleteAsync($"api/periodos-escolares/{id}");
-        } */
-
+        // Método para obtener todos los periodos escolares
         public async Task<ApiResponse<List<SchoolTerm>>> GetAllAsync()
         {
             var result = new ApiResponse<List<SchoolTerm>>();
@@ -71,6 +46,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener un periodo escolar por su ID
         public async Task<ApiResponse<SchoolTerm?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<SchoolTerm?>();
@@ -108,6 +84,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
+        // Método para crear un nuevo periodo escolar
         public async Task<ApiResponse<bool>> CreateAsync(SchoolTerm schoolTerm)
         {
             var result = new ApiResponse<bool>();
@@ -145,6 +122,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para actualizar un periodo escolar existente
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, SchoolTerm schoolTerm)
         {
             var result = new ApiResponse<bool>();
@@ -181,6 +159,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar un periodo escolar por su ID
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -218,6 +197,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener una lista de periodos escolares en formato de combo (ID y nombre) para su uso en interfaces
         public async Task<List<PeriodoEscolarComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<PeriodoEscolarComboDTO>>("api/periodos-escolares/combo")

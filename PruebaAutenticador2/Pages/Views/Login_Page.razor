@@ -1,7 +1,7 @@
 ﻿<!--Ruta de la interfaz-->
 @page "/"
 
-<!--Importación de librería/servicio de navegación-->
+<!--Importación de librerías/servicios-->
 @inject NavigationManager NavManager;
 @inject AuthenticationStateProvider AuthProvider;
 
@@ -40,33 +40,15 @@
     </Div>
 </Div>
 
-@if (isLoading)
-{
-    <Div Style="position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background-color: rgba(0, 0, 0, 0.4);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;">
-        <Div Class="spinner-border text-white">
-            <Span Class="visually-hidden">Cargando...</Span>
-        </Div>
-    </Div>
-}
-
 @code{
 
-    private bool isLoading = false;
-
+    // Al iniciar la página, se verifica si el usuario ya está autenticado. Si es así, se redirige automáticamente a la página de redirección.
     protected override async Task OnInitializedAsync()
     {
+        // Se obtiene el estado de autenticación del usuario utilizando AuthenticationStateProvider.
         var authState = await AuthProvider.GetAuthenticationStateAsync();
 
+        // Si el usuario ya está autenticado, se redirige a la página de redirección para evaluar a qué pantalla enviar al usuario.
         if (authState.User.Identity?.IsAuthenticated == true)
         {
             NavManager.NavigateTo("/redirect");

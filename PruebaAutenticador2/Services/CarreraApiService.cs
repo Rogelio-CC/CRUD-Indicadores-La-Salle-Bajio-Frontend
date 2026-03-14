@@ -14,35 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<CarreraDto>> GetAllAsync()
-        {
-            return await _http.GetFromJsonAsync<List<CarreraDto>>("api/carreras/dto")
-                   ?? new List<CarreraDto>();
-        } */
-
-        /* public async Task<CarreraDto?> GetByIdAsync(Guid id)
-        {
-            return await _http.GetFromJsonAsync<CarreraDto>($"api/carreras/dto/{id}");
-        } */
-
-        /* public async Task<bool> CreateAsync(CarreraCreateUpdateDto dto)
-        {
-            var response = await _http.PostAsJsonAsync("api/carreras/dto", dto);
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> UpdateAsync(Guid id, CarreraCreateUpdateDto dto)
-        {
-            var response = await _http.PutAsJsonAsync($"api/carreras/dto/{id}", dto);
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> DeleteAsync(Guid id)
-        {
-            var response = await _http.DeleteAsync($"api/carreras/{id}");
-            return response.IsSuccessStatusCode;
-        } */
-
+        // Método para obtener todas las carreras
         public async Task<ApiResponse<List<CarreraDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<CarreraDto>>();
@@ -76,6 +48,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener una carrera por su ID
         public async Task<ApiResponse<CarreraDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<CarreraDto>();
@@ -113,6 +86,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
+        // Método para crear una nueva carrera
         public async Task<ApiResponse<bool>> CreateAsync(CarreraCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -150,6 +124,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para actualizar una carrera existente
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, CarreraCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -186,6 +161,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar una carrera por su ID
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -223,6 +199,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener una lista de carreras en formato de combo (ID y nombre) para su uso en interfaces
         public async Task<List<CarreraComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<CarreraComboDTO>>("api/carreras/combo")

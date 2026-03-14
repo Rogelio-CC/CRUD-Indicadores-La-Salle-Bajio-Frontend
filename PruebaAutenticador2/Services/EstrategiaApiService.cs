@@ -14,35 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<EstrategiaDto>> GetAllAsync()
-        {
-            return await _http.GetFromJsonAsync<List<EstrategiaDto>>("api/estrategias/dto")
-                   ?? new List<EstrategiaDto>();
-        } */
-
-        /* public async Task<EstrategiaDto?> GetByIdAsync(Guid id)
-        {
-            return await _http.GetFromJsonAsync<EstrategiaDto>($"api/estrategias/dto/{id}");
-        } */
-
-        /* public async Task<bool> CreateAsync(EstrategiaCreateUpdateDto dto)
-        {
-            var response = await _http.PostAsJsonAsync("api/estrategias/dto", dto);
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> UpdateAsync(Guid id, EstrategiaCreateUpdateDto dto)
-        {
-            var response = await _http.PutAsJsonAsync($"api/estrategias/dto/{id}", dto);
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> DeleteAsync(Guid id)
-        {
-            var response = await _http.DeleteAsync($"api/estrategias/{id}");
-            return response.IsSuccessStatusCode;
-        } */
-
+        // Método para obtener todas las estrategias
         public async Task<ApiResponse<List<EstrategiaDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<EstrategiaDto>>();
@@ -76,6 +48,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener una estrategia por su ID
         public async Task<ApiResponse<EstrategiaDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<EstrategiaDto>();
@@ -113,6 +86,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
+        // Método para crear una nueva estrategia
         public async Task<ApiResponse<bool>> CreateAsync(EstrategiaCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -150,6 +124,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para actualizar una estrategia existente
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, EstrategiaCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -186,6 +161,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar una estrategia por su ID
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -223,6 +199,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener la lista de estrategias en formato combo (ID y nombre) para para su uso en interfaces
         public async Task<List<EstrategiaComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<EstrategiaComboDTO>>("api/estrategias/combo")

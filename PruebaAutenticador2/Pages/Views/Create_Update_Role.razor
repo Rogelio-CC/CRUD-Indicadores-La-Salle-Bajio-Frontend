@@ -1,6 +1,8 @@
-﻿@page "/home/vistaRoles/creacionRol"
+﻿<!-- La estructura .razor de CreateUpdateRole es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaRoles/creacionRol"
 @page "/home/vistaRoles/creacionRol/{roleId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject RoleApiService RoleApiService
 @using System.ComponentModel.DataAnnotations
@@ -110,6 +112,8 @@
 
 
 @code {
+    // La estructura de CreateUpdateRole es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? roleId { get; set; }
 

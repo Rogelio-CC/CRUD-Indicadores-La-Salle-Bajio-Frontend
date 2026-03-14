@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Usuarios
 {
+    // DTO para crear o actualizar un usuario
     public class UsuarioCreateUpdateDto
     {
         public string NombreUsuario { get; set; } = null!;

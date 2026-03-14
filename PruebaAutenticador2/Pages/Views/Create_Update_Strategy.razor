@@ -1,4 +1,5 @@
-﻿@page "/home/vistaEstrategias/creacionEstrategia"
+﻿<!-- La estructura .razor de CreateUpdateStrategy es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaEstrategias/creacionEstrategia"
 @page "/home/vistaEstrategias/creacionEstrategia/{strategyId:guid}"
 @attribute [Authorize]
 @inject NavigationManager NavManager
@@ -166,6 +167,8 @@
 
 
 @code {
+    // La estructura de CreateUpdateComment es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? strategyId { get; set; }
 

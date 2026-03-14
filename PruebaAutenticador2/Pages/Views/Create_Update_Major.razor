@@ -1,6 +1,8 @@
-﻿@page "/home/vistaCarreras/creacionCarrera"
+﻿<!-- La estructura .razor de CreateUpdateMajor es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaCarreras/creacionCarrera"
 @page "/home/vistaCarreras/creacionCarrera/{majorId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject CarreraApiService CarreraApiService
 @inject FacultadApiService FacultadApiService
@@ -121,6 +123,8 @@
 
 
 @code {
+    // La estructura de CreateUpdateMajor es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? majorId { get; set; }
 

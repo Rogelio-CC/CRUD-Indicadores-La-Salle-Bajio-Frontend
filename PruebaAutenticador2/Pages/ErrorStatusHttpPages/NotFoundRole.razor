@@ -1,6 +1,9 @@
-﻿@page "/rol-no-identificado"
+﻿<!-- Ruta de la interfaz -->
+@page "/rol-no-identificado"
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
 @attribute [Authorize]
 
 <link rel="stylesheet" href="css/Fonts.css" />
 
+<!-- Muestra este mensaje en esta interfaz cuaando el rol no fue encontrado en el proceso de ingreso -->
 <Heading Size="HeadingSize.Is5" Style="font-family:IndivisaFontBold;">Hubo un problema a la hora de identificar el rol.</Heading>

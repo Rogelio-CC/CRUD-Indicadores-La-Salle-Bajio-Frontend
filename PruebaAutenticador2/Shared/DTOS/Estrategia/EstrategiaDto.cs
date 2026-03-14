@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Estrategia
 {
+    // DTO para representar la información de una estrategia
     public class EstrategiaDto
     {
         public Guid Id { get; set; }

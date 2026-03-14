@@ -1,5 +1,7 @@
-﻿<link rel="stylesheet" href="css/Fonts.css" />
+﻿<!--Importaciones de estilos CSS-->
+<link rel="stylesheet" href="css/Fonts.css" />
 
+<!--Estructura de la plantilla para enviar mensaje de recordatorio desde el correo. Esta plantilla la usan los elementos Indicador y Actividad-->
 <Div Style="width:100%; font-family: IndivisaFont; background-color:#f9fafb; padding:20px;">
     <Row>
         <Column>
@@ -17,8 +19,8 @@
                     </Paragraph>
                     <Div Style="background-color:#f3f4f6; padding:15px; border-radius:8px; margin-top:15px; margin-bottom: 15px;">
                         <Paragraph Style="margin:0; font-size:16px; text-align:left;">
-                            <Strong>📅 Fecha programada:</Strong> {{FECHA}}<br />
-                            <Strong>⏰ Hora programada:</Strong> {{HORA}}
+                            <Strong>📅 Fecha programada:</Strong> {{FECHA}}<br /> <!--Se remplaza esta etiqueta en el código de CreateUpdateActivity o CreateActivityIndicator-->
+                            <Strong>⏰ Hora programada:</Strong> {{HORA}} <!--Se remplaza esta etiqueta en el código de CreateUpdateActivity o CreateActivityIndicator-->
                         </Paragraph>
                     </Div>
                     <Paragraph Style="font-size:14px; color:#6b7280; text-align: left; margin-bottom: 15px;">
@@ -29,7 +31,7 @@
                 <!-- Footer -->
                 <Div Style="padding-top:20px; border-top:2px solid #e5e7eb; margin-top:15px;">
                     <Paragraph Style="font-size:14px; color:#9ca3af; text-align: left;">
-                        © {{ANIO}} Gestión de Indicadores | Universidad La Salle Bajío
+                        © {{ANIO}} Gestión de Indicadores | Universidad La Salle Bajío <!--"ANIO" se remplaza esta etiqueta en el código de CreateUpdateActivity o CreateActivityIndicator-->
                     </Paragraph>
                 </Div>
 

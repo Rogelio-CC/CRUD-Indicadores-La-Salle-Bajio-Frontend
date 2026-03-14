@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Classes
 {
+    // Atributos de la Clase Directriz
     public class Guideline
     {
         public Guid Id { get; set; }

@@ -1,6 +1,7 @@
 ﻿
 namespace PruebaAutenticador2.Classes
 {
+    // Atributos de la clase Rol
     public class Role
     {
         public Guid Id { get; set; }

@@ -1,5 +1,9 @@
-﻿@page "/home/verCalendario/"
+﻿<!--Ruta de la interfaz-->
+@page "/home/verCalendario/"
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
 @attribute [Authorize]
+
+<!--Importación de librerías/servicios-->
 @inject NavigationManager NavManager
 @using System.Globalization
 @using PruebaAutenticador2.Classes
@@ -7,16 +11,24 @@
 @inject AuthStateService AuthState
 @inject EventosCalendarioService EventosCalendarioService
 
+<!--Importaciones de estilos CSS-->
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/Footer.css" />
 <link rel="stylesheet" href="css/Calendar.css" />
 
+<!--Título principal de la pestaña-->
+<PageTitle>Vista de las gráficas</PageTitle>
+
+<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
 <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role"/>
 
+<!--Título principal de la pantalla-->
 <h1>Calendario</h1>
 
+<!--Línea de seperación entre el título de la página y el contenido-->
 <Divider Class="separate-line-calendar" />
 
+<!--Contenedor del formulario para buscar algun evento del calendario-->
 <Div Class = "container-search">
     <Form>
         <fieldset class="form-search">
@@ -49,6 +61,7 @@
     </Form>
 </Div>
 
+<!--Contenedor principal del calendario-->
 <Div class="academic-calendar-container">
     <!-- Encabezado con navegación -->
     <Div Class="calendar-navigation">
@@ -75,14 +88,16 @@
         }
     </Div>
 
-    <!-- Cuadrícula de días - CAMBIO PRINCIPAL -->
+    <!-- Cuadrícula de días -->
     <Div Class="calendar-grid">
         @{
+            // Obtener las semanas del mes actual
             var weeks = GetWeeksInMonth(currentYear, currentMonth);
+
             // Mostrar solo las semanas que contengan días del mes actual
             var weeksToShow = weeks.Where(week => week.Any(day => day != DateTime.MinValue));
         }
-
+        <!--Visualización de los días y las semanas correspondientes al mes y al evento, mostrando el color asociado al evento-->
         @foreach (var week in weeksToShow)
         {
             <div class="calendar-row">
@@ -94,6 +109,7 @@
                         @if (day != DateTime.MinValue)
                         {
                             <div class="day-number">@day.Day</div>
+                            <!--Visualización de los eventos y, cuando se presiona alguno de estos, muestra el modal para ver información de ese evento-->
                             @foreach (var eventItem in GetAcademicEvents(day))
                             {
                                 <Div class="calendar-event" @onclick="() => ShowModal(eventItem)">
@@ -108,6 +124,7 @@
     </Div>
 </Div>
 
+<!--Modal para mostrar información de algun evento-->
 <Modal @ref="@modalRef" Class="event-modal">
     <ModalContent Centered="true">
         <ModalBody>
@@ -124,6 +141,7 @@
     </ModalContent>
 </Modal>
 
+<!--Modal para mostrar mensaje de error-->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -135,8 +153,10 @@
     </ModalContent>
 </Modal>
 
+<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
 <PruebaAutenticador2.Pages.ReusableComponents.Footer/>
 
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
 @if (isLoading)
 {
     <Div Style="position: fixed;
@@ -158,20 +178,26 @@
 
 @code {
 
+    // Variables para controlar el mes y año actual del calendario, 
+    // el evento seleccionado, los filtros aplicados, 
+    // la lista de eventos académicos, los eventos filtrados, el estado de carga y el mensaje de error.
     private int currentYear = DateTime.Now.Year;
     private int currentMonth = DateTime.Now.Month;
     private CalendarEvent selectedEvent = new();
-
     private string filterTitle = string.Empty;
     private DateTime? filterStart;
     private DateTime? filterEnd;
     private List<CalendarEvent> AcademicEvents = new();
     private List<CalendarEvent> filteredEvents = new();
-
     private bool isLoading = false;
-
     private string? errorMessage;
 
+    // Referencias a los modales para mostrar información del evento y mensajes de error.
+    private Modal modalRef;
+    private Modal modalToShowErrorMessage;
+
+    // Al iniciar la página, se cargan los eventos académicos desde el servicio y se aplican los filtros correspondientes. 
+    // Si ocurre un error al cargar los eventos, se muestra un mensaje de error en un modal.
     protected override async Task OnInitializedAsync()
     {
         try
@@ -197,6 +223,7 @@
         }
     }
 
+    // Método para aplicar los filtros de búsqueda a la lista de eventos académicos.
     private void ApplyFilters()
     {
         filteredEvents = AcademicEvents.Where(ev =>
@@ -206,11 +233,7 @@
         ).ToList();
 
         // Si NO hay filtros aplicados, regresar al mes actual
-        bool noFilters =
-            string.IsNullOrWhiteSpace(filterTitle) &&
-            !filterStart.HasValue &&
-            !filterEnd.HasValue;
-
+        bool noFilters = string.IsNullOrWhiteSpace(filterTitle) && !filterStart.HasValue && !filterEnd.HasValue;
         if (noFilters)
         {
             currentYear = DateTime.Now.Year;
@@ -218,18 +241,20 @@
             return;
         }
 
-
-        // 👉 Si hay eventos filtrados, mover al mes del primer evento encontrado
+        // Si hay eventos filtrados, mover al mes del primer evento encontrado
         if (filteredEvents.Count > 0)
         {
+            // Ordenar los eventos filtrados por fecha de inicio y tomar el primero para establecer el mes y año actuales
             var firstEvent = filteredEvents.OrderBy(e => e.FechaInicio).First();
 
+            // Establecer el mes y año actuales al mes del primer evento encontrado
             currentYear = firstEvent.FechaInicio.Year;
             currentMonth = firstEvent.FechaInicio.Month;
         }
         
     }
 
+    // Método para cambiar el mes actual del calendario, sumando o restando meses según el valor de delta.
     private void ChangeMonth(int delta)
     {
         var newDate = new DateTime(currentYear, currentMonth, 1).AddMonths(delta);
@@ -237,6 +262,7 @@
         currentMonth = newDate.Month;
     }
 
+    // Método para obtener las semanas de un mes específico, ajustando para que la semana comience en domingo y asegurando que se muestren al menos 6 filas de semanas.
     private List<DateTime[]> GetWeeksInMonth(int year, int month)
     {
         var firstDay = new DateTime(year, month, 1);
@@ -246,14 +272,14 @@
         var currentWeek = new DateTime[7];
         var currentDay = firstDay;
 
-        // Ajustar para que la semana comience en Domingo
+        // Ajuste para que la semana comience en Domingo
         while (currentDay.DayOfWeek != DayOfWeek.Sunday)
         {
             currentDay = currentDay.AddDays(-1);
         }
 
-        // Cambio clave: continuar hasta cubrir todos los días del mes
-        while (currentDay <= lastDay || weeks.Count < 6) // Mostrar mínimo 6 filas
+        // Llenar las semanas del mes, asegurando que se muestren al menos 6 filas de semanas
+        while (currentDay <= lastDay || weeks.Count < 6)
         {
             for (int i = 0; i < 7; i++)
             {
@@ -267,32 +293,33 @@
         return weeks;
     }
 
+    // Método para obtener los eventos académicos que ocurren en un día específico, filtrando la lista de eventos según la fecha.
     private List<CalendarEvent> GetAcademicEvents(DateTime day)
     {
         return filteredEvents.Where(e => e.IsOnDate(day)).ToList();
     }
 
+    // Método para determinar el color de fondo de un día en el calendario, basado en los eventos académicos que ocurren en ese día. 
+    // Si hay eventos en algunos días compartidos, se toma el color del primer evento; si no hay eventos, se devuelve una cadena vacía (fondo blanco o transparente).
     private string GetDayBackgroundColor(DateTime day)
     {
         var events = GetAcademicEvents(day);
         if (events.Any())
         {
-            // Tomamos el color del primer evento
+            // Aquí es donde se toma el color del primer evento
             return events.First().Color!;
         }
         return "";
     }
 
-    private Modal modalRef;
-
-    private Modal modalToShowErrorMessage;
-
+    // Método para mostrar el modal con la información de un evento específico cuando se hace clic en él.
     private Task ShowModal(CalendarEvent ev)
     {
         selectedEvent = ev;
         return modalRef.Show();
     }
 
+    // Método para ocultar el modal de información del evento.
     private Task HideModal(Modal modal)
     {
         return modal.Hide();

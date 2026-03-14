@@ -1,5 +1,7 @@
 ﻿@import "Fonts.css";
 
+/* Estilos para el botón de inicio de sesión */
+
 .custom-button-login {
     display: inline-block; /*Muestra el botón (enlace) en forma de una sola linea de bloque*/
     padding: 6.7px 10px; /*Relleno interno de 6.7px de arriba, izquierda y derecha. 10px para la parte de abajo*/

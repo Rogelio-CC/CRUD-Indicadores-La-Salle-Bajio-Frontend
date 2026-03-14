@@ -1,4 +1,5 @@
-﻿<div class="alert alert-secondary mt-4">
+﻿<!--Estructura princial del SurveyPrompt (es probable que se pueda borrar, pero por si acaso no hacerlo)-->
+<div class="alert alert-secondary mt-4">
     <span class="oi oi-pencil me-2" aria-hidden="true"></span>
     <strong>@Title</strong>
 
@@ -10,7 +11,7 @@
 </div>
 
 @code {
-    // Demonstrates how a parent component can supply parameters
+    // Propiedad para el título del mensaje, que se puede establecer al usar el componente en otras partes de la aplicación y que se muestra en el mensaje de alerta.
     [Parameter]
     public string? Title { get; set; }
 }

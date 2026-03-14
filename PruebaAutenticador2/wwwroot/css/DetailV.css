@@ -1,5 +1,8 @@
 ﻿@import "Fonts.css";
 
+/* Estilos generales para el formulario de detalle de datos */
+
+/* Título principal del formulario de detalle de datos */
 h1 {
     margin: 30px 30px 20px;
     font-size: 2em;
@@ -9,6 +12,7 @@ h1 {
     text-align: center;
 }
 
+/* Línea separadora del formulario de detalle de datos */
 .separate-line-detail {
     width: 96%;
     border: 3px solid #002855;
@@ -16,6 +20,7 @@ h1 {
     margin: 0 auto;
 }
 
+/* Contenedor del formulario de detalle de datos */
 .container-detail {
     width: 96%;
     padding: 20px;
@@ -26,10 +31,11 @@ h1 {
     margin-bottom: 250px;
 }
 
+/* Formulario de detalle de datos */
 form {
     padding: 2rem;
 }
-
+    /* Etiquetas del formulario de detalle de datos */
     form label {
         display: block;
         color: #002855;
@@ -39,6 +45,7 @@ form {
         text-transform: uppercase;
     }
 
+/* Contenedor de los inputs del formulario de detalle de datos */
 .form-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 columnas */
@@ -46,11 +53,13 @@ form {
     margin-bottom: 1rem;
 }
 
+/* Contenedor de cada campo del formulario de detalle de datos */
 .form-field {
     display: flex;
     flex-direction: column;
 }
 
+/* Estilos para los campos del formulario de detalle de datos */
 .form-control {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     border: 2px solid #002855;
@@ -61,6 +70,7 @@ form {
     text-align: start;
 }
 
+/* Contenedor del botón de envío del formulario de detalle de datos */
 .form-submit {
     text-align: center;
 }
@@ -93,6 +103,3 @@ form {
         }
     }
 }
-
-
-/*PENDIENTE VER COMO AJUSTAR EL CONTENEDOR EN VERSIÓN TABLETA*/

@@ -1,5 +1,7 @@
-﻿@page "/home/vistaIndicadores"
+﻿<!-- La estructura .razor de CRUDIndicators es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaIndicadores"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Services
 @using PruebaAutenticador2.Shared.DTOS.Indicador
@@ -140,7 +142,8 @@
 
 
 @code {
-
+    // La estructura de CRUDIndicators es la misma que CRUDActivities, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     private List<IndicadorDto> indicatorList = new();
 
     private string searchText = string.Empty;

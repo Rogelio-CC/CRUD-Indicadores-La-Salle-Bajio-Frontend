@@ -1,5 +1,8 @@
 ﻿@import "Fonts.css";
 
+/* Estilos generales para el calendario académico */
+
+/* Título principal de la sección "Calendario"*/
 h1 {
     margin: 30px 30px 20px;
     font-size: 2em;
@@ -9,6 +12,7 @@ h1 {
     text-align: center;
 }
 
+/*Línea separadora del calendario académico*/
 .separate-line-calendar {
     width: 96%;
     border: 3px solid #002855;
@@ -16,6 +20,7 @@ h1 {
     margin: 0 auto;
 }
 
+/*Contenedor de búsqueda del calendario académico*/
 .container-search {
     width: 50%;
     box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.10);
@@ -25,10 +30,11 @@ h1 {
     justify-self: center; /*Ayuda a posicionar al contenedor al centro junto con sus elementos*/
 }
 
+/*Formulario de búsqueda del calendario académico*/
 form {
     padding: 2rem;
 }
-
+    /*Etiquetas del formulario de búsqueda del calendario académico*/
     form label {
         display: block;
         color: #002855;
@@ -38,6 +44,7 @@ form {
         text-transform: uppercase;
     }
 
+/*Contenedor de los inputs del formulario de búsqueda del calendario académico*/
 .form-search {
     display: flex;
     flex-direction: column;
@@ -45,11 +52,13 @@ form {
     margin-bottom: 1rem;
 }
 
+/*Contenedor de cada campo del formulario de búsqueda del calendario académico*/
 .form-field-search {
     display: flex;
     flex-direction: column;
 }
 
+/*Input de selección del formulario de búsqueda del calendario académico (se aplica únicamente al campo "Evento" por manejar diferentes opciones)*/
 .form-select-search {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     border: 2px solid #002855;
@@ -60,6 +69,7 @@ form {
     text-align: start;
 }
 
+/*Input de texto del formulario de búsqueda del calendario académico (se aplica a los campos referentes a las "Fechas")*/
 .form-control {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     border: 2px solid #002855;
@@ -70,7 +80,7 @@ form {
     text-align: start;
 }
 
-
+/*Contenedor del calendario académico*/
 .academic-calendar-container {
     max-width: 96%;
     margin: 30px auto;
@@ -82,6 +92,7 @@ form {
     margin-bottom: 250px;
 }
 
+/*Contenedor de navegación del calendario académico*/
 .calendar-navigation {
     display: flex;
     justify-content: center; /*Ayuda a posicionar el elemento de navegación del calendario al centro*/
@@ -93,6 +104,7 @@ form {
     border-radius: 10px;
 }
 
+/*Título del calendario académico*/
 .calendar-title {
     color: white;
     font-family: IndivisaFontBold;
@@ -103,6 +115,7 @@ form {
     text-transform: capitalize;
 }
 
+/*Contenedor de los días de la semana del calendario académico*/
 .weekdays-header {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /*Se alinean en 7 columnas*/
@@ -116,24 +129,28 @@ form {
     border-radius: 5px;
 }
 
+/*Días de la semana del calendario académico*/
 .weekday {
     padding: 5px;
 }
 
+/*Contenedor de los días del calendario académico*/
 .calendar-grid {
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
 
+/*Contenedor de cada fila del calendario académico*/
 .calendar-row {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, 1fr); /*Se alinean en 7 columnas*/
     gap: 5px;
 }
 
+/*Contenedor de cada día del calendario académico*/
 .calendar-day {
-    min-height: 150px; /*Altura mínima para los cuadros dentro del calendario*/
+    min-height: 150px; /*Altura mínima para los cuadros de los días del calendario*/
     padding: 8px;
     border: 1px solid #e0e0e0;
     border-radius: 5px;
@@ -143,6 +160,7 @@ form {
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
+/*Número de cada día del calendario académico*/
 .day-number {
     font-family: IndivisaFontBold;
     color: black;
@@ -151,6 +169,7 @@ form {
     align-self: flex-end; /*Posiciona el número de lado derecho.*/
 }
 
+/*Contenedor de cada evento del calendario académico*/
 .calendar-event {
     font-size: 0.75rem;
     padding: 4px 6px;
@@ -172,21 +191,25 @@ form {
         box-shadow: 0 3px 10px rgba(0, 40, 85, 0.15);
     }
 
+/*Modal de cada evento del calendario académico*/
 .event-modal .modal-content {
     border-radius: 10px;
 }
 
+/*Título del modal de cada evento del calendario académico*/
 .event-dates {
     text-align: start;
     margin-bottom: 30px;
 }
 
+/*Etiqueta de la descripción del modal de cada evento del calendario académico*/
 h5 {
     color: #002855;
     margin: 10px 0;
     font-family: IndivisaFont;
 }
 
+/*Etiqueta del título del modal de cada evento del calendario académico*/
 h3 {
     color: #002855;
     margin: 10px 0;

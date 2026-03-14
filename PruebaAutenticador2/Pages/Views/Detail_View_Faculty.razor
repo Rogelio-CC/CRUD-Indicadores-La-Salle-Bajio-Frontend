@@ -1,5 +1,7 @@
-﻿@page "/home/vistaFacultades/detalleFacultad/{facultyId:guid}"
+﻿<!-- La estructura .razor de DetailViewFaculty es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaFacultades/detalleFacultad/{facultyId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject FacultadApiService FacultadApiService
 @using PruebaAutenticador2.Classes
@@ -105,6 +107,8 @@
 </Modal>
 
 @code {
+    // La estructura de DetailViewFaculty es la misma que DetailViewActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? facultyId { get; set; }
 

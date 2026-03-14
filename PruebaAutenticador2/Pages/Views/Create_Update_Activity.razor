@@ -1,9 +1,10 @@
 ﻿<!--Ruta de la interfaz-->
 @page "/home/vistaActividades/creacionActividad"
 @page "/home/vistaActividades/creacionActividad/{activityId:guid}"
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
 @attribute [Authorize]
 
-<!--Importación de librería/servicio de navegación-->
+<!--Importación de librerías/servicios-->
 @inject NavigationManager NavManager
 @inject ActividadApiService ActividadApiService
 @inject UsuarioApiService UsuarioApiService
@@ -38,12 +39,14 @@
 <!--Línea de seperación entre el título de la página y el contenido-->
 <Divider Class="separate-line-register" />
 
-<!--Contenedor que contiene el formulario de registro/actualización-->
+<!--Contenedor del formulario de registro/actualización-->
 <Div Class="container-register">
     <Form>
         <fieldset class="form-grid">
+            <!-- Se agrega Validations para la verificación correcta de los inputs -->
             <Validations @ref="validations" Mode="ValidationMode.Auto" Model="currentActivity">
 
+                <!-- Dentro de Validations, se pueden poner diversos Validation individuales para agregar una regla que ayude a cumplir que el input este completado, por ejemplo -->
                 <Validation Validator="@ValidationRule.IsNotEmpty">
                     <Field Class="form-field">
                         <FieldLabel For="descripcion">Descripción</FieldLabel>
@@ -75,11 +78,13 @@
                     <NumericEdit TValue="decimal" Class="form-control" ElementId="cantidadLograda" @bind-Value=currentActivity.CantidadLograda />
                 </Field>
 
+                <!-- Se puede poner Validation personalizado, como en este caso para evaluar que este llenado correctamente el valor de un ID -->
                 <Validation Validator="ValidateGuidSelection">
                     <Field Class="form-field">
                         <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
                         <Select Class="form-select" TValue="Guid" ElementId="creadorAsociado" @bind-SelectedValue=currentActivity.CreadorId>
                             <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                            <!-- Se usa un foreach para visualizar la lista de elementos existentes (para esta ocasión, muestra una lista de usuarios existentes.) -->
                             @foreach (var u in usuarios)
                             {
                                 <SelectItem TValue="Guid" Value="@u.Id">
@@ -135,6 +140,7 @@
                     </Field>
                 </Validation>
             </Validations>
+            <!-- Elementos como Actividad e Indicador contienen esta parte de agregar una fecha y hora de recordatorio de manera opcional -->
             <Field Class="form-field">
                 <FieldLabel For="fechaRecordatorio">Fecha de actulización</FieldLabel>
                 <DateEdit TValue="DateTime?" Disabled="@(!remiderActivateActivity)" ElementId="fechaRecordatorio" @bind-Date=FechaRecordatorio />
@@ -145,7 +151,7 @@
             </Field>
         </fieldset>
         <Div Style="display: flex; align-items: center; justify-content: center; font-family:IndivisaFont;">
-            <!--CheckBox-->
+            <!-- CheckBox que ayuda a que se habiliten o no los inputs referentes al recordatorio. Si el rol es Maestro o Investigador, entonces se deshabilita esta opción.-->
             <Check TValue="bool" @bind-Checked="remiderActivateActivity" Disabled="@(AuthState.Role == "Maestro" || AuthState.Role == "Investigador")">Activar recordatorio de modificación de la actividad</Check>
         </Div>
     </Form>
@@ -176,6 +182,7 @@
 <!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
 <PruebaAutenticador2.Pages.ReusableComponents.Footer />
 
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
 @if (isLoading)
 {
     <Div Style="position: fixed; 
@@ -195,6 +202,7 @@
     </Div>
 }
 
+<!-- Modal para mostrar el mensaje de error -->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -206,6 +214,7 @@
     </ModalContent>
 </Modal>
 
+<!-- Modal para mostrar el mensaje de error y redireccionar a la pantalla de vista de elementos (en este caso, vista de actividades) -->
 <Modal @ref="@modalToShowErrorMessageAndRedirectViewPage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -220,9 +229,11 @@
 
 
 @code {
+    // El parámetro activityId se obtiene de la URL, si es que se proporciona. Si no se proporciona, se asume que se está creando una nueva actividad.
     [Parameter]
     public Guid? activityId { get; set; }
 
+    // Listas para llenar los combos de selección, como el de usuarios, estrategias, periodos escolares y carreras.
     private List<UsuarioComboDTO> usuarios = new();
     private List<EstrategiaComboDTO> estrategias = new();
     private List<PeriodoEscolarComboDTO> periodos = new();
@@ -231,10 +242,14 @@
     // Variable que sirve para válidar que el checkbox este activado
     private bool remiderActivateActivity { get; set; } = false;
 
-    private Activity currentActivity = new();   // actividad en edición o nuevo
+    // Variable que representa la actividad que se va a crear o actualizar, dependiendo de si se proporciona un activityId o no.
+    private Activity currentActivity = new();
+
+    // Variables para el título de la página y el texto del botón, que cambian dependiendo de si se está creando o editando una actividad.
     private string pageTitle = "";
     private string buttonText = "";
 
+    // Variables para el envío de correo, como el destinatario, el email autenticado, la fecha y hora del recordatorio, el asunto y el mensaje.
     private string destinatario = "";
     private string authenticatedEmail = "";
     private DateTime? FechaRecordatorio { get; set; } = null;
@@ -242,18 +257,23 @@
     private string asunto = "";
     private string mensaje = "";
 
+    // Variable para habilitar o deshabilitar el input de fecha de cumplimiento, dependiendo de si la actividad se ha cumplido o no.
     bool complianceDateDisableInput = true;
 
+    // Variable para manejar las validaciones del formulario.
     private Validations validations;
 
+    // Variable para mostrar la pantalla de carga mientras se están obteniendo los datos o se está guardando la actividad.
     private bool isLoading = false;
 
+    // variable para almacenar el mensaje de error que se mostrará en caso de que ocurra algún error al obtener los datos o guardar la actividad.
     private string? errorMessage;
 
+    // Variables para manejar los modales que muestran los mensajes de error, dependiendo de si el error requiere o no redireccionar a la pantalla de vista de actividades.
     private Modal modalToShowErrorMessage;
-
     private Modal modalToShowErrorMessageAndRedirectViewPage;
 
+    // Método de validación personalizado para verificar que el valor seleccionado en los combos de selección no sea Guid.Empty, lo que indicaría que no se ha seleccionado una opción válida.
     private void ValidateGuidSelection(ValidatorEventArgs e)
     {
         if (e.Value is Guid guid && guid == Guid.Empty)
@@ -266,13 +286,18 @@
         }
     }
 
+    // Método que se ejecuta cuando se carga la página o cuando se proporciona un activityId en la URL. 
+    // En este método se obtienen los datos necesarios para llenar los combos de selección y, si se proporciona un activityId, 
+    // se llenan los campos del formulario con los datos de la actividad correspondiente para su edición. 
+    // Si ocurre algún error durante este proceso, se muestra un mensaje de error en un modal.
     protected override async Task OnParametersSetAsync()
     {
         try
         {
             isLoading = true;
-            StateHasChanged();
+            StateHasChanged(); // Se llama a StateHasChanged para asegurarse de que la interfaz de usuario se actualice y muestre el estado de carga antes de realizar las operaciones asincrónicas.
 
+            // Se obtienen los datos para llenar los combos de selección, como la lista de usuarios, estrategias, periodos escolares y carreras.
             usuarios = await UsuarioApiService.GetComboAsync();
             estrategias = await EstrategiaApiService.GetComboAsync();
             periodos = await PeriodoEscolarApiService.GetComboAsync();
@@ -280,6 +305,9 @@
 
             if (activityId is not null && activityId != Guid.Empty)
             {
+                // Si se proporciona un activityId, se llama al método GetByIdAsync del servicio de actividad para obtener los datos de la actividad correspondiente a ese ID. 
+                // Si la respuesta no es exitosa, se muestra un mensaje de error en un modal. Si la respuesta es exitosa, se obtiene el DTO de la actividad y 
+                // se asigna a currentActivity para llenar los campos del formulario con los datos correspondientes.
                 var responseToGetId = await ActividadApiService.GetByIdAsync(activityId.Value);
 
                 if (!responseToGetId.Success)
@@ -320,6 +348,7 @@
             }
             else
             {
+                // Si no se proporciona un activityId, se asume que se está creando una nueva actividad, por lo que se inicializa currentActivity con una nueva instancia de Activity
                 currentActivity = new Activity();
                 pageTitle = "Crear Actividad";
                 buttonText = "Crear";
@@ -334,11 +363,13 @@
         }
         finally
         {
-            isLoading = false;
+            isLoading = false; // Se establece isLoading en false para ocultar la pantalla de carga una vez que se han obtenido los datos o se ha producido un error.
         }
     }
 
-
+    // Método que se ejecuta cuando se hace clic en el botón de crear o actualizar. 
+    // En este método se validan los campos del formulario y, si la validación es exitosa, se llama al método saveActivity para guardar la actividad. 
+    // Si ocurre algún error durante este proceso, se muestra un mensaje de error en un modal.
     private async Task submit()
     {
         if (await validations.ValidateAll())
@@ -347,7 +378,7 @@
         }
     }
 
-
+    // Método que se encarga de guardar la actividad, ya sea creando una nueva o actualizando una existente, dependiendo de si se proporciona un activityId o no.
     private async Task saveActivity()
     {
         try
@@ -393,7 +424,8 @@
 
                     return;
                 }
-
+                // Si la creación o actualización es exitosa, se verifica si se han proporcionado una fecha y hora para el recordatorio.
+                // Si ambos valores están presentes, se llama al método EnviarCorreo para enviar un correo electrónico con los detalles del recordatorio.
                 if (HoraRecordatorio != null && FechaRecordatorio != null)
                 {
                     await EnviarCorreo();
@@ -450,14 +482,14 @@
         }
     }
 
-
+    // Método que se encarga de leer el contenido de una plantilla de correo electrónico desde un archivo y devolverlo como una cadena.
     public string GetEmailTemplate(string fileName)
     {
         var path = Path.Combine("Shared", "templates", fileName);
         return File.ReadAllText(path);
     }
 
-
+    // Método que se encarga de enviar un correo electrónico con los detalles del recordatorio para modificar la actividad.
     private async Task EnviarCorreo()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
@@ -483,6 +515,7 @@
         await EmailService.SendEmailAsync(destinatario, asunto, mensaje);
     }
 
+    // Método que se ejecuta cuando se cambia el valor seleccionado en el combo de selección que indica si la actividad se ha cumplido o no.
     private void OnSelectedValueChanged(bool value)
     {
         currentActivity.ActividadCumplida = value;
@@ -497,12 +530,15 @@
         }
     }
 
-
+    // Método que se ejecuta cuando se hace clic en el botón de cancelar, redireccionando a la pantalla de vista de actividades.
     private void goBack()
     {
         NavManager.NavigateTo("/home/vistaActividades");
     }
 
+    // Método que se encarga de ocultar el modal que muestra el mensaje de error. 
+    // Si el valor del parámetro "value" es true, se redirecciona a la pantalla de vista de actividades después de ocultar el modal. 
+    // Si el valor es false, simplemente se oculta el modal sin redireccionar.
     private Task HideModal(Modal modal, bool value)
     {
         if (value)

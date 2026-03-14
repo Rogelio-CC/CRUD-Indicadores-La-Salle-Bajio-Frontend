@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Classes
 {
+    // Atributos de la clase Grupo de indicadores
     public class GroupOfIndicators
     {
         public Guid Id { get; set; }

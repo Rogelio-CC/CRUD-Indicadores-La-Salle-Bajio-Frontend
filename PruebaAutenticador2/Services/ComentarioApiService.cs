@@ -16,35 +16,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<ComentarioDto>> GetAllAsync()
-        {
-            return await _http.GetFromJsonAsync<List<ComentarioDto>>("api/comentarios/dto")
-                   ?? new List<ComentarioDto>();
-        } */
-
-        /* public async Task<ComentarioDto?> GetByIdAsync(Guid id)
-        {
-            return await _http.GetFromJsonAsync<ComentarioDto>($"api/comentarios/dto/{id}");
-        } */
-
-        /* public async Task<bool> CreateAsync(ComentarioCreateUpdateDto dto)
-        {
-            var response = await _http.PostAsJsonAsync("api/comentarios/dto", dto);
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> UpdateAsync(Guid id, ComentarioCreateUpdateDto dto)
-        {
-            var response = await _http.PutAsJsonAsync($"api/comentarios/dto/{id}", dto);
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> DeleteAsync(Guid id)
-        {
-            var response = await _http.DeleteAsync($"api/comentarios/{id}");
-            return response.IsSuccessStatusCode;
-        } */
-
+        // Método para obtener todos los comentarios
         public async Task<ApiResponse<List<ComentarioDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<ComentarioDto>>();
@@ -78,6 +50,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener un comentario por su ID
         public async Task<ApiResponse<ComentarioDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<ComentarioDto>();
@@ -115,6 +88,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
+        // Método para crear un nuevo comentario
         public async Task<ApiResponse<bool>> CreateAsync(ComentarioCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -152,6 +126,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para actualizar un comentario existente   
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, ComentarioCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -188,6 +163,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar un comentario por su ID
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();

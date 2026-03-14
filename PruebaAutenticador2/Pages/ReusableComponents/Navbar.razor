@@ -1,6 +1,8 @@
-﻿@inject NavigationManager NavManager
+﻿<!-- Importaciones -->
+@inject NavigationManager NavManager
 @using System.Globalization
 
+<!-- Contenido del navbar -->
 <Bar Class="navbar-perzonalized">
     <BarBrand>
         <Div Class="left-elements">
@@ -40,6 +42,7 @@
     </div>
 </Bar>
 
+<!-- Modal para las acciones que puede hacer el usuario -->
 <Modal @ref="@modalRef" Class="profile-modal">
     <ModalContent Centered="true">
         <ModalBody>
@@ -62,9 +65,17 @@
 
 
 @code {
+    // Parámetro para recibir el rol del usuario a traves del AuthStateService
     [Parameter]
     public required string role { get; set; }
 
+    // Referencia al modal para poder mostrarlo y ocultarlo desde el código
+    private Modal modalRef;
+
+    // Variable para controlar la visibilidad del menú móvil
+    private bool ShowMobileMenu = false;
+
+    // Métodos para navegar a las diferentes páginas
     private void viewProfile(){
         NavManager.NavigateTo("/home/verPerfil");
     }
@@ -78,8 +89,7 @@
 
     }
 
-    private Modal modalRef;
-
+    // Métodos para mostrar y ocultar el modal
     private Task ShowModal()
     {
         return modalRef.Show();
@@ -89,8 +99,8 @@
     {
         return modalRef.Hide();
     }
-    private bool ShowMobileMenu = false;
 
+    // Método para alternar la visibilidad del menú móvil
     private void ToggleMobileMenu()
     {
         ShowMobileMenu = !ShowMobileMenu;

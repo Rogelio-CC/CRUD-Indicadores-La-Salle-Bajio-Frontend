@@ -1,5 +1,7 @@
-﻿@page "/home/vistaDirectrices"
+﻿<!-- La estructura .razor de CRUDGuidelines es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaDirectrices"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Services
 @using PruebaAutenticador2.Shared.DTOS.Directriz
@@ -136,7 +138,8 @@
 
 
 @code {
-
+    // La estructura de CRUDGuidelines es la misma que CRUDActivities, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     private List<DirectrizDto> guidelineList = new();
 
     private string searchText = string.Empty;

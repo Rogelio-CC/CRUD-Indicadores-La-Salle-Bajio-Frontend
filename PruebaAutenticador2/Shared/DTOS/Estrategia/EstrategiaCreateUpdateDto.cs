@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Estrategia
 {
+    // DTO para crear o actualizar una estrategia
     public class EstrategiaCreateUpdateDto
     {
         public string DescripcionEstrategia { get; set; } = null!;

@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Classes
 {
+    // Atributos de la clase Estrategia
     public class Strategy
     {
         public Guid Id { get; set; }

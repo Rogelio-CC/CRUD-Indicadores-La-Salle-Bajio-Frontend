@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Evidencia
 {
+    // DTO para representar la evidencia de un indicador
     public class EvidenciaDto
     {
         public Guid Id { get; set; }

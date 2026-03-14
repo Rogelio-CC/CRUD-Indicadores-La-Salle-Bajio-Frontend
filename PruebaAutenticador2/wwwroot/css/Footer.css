@@ -1,4 +1,8 @@
-﻿.footer-principal-page {
+﻿
+/* Estilos para el footer de la página principal */
+
+/* Contenedor principal del footer */
+.footer-principal-page {
     background-color: #002855;
     padding: 60px 0;
     margin-top: auto;
@@ -7,6 +11,7 @@
     align-items: center;
 }
 
+/* Contenedor del contenido del footer */
 .footer-content {
     width: 90%;
     max-width: 1200px;
@@ -17,24 +22,26 @@
     gap: 80px;
 }
 
+/* Contenedor del logo en el footer */
 .logo-container {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-
+    /* Estilos para la imagen del logo en el footer */
     .logo-container img {
         height: 100px;
         width: auto;
         object-fit: contain; /*Escala la imagen para que encaje completamente dentro del contenedor*/
     }
 
+/* Contenedor de la información del footer */
 .footer-info {
     text-align: center;
     line-height: 1.6; /*Ayuda a tener mejor espacio dentro del texto*/
     max-width: 600px; /*Anchura máxima de 600px*/
 }
-
+    /* Estilos para los párrafos dentro de la información del footer */
     .footer-info p {
         margin: 0;
         font-size: 1rem;

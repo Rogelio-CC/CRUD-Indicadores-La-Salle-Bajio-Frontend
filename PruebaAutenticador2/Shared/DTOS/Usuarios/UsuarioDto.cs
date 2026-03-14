@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Usuarios
 {
+    // DTO para representar la información de un usuario
     public class UsuarioDto
     {
         public Guid Id { get; set; }

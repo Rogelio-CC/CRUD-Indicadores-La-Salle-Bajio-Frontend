@@ -1,4 +1,20 @@
-﻿@page
+﻿@*
+    ====================================================================
+    PROPÓSITO:
+    Esta página se muestra cuando ocurre un error no controlado en el
+    servidor o cuando se produce una excepción durante
+    el procesamiento de una solicitud.
+
+    FUNCIONALIDAD PRINCIPAL:
+    - Muestra un mensaje genérico de error.
+    - Opcionalmente muestra el ID de la solicitud para facilitar la
+      depuración (útil en producción para correlacionar con logs).
+    - Incluye una advertencia sobre el entorno de desarrollo,
+      recordando no habilitarlo en producción.
+    ====================================================================
+*@
+
+@page
 @model PruebaAutenticador2.Pages.ErrorModel
 
 <!DOCTYPE html>

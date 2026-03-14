@@ -14,38 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        /* public async Task<List<IndicadorDto>> GetAllAsync()
-        {
-            return await _http.GetFromJsonAsync<List<IndicadorDto>>("api/indicadores/dto")
-                   ?? new List<IndicadorDto>();
-        } */
-
-        /* public async Task<IndicadorDto?> GetByIdAsync(Guid id)
-        {
-            return await _http.GetFromJsonAsync<IndicadorDto>($"api/indicadores/dto/{id}");
-        } */
-
-        /* public async Task<IndicadorDto?> CreateAsync(IndicadorCreateUpdateDto dto)
-        {
-            var response = await _http.PostAsJsonAsync("api/indicadores/dto", dto);
-            if (!response.IsSuccessStatusCode)
-                return null;
-
-            return await response.Content.ReadFromJsonAsync<IndicadorDto>();
-        } */
-
-        /* public async Task<bool> UpdateAsync(Guid id, IndicadorCreateUpdateDto dto)
-        {
-            var response = await _http.PutAsJsonAsync($"api/indicadores/dto/{id}", dto);
-            return response.IsSuccessStatusCode;
-        } */
-
-        /* public async Task<bool> DeleteAsync(Guid id)
-        {
-            var response = await _http.DeleteAsync($"api/indicadores/{id}");
-            return response.IsSuccessStatusCode;
-        } */
-
+        // Método para obtener todos los indicadores
         public async Task<ApiResponse<List<IndicadorDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<IndicadorDto>>();
@@ -79,6 +48,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener un indicador por su ID
         public async Task<ApiResponse<IndicadorDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<IndicadorDto?>();
@@ -116,6 +86,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
+        // Método para crear un nuevo indicador
         public async Task<ApiResponse<IndicadorDto>> CreateAsync(IndicadorCreateUpdateDto dto)
         {
             var result = new ApiResponse<IndicadorDto>();
@@ -153,6 +124,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para actualizar un indicador existente
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, IndicadorCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -189,6 +161,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para eliminar un indicador por su ID
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -226,6 +199,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
+        // Método para obtener la lista de indicadores en formato de combo (ID y nombre) para su uso en interfaces
         public async Task<List<IndicadorComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<IndicadorComboDTO>>("api/indicadores/combo")

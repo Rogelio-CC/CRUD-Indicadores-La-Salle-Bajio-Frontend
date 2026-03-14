@@ -1,5 +1,9 @@
-﻿@page "/redirect"
+﻿<!--Ruta de la interfaz-->
+@page "/redirect"
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
 @attribute [Authorize]
+
+<!--Importación de librerías/servicios-->
 @using PruebaAutenticador2.Services
 @inject AuthenticationStateProvider AuthProvider
 @inject AuthApiService AuthApi
@@ -7,7 +11,7 @@
 @inject NavigationManager Nav
 @inject TokenStorageService tokenStorageService;
 
-
+<!-- Se reutiliza esta misma pantalla de carga para indicar que esta evaluando a que pantalla mandar al usuario, dependiendo si esta autenticado o no -->
 <Div Style="position: fixed;
             top: 0;
             left: 0;
@@ -23,44 +27,49 @@
 </Div>
 
 @code {
+    // Al iniciar la página, se verifica el estado de autenticación del usuario.
+    // Si no está autenticado, se redirige a la página de inicio de sesión. 
+    // Si está autenticado, se obtiene su correo electrónico y se intenta iniciar sesión en la API para obtener un token JWT. 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
-        // Si NO está autenticado, Azure lanza login automáticamente
         if (!user.Identity?.IsAuthenticated ?? true)
         {
             Nav.NavigateTo("/");
             return;
         }
 
+        // Se intenta obtener el correo electrónico del usuario desde las reclamaciones de AuthenticationStateProvider. Primero se busca "preferred_username" y si no se encuentra, se busca "email".
         var email =  user.FindFirst("preferred_username")?.Value ?? user.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
 
+        // Si no se encuentra el correo electrónico, se redirige a una página de error indicando que el usuario no fue encontrado.
         if (string.IsNullOrEmpty(email))
         {
             Nav.NavigateTo("/usuario-no-encontrado");
             return;
         }
 
+        // Intentar iniciar sesión en la API para obtener el token JWT
         var loginResponse = await AuthApi.LoginAsync(email);
 
+        // Si la respuesta de inicio de sesión es nula, se redirige a una página de error indicando que el usuario no fue encontrado.
         if (loginResponse == null)
         {
             Nav.NavigateTo("/usuario-no-encontrado");
             return;
         }
 
-        // Guardar en memoria
+        // Guardar en memoria el token JWT
         AuthState.SetToken(loginResponse.Token);
         await tokenStorageService.SetTokenAsync(loginResponse.Token);
 
-        // Extraer rol del token
+        // Extraer rol del token  y  Id del usuario
         var rol = JwtHelper.GetRole(loginResponse.Token);
-
-        //Extraer Id del usuario
         var idUser = JwtHelper.GetIdUser(loginResponse.Token);
 
+        // Verificar que el rol sea uno de los roles permitidos. Si no es así, se redirige a una página de error indicando que el rol no fue identificado.
         if (string.IsNullOrEmpty(rol) || 
             rol != "Administrador" && 
             rol != "Jefe_de_Pregrado" && 
@@ -72,16 +81,19 @@
             return;
         }
 
+        // Verificar que se haya obtenido un Id de usuario válido. Si no es así, se redirige a una página de error indicando que el usuario no fue encontrado.
         if (string.IsNullOrEmpty(idUser))
         {
             Nav.NavigateTo("/usuario-no-encontrado");
             return;
         }
 
-        // Guardar rol en memoria (opcional pero útil)
+        // Guardar rol y Id del usuario en memoria
         AuthState.SetRole(rol);
         AuthState.SetIdUser(idUser);
 
+        // Redirigir a la página principal de la aplicación. 
+        // Dependiendo de la implementación de la aplicación, se podría redirigir a diferentes páginas dependiendo del rol del usuario.
         Nav.NavigateTo("/home");
     }
 

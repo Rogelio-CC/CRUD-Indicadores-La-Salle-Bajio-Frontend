@@ -1,11 +1,15 @@
 ﻿@import "Fonts.css";
 
+/* Estilos generales para las tablas de datos */
+
+/* Contenedor principal de la tabla de datos */
 .header-section {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
 }
 
+/* Título principal de la tabla de datos */
 h1 {
     display: flex;
     margin: 30px 30px 20px;
@@ -15,6 +19,7 @@ h1 {
     text-align: start;
 }
 
+/* Botón de agregar nuevo registro */
 .add-button {
     font-family: IndivisaFont;
     background-color: #002855;
@@ -23,11 +28,12 @@ h1 {
     margin-top: 30px;
     margin-right: 30px;
 }
-
+    /* Efecto hover para el botón de agregar nuevo registro */
     .add-button:hover {
         color: #ffffff;
     }
 
+/* Línea separadora entre el título principal y la tabla de datos */
 .separate-line {
     width: 96%;
     border: 5px solid #002855;
@@ -35,12 +41,14 @@ h1 {
     margin: 0 auto;
 }
 
+/* Contenedor del buscador de la tabla de datos */
 .search-container {
     position: relative;
     width: 96%;
     margin-left: 30px;
 }
 
+/* Ícono de búsqueda dentro del buscador de la tabla de datos */
 .search-icon {
     position: absolute;
     left: 15px;
@@ -49,6 +57,7 @@ h1 {
     color: #002855;
 }
 
+/* Campo de búsqueda dentro del buscador de la tabla de datos */
 .search-bar {
     width: 98%;
     padding-left: 40px;
@@ -57,6 +66,7 @@ h1 {
     margin-top: 20px;
 }
 
+/* Contenedor de la tabla de datos */
 .all-table {
     width: 95%;
     margin-top: 1rem;
@@ -65,6 +75,7 @@ h1 {
     border-color: #002855;
 }
 
+/* Contenedor de la tabla de datos con scroll */
 .table-container {
     min-height: 200px; /* Altura mínima inicial */
     max-height: 300vh; /* Altura máxima antes de scroll */
@@ -77,21 +88,25 @@ h1 {
     margin-bottom: 250px;
 }
 
+/* Contenedor de los botones de acción (editar, eliminar, detalles) dentro de la tabla de datos */
 .buttons-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
 
+/* Estilos para las etiquetas th y td de la tabla de datos */
 table th, tbody td {
     font-family: IndivisaFont;
     text-align: center;
 }
 
+/* Estilos para los botónes de inicio (agregar y regresar) */
 .header-buttons {
     display: inline-table; /*Posiciona los botones en forma de tabla*/
 }
 
+/* Título general de la tabla de datos */
 .title-general {
     display: flex;
     margin: 30px 30px 20px;

@@ -1,11 +1,14 @@
-﻿@using PruebaAutenticador2.Services
+﻿<!--Importaciones de librerías/servicios-->
+@using PruebaAutenticador2.Services
 @inject IJSRuntime JS
 @inject NavigationManager Nav
 @inject AuthStateService AuthState
 @inject TokenStorageService tokenStorageService
 
+<!--Importaciones de estilos CSS-->
 <link rel="stylesheet" href="css/Custom-button-logout.css" />
 
+<!--Botón para cerrar sesión con el servicio de microsoft-->
 <AuthorizeView>
     <Authorized>
         <Button Class="custom-button-logout" Clicked="LogoutAsync">Cerrar sesión</Button>
@@ -13,11 +16,14 @@
 </AuthorizeView>
 
 @code {
+    // Método para cerrar sesión
     private async Task LogoutAsync()
     {
-        // // 1. Eliminar JWT del localStorage
+        // Eliminar JWT del localStorage
         await tokenStorageService.RemoveTokenAsync();
+        // Limpiar el estado de autenticación
         AuthState.Logout();
+        // Redirige a la ruta de cierre de sesión de Microsoft (importante que dentro del NavigateTo este el valor True en el forcedLoad para que funcione el cierre de sesión correctamente)
         Nav.NavigateTo("MicrosoftIdentity/Account/SignOut", true);
     }
 }

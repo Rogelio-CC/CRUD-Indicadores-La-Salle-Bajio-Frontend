@@ -1,6 +1,8 @@
-﻿@page "/home/vistaUsuarios/creacionUsuario"
+﻿<!-- La estructura .razor de CreateUpdateUser es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaUsuarios/creacionUsuario"
 @page "/home/vistaUsuarios/creacionUsuario/{userId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject UsuarioApiService UsuarioApiService
 @inject FacultadApiService FacultadApiService
@@ -170,6 +172,8 @@
 
 
 @code {
+    // La estructura de CreateUpdateUser es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter] 
     public Guid? userId { get; set; }
 

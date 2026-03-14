@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Classes
 {
+    //Atributo de la clase que representa un evento en el calendario (CalendarEvent)
     public class CalendarEvent
     {
         public Guid Id { get; set; }

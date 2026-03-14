@@ -1,5 +1,7 @@
-﻿@page "/home/vistaIndicadores/detalleIndicador/{indicatorId:guid}"
+﻿<!-- La estructura .razor de DetailViewIndicator es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaIndicadores/detalleIndicador/{indicatorId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Classes
 @using PruebaAutenticador2.Services;
@@ -62,9 +64,7 @@
             <Field Class="form-field">
                 <FieldLabel For="fechaDeCumplimiento">Fecha de cumplimiento</FieldLabel>
                 <TextEdit Class="form-control"
-                          Text="@(currentIndicator.FechaCumplimiento.HasValue
-                                          ? currentIndicator.FechaCumplimiento.Value.ToString("dd/MM/yyyy")
-                                          : "")"
+                          Text="@(currentIndicator.FechaCumplimiento.HasValue ? currentIndicator.FechaCumplimiento.Value.ToString("dd/MM/yyyy") : "")"
                           ReadOnly="true"
                           ElementId="fechaDeCumplimiento" />
             </Field>
@@ -78,14 +78,12 @@
                 <FieldLabel For="carreraAsociada">Carrera asociada</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentIndicator.Carrera" ReadOnly="true" ElementId="carreraAsociada" />
             </Field>
-            <!--Nuevo código (solicitado por el cliente). No se si el último campo llamado "Responsable de la acción correctiva" sea lo mismo que el "creador asociado"-->
             <Field Class="form-field">
                 <FieldLabel For="cantidadEvidenciasNecesarias">Cantidad de evidencias necesarias</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentIndicator.CantidadEvidencias.ToString()" ReadOnly="true" ElementId="cantidadEvidenciasNecesarias" />
             </Field>
 
             <!-- Fila 4 -->
-            <!-- "Evidencias" necesita mostrar los documentos subidos -->
             <Field Class="form-field">
                 <FieldLabel For="indicadorCumplido">¿Se cumplió el indicador?</FieldLabel>
                 <TextEdit Class="form-control" Text="@(currentIndicator.IndicadorCompletado ? "Sí" : "No")" ReadOnly="true" ElementId="indicadorCumplido" />
@@ -98,9 +96,8 @@
                 <FieldLabel For="resopnsableAC">Responsable de la acción correctiva</FieldLabel>
                 <TextEdit Class="form-control" Text="@(currentIndicator.ResponsableAccionCorrectiva ?? "")" ReadOnly="true" ElementId="resopnsableAC" />
             </Field>
-            <!--Nuevo código (solicitado por el cliente). No se si el último campo llamado "Responsable de la acción correctiva" sea lo mismo que el "creador asociado"-->
         </fieldset>
-        <!-- "Evidencias" necesita mostrar los documentos subidos, por ende, se tiene que modificar -->
+        <!-- Lista de las evidencias que estan subidas al indicador actual mostrado -->
         <Field Class="container-evidencias">
             <FieldLabel Class="label-evidencias" For="evidencias">Evidencias</FieldLabel>
             @if (evidencias.Any())
@@ -119,6 +116,7 @@
                 </ul>
 
                 <p class="estado-evidencias">
+                    <!-- Mensaje en caso de que faltan evidencias por subir para completar el indicador -->
                     @if (evidencias.Count < currentIndicator.CantidadEvidencias)
                     {
                         <span style="color: #b22222;">⚠️ Faltan @(currentIndicator.CantidadEvidencias - evidencias.Count) evidencias por completar.</span>
@@ -182,6 +180,8 @@
 </Modal>
 
 @code {
+    // La estructura de DetailViewIndicator es la misma que DetailViewActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? indicatorId { get; set; }
 
@@ -285,6 +285,8 @@
         }
     }
 
+    // El método DownloadEvidence se encarga de descargar la evidencia seleccionada por el usuario. 
+    // Para esto, se hace una petición al backend para obtener el archivo en bytes, y luego se utiliza JavaScript interop para descargar el archivo en el navegador del usuario.
     private async Task DownloadEvidence(EvidenciaDto evidencia)
     {
         var bytes = await EvidenciaApiService.DownloadAsync(
@@ -292,6 +294,8 @@
             evidencia.Id
         );
 
+        // Se llama a la función JavaScript "downloadFile" que se encuentra en el archivo wwwroot/js/download.js, 
+        // pasando el nombre del archivo, el tipo y los bytes para que el navegador pueda descargarlo.
         await JS.InvokeVoidAsync(
             "downloadFile",
             evidencia.NombreArchivo,

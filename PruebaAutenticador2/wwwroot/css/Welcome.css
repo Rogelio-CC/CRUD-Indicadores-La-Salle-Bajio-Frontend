@@ -1,5 +1,8 @@
 ﻿@import "Fonts.css";
 
+/* Estilos para la página de bienvenida */
+
+/* Título principal en la página de bienvenida */
 h1 {
     margin-bottom: 30px;
     margin-left: 50px;
@@ -10,6 +13,7 @@ h1 {
     text-align: center;
 }
 
+/* Contenedor principal de la sección de bienvenida */
 .container-section {
     width: 100%;
     display: grid;
@@ -19,6 +23,7 @@ h1 {
     margin-top: 25px;
 }
 
+/* Tarjetas de opciones en la página de bienvenida */
 .card {
     background-color: white;
     border: 3px solid #002855;
@@ -28,35 +33,37 @@ h1 {
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
 }
-
+    /* Efecto de hover para las tarjetas de opciones */
     .card:hover {
         transform: scale(1.05);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
     }
 
+    /* Iconos dentro de las tarjetas de opciones */
     .card i {
         font-size: 2em;
         color: #002855;
         margin-bottom: 10px;
     }
 
+/* Título dentro de las tarjetas de opciones */
 .card-title {
     font-family: IndivisaFont;
     color: #002855;
 }
 
+/* Contenedor de las tarjetas de opciones en la página de bienvenida */
 .card-deck {
     margin-bottom: 20px;
     margin-left: 20px;
     margin-right: 20px;
 }
 
+/* Estilo para las tarjetas de opciones deshabilitadas */   
 .card-disabled {
     opacity: 0.3;
     cursor: not-allowed;
 }
-
-
 
 /* Responsividad para celulares (anchura) */
 @media (min-width: 320px) and (max-width: 768px) {

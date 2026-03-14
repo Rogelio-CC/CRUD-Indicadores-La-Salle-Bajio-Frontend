@@ -1,5 +1,9 @@
-﻿@page "/home/vistaIndicadores/vistaGruposIndicadores/vistaGraficas"
+﻿<!--Ruta de la interfaz-->
+@page "/home/vistaIndicadores/vistaGruposIndicadores/vistaGraficas"
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
 @attribute [Authorize]
+
+<!--Importación de librerías/servicios-->
 @inject NavigationManager NavManager
 @inject IndicadorApiService IndicadorApiService
 @inject GrupoIndicadoresApiService GrupoIndicadoresApiService
@@ -9,19 +13,25 @@
 @using PruebaAutenticador2.Shared.DTOS.ListaCombos
 @inject AuthStateService AuthState
 
+<!--Importaciones de estilos CSS-->
 <link rel="stylesheet" href="css/GraphSearch.css" />
 <link rel="stylesheet" href="css/Nabvar.css" />
 <Link rel="stylesheet" href="~/css/Fonts.css"/>
 <link rel="stylesheet" href="css/Footer.css" />
 
+<!--Título principal de la pestaña-->
 <PageTitle>Búsqueda de Gráficas</PageTitle>
 
+<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
 <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
 
+<!--Título principal de la pantalla-->
 <h1>Gráficas generadas</h1>
 
+<!--Línea de seperación entre el título de la página y el contenido-->
 <Divider Class="separate-line-detail" />
 
+<!--Contenedor del formulario para mostrar resultados de las gráficas-->
 <Container Class="container-search">
     <Form>
         <fieldset class="form-search">
@@ -29,7 +39,8 @@
                 <FieldLabel For="DescripcionGrupo">Descripción/Título del grupo de indicadores</FieldLabel>
                 <Select TValue="Guid?" @bind-SelectedValue="selectedGrupoId" Class="form-select-search" ElementId="DescripcionGrupo">
                     <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
-
+                   
+                    <!-- Se recorre la lista de indicadores para obtener los grupos existentes. Se agrupan por GrupoId y Grupo para evitar mostrar valores duplicados en la lista desplegable. -->
                     @foreach (var grupo in indicatorList
                                         .GroupBy(i => new { i.GrupoId, i.Grupo })
                                         .Select(g => g.Key))
@@ -45,6 +56,7 @@
                 <Select TValue="Guid?" @bind-SelectedValue="selectedDirectrizId" Class="form-select-search" ElementId="DirectrizAsociado">
                     <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
 
+                    <!-- Se recorre la lista de indicadores para obtener las directrices existentes. Se agrupan por DirectrizId y Directriz para evitar mostrar valores duplicados en la lista desplegable. -->
                     @foreach (var directriz in indicatorList
                                         .GroupBy(i => new { i.DirectrizId, i.Directriz })
                                         .Select(g => g.Key))
@@ -60,6 +72,7 @@
                 <Select TValue="Guid?" @bind-SelectedValue="selectedPeriodoId" Class="form-select-search" ElementId="PeriodoEscolarAsociado">
                     <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
 
+                    <!-- Se recorre la lista de indicadores para obtener los períodos escolares existentes. Se agrupan por PeriodoId y Periodo para evitar mostrar valores duplicados en la lista desplegable. -->
                     @foreach (var periodo in indicatorList
                                         .GroupBy(i => new { i.PeriodoId, i.Periodo })
                                         .Select(g => g.Key))
@@ -75,6 +88,7 @@
                 <Select TValue="Guid?" @bind-SelectedValue="selectedCarreraId" Class="form-select-search" ElementId="CarreraAsociada">
                     <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
 
+                    <!-- Se recorre la lista de indicadores para obtener las carreras existentes. Se agrupan por CarreraId y Carrera para evitar mostrar valores duplicados en la lista desplegable. -->
                     @foreach (var carrera in indicatorList
                                         .GroupBy(i => new { i.CarreraId, i.Carrera })
                                         .Select(g => g.Key))
@@ -106,22 +120,26 @@
     </Div>
 </Container>
 
+<!--Contenedor del formulario para mostrar resultados de las gráficas-->
 <Container Class="container-graphics">
     <Div Class="title-container">
         <h3 style="padding-top: 30px;">
             Resultados de la búsqueda
         </h3>
     </Div>
+    <!--Si graficasCargadas es true, se cargan las gráficas-->
     @if (graficasCargadas)
     {
         <Div Class="dashboard-grid">
 
             <!-- CARD 1 -->
             <Div Class="dashboard-card">
+                <!-- Título de la gráfica -->
                 <Div Class="card-header">
                     Cantidad total de indicadores del grupo
                 </Div>
 
+                <!-- Tamaño, tipo y propiedades (Categoría y valor) de la gráfica -->
                 <RadzenChart Style="height:260px;">
                     <RadzenColumnSeries Data="@totalIndicadoresPorGrupoData"
                                         CategoryProperty="Categoria"
@@ -208,6 +226,7 @@
     }
     else
     {
+        <!-- Mensaje que aparece en caso de que los filtros no esten seleccionados correctamente y se presione el botón del formulario -->
         <Column>
             <p class="text-center greyText">Seleccione filtros y haga clic en "Buscar" para ver las gráficas.</p>
         </Column>
@@ -215,8 +234,10 @@
     
 </Container>
 
+<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
 <PruebaAutenticador2.Pages.ReusableComponents.Footer/>
 
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
 @if (isLoading)
 {
     <Div Style="position: fixed;
@@ -236,6 +257,7 @@
     </Div>
 }
 
+<!-- Modal para mostrar el mensaje de error -->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -249,15 +271,16 @@
 
 @code {
 
+    // Variables para filtros de búsqueda
     private bool graficasCargadas = false;
-
-    private List<IndicadorDto> indicatorList = new();
-
     private Guid? selectedGrupoId;
     private Guid? selectedPeriodoId;
     private Guid? selectedCarreraId;
     private Guid? selectedDirectrizId;
     private DateTime? selectedCreationDate { get; set; }
+
+    // Lista completa de indicadores obtenida de la API
+    private List<IndicadorDto> indicatorList = new();
 
     // Datos para gráficas (resultado)
     private int totalIndicators = 0;
@@ -266,17 +289,24 @@
     // Lista real filtrada
     private List<IndicadorDto> filteredIndicators = new();
 
+    // Variable para controlar la visualización de la pantalla de carga
     private bool isLoading = false;
 
+    // Variable para almacenar el mensaje de error
     private string? errorMessage;
 
+    // Referencia al modal para mostrar el mensaje de error
     private Modal modalToShowErrorMessage;
 
+    // Al iniciar la página, se cargan todos los indicadores desde la API para poder mostrar las opciones de filtros y generar las gráficas.
     protected override async Task OnInitializedAsync()
     {
         await LoadAllIndicators();
     }
 
+    // Método para cargar todos los indicadores desde la API. 
+    // Se muestra la pantalla de carga mientras se obtienen los datos. 
+    // En caso de error, se muestra un mensaje indicando que no se pudo conectar con el servidor.
     private async Task LoadAllIndicators()
     {
         try 
@@ -302,10 +332,12 @@
         }
     }
 
-
+    // Método que se ejecuta al hacer clic en el botón "Buscar". Filtra la lista de indicadores según los filtros seleccionados y genera los datos para las gráficas.
     private void toSearchGraphics()
     {
-        // Validación correcta
+        // Se verifica que los filtros de grupo, periodo y carrera estén seleccionados (no sean nulos ni Guid.Empty) 
+        // para poder generar las gráficas. 
+        // Si alguno de estos filtros no está seleccionado, no se generan las gráficas y se muestra el mensaje indicando que se deben seleccionar los filtros.
         if (selectedGrupoId != Guid.Empty &&
             selectedPeriodoId != Guid.Empty &&
             selectedCarreraId != Guid.Empty)
@@ -405,19 +437,23 @@
         }
     }
 
+    // Método para ocultar el modal de mensaje de error
     private Task HideModal(Modal modal)
     {
         return modal.Hide();
     }
 
+    // Variable para controlar la visualización de las etiquetas de datos en las gráficas
     bool showDataLabels = true;
 
+    // Clases para representar los datos de las gráficas (categoría y valor), dependiendo si es de tipo pie o barra
     class PieData
     {
         public string Categoria { get; set; }
         public int Valor { get; set; }
     }
 
+    // Variable para almacenar los datos del gráfico pastel de porcentaje de cumplimiento
     private PieData[] porcentajeCumplimientoData;
 
     class BarData
@@ -426,6 +462,7 @@
         public int Valor { get; set; }
     }
 
+    // Variables para almacenar los datos de las gráficas de barras
     private BarData[] totalIndicadoresPorGrupoData;
     private BarData[] cumplimientoData;
     private BarData[] totalIndicadoresGrupoPorDirectrizData;

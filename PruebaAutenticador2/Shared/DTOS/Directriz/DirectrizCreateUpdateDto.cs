@@ -1,5 +1,6 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Directriz
 {
+    // DTO para crear o actualizar una Directriz
     public class DirectrizCreateUpdateDto
     {
         public Guid Id { get; set; }

@@ -1,5 +1,7 @@
-﻿@page "/home/vistaFacultades"
+﻿<!-- La estructura .razor de CRUDFaculties es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaFacultades"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject FacultadApiService FacultadApiService
 @using PruebaAutenticador2.Classes
@@ -132,7 +134,8 @@
 
 
 @code {
-
+    // La estructura de CRUDFaculties es la misma que CRUDActivities, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     private List<Faculty> facultyList = new();
 
     private string searchText = string.Empty;

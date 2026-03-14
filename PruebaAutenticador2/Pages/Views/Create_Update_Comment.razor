@@ -1,6 +1,8 @@
-﻿@page "/home/vistaComentarios/creacionComentario"
+﻿<!-- La estructura .razor de CreateUpdateComment es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaComentarios/creacionComentario"
 @page "/home/vistaComentarios/creacionComentario/{commentId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject ComentarioApiService ComentarioApiService
 @inject UsuarioApiService UsuarioApiService
@@ -133,6 +135,8 @@
 
 
 @code {
+    // La estructura de CreateUpdateComment es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? commentId { get; set; }
 

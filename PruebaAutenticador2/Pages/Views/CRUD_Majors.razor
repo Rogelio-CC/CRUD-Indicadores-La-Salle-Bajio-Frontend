@@ -1,5 +1,7 @@
-﻿@page "/home/vistaCarreras"
+﻿<!-- La estructura .razor de CRUDMajors es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaCarreras"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject CarreraApiService CarreraApiService
 @using PruebaAutenticador2.Classes
@@ -127,7 +129,8 @@
 
 
 @code {
-
+    // La estructura de CRUDMajors es la misma que CRUDActivities, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     private List<CarreraDto> majorList = new();
 
     private string searchText = string.Empty;

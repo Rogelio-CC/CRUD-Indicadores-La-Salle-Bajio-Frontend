@@ -1,6 +1,8 @@
-﻿@page "/home/vistaFacultades/creacionFacultad"
+﻿<!-- La estructura .razor de CreateUpdateFaculty es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaFacultades/creacionFacultad"
 @page "/home/vistaFacultades/creacionFacultad/{facultyId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Classes
 @using PruebaAutenticador2.Services
@@ -127,6 +129,8 @@
 </Modal>
 
 @code {
+    // La estructura de CreateUpdateFaculty es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? facultyId { get; set; }
 

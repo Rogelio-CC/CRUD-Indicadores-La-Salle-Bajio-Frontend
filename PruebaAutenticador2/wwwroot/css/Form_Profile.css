@@ -1,5 +1,8 @@
 ﻿@import "Fonts.css";
 
+/* Estilos generales para la página de visualización del perfil */
+
+/* Contenedor principal de la página de visualización del perfil */
 .view-profile-page {
     width: 100vw;
     height: 100vh;
@@ -7,17 +10,17 @@
     grid-template-columns: 1fr 1fr;
 }
 
-
+/* Sección izquierda con la imagen */
 .left-section {
     position: relative; /* Necesario para el posicionamiento absoluto de la imagen */
     box-shadow: 4px 0 10px rgba(0, 0, 0, 0.15);
 }
-
+/* Contenedor de la imagen para asegurar que ocupe todo el espacio disponible */
 .image-left {
     width: 100%;
     height: 100%;
 }
-
+    /* Estilos para la imagen en la sección izquierda */
     .image-left img {
         width: 100%;
         height: 100%;
@@ -26,7 +29,7 @@
         display: block; /* Elimina espacios debajo de la imagen */
     }
 
-
+/* Sección derecha con el formulario */
 .right-section {
     display: flex;
     justify-content: center;
@@ -34,15 +37,27 @@
     padding: 2rem;
 }
 
+/* Contenedor del formulario en la sección derecha */
+.container-form {
+    width: 96%;
+    padding: 20px;
+    box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.35);
+    border-radius: 10px;
+    background-color: white;
+    margin: 30px 30px 0;
+}
+
+/* Estilos para el formulario en la sección derecha */
 form {
     padding: 2rem;
 }
 
-
+    /* Contenedor de cada campo del formulario */
     form .mb-3 {
         margin-bottom: 1.5rem;
     }
 
+    /* Estilos de las etiquetas del formulario */
     form label {
         display: block;
         margin-bottom: 2em;
@@ -51,6 +66,7 @@ form {
         text-align: start;
     }
 
+/* Estilos de los campos de entrada del formulario */
 .form-control {
     width: 500px;
     border: 3px solid #002855;
@@ -58,15 +74,6 @@ form {
     border-radius: 6px;
     font-family: IndivisaFont;
     text-align: start;
-}
-
-.container-form {
-    width: 96%;
-    padding: 20px;
-    box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.35);
-    border-radius: 10px;
-    background-color: white;
-    margin: 30px 30px 0;
 }
 
 

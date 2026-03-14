@@ -1,5 +1,7 @@
-﻿@page "/home/vistaUsuarios/detalleUsuario/{userId:guid}"
+﻿<!-- La estructura .razor de DetailViewUser es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+@page "/home/vistaUsuarios/detalleUsuario/{userId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @using PruebaAutenticador2.Classes
 @using PruebaAutenticador2.Services
@@ -100,6 +102,8 @@
 
 
 @code {
+    // La estructura de DetailViewUser es la misma que DetailViewActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
+    //  como la validación del Guid, el manejo de errores, entre otros.
     [Parameter]
     public Guid? userId { get; set; }
 
