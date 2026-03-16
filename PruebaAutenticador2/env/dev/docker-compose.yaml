@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: rogercc28/crud-indicadores-la-salle-bajio-frontend:v1.0
+    container_name: IndicadoresSalle_Parte_Cliente
+    env_file:
+      - .env
+    ports:
+      - "8080:8080"  # mapa local 8080 -> contenedor 8080
+    restart: always
+    volumes:
+      - /root/.aspnet/DataProtection-Keys
+

@@ -15,6 +15,7 @@
   <ItemGroup>
     <PackageReference Include="Blazorise.Bootstrap5" Version="1.7.3" />
     <PackageReference Include="Blazorise.Icons.FontAwesome" Version="1.7.3" />
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="MailKit" Version="4.14.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.1" NoWarn="NU1605" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="9.0.1" />
