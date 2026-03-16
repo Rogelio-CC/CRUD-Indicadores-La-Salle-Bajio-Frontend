@@ -9,7 +9,7 @@ services:
     env_file:
       - .env
     ports:
-      - "8080:8080"  # mapa local 8080 -> contenedor 8080
+      - "8080:80"  # mapa local 8080 -> contenedor 80
     restart: always
     volumes:
       - /root/.aspnet/DataProtection-Keys
