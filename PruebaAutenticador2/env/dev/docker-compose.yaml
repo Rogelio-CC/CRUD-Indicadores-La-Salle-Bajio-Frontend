@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: rogercc28/crud-indicadores-la-salle-bajio-frontend:v1.0
-    container_name: IndicadoresSalle_Cliente
+    container_name: IndicadoresSalle_cliente
     env_file:
       - .env
     ports:
