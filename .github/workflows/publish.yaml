@@ -31,34 +31,9 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-         creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    - name: Set Azure App Settings
-      uses: azure/CLI@v1
-      with:
-        inlineScript: |
-          az webapp config appsettings set \
-            --name ${{ secrets.AZURE_WEBAPP_NAME }} \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --settings \
-              ApiBaseUrl=https://tu-app.azurewebsites.net/ \
-              Email__SmtpServer=smtp.gmail.com \
-              Email__SmtpPort=587 \
-              Email__SmtpUser=universidadlasallebajio01@gmail.com \
-              Email__SmtpPass=${{ secrets.EMAIL_SMTP_PASS }} \
-              AzureAd__Instance=https://login.microsoftonline.com/ \
-              AzureAd__Domain=lasallebajio.edu.mx \
-              AzureAd__TenantId=${{ secrets.AZURE_AD_TENANT_ID }} \
-              AzureAd__ClientId=${{ secrets.AZURE_AD_CLIENT_ID }} \
-              AzureAd__ClientSecret=${{ secrets.AZURE_AD_CLIENT_SECRET }} \
-              AzureAd__CallbackPath=/signin-oidc
-
-    - name: Deploy container image to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-        images: ${{ secrets.DOCKERHUB_REPO }}:latest
+      - name: Deploy container image to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          images: ${{ secrets.DOCKERHUB_REPO }}:latest
