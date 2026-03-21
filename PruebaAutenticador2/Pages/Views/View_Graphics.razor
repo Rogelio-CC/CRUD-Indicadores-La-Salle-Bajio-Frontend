@@ -99,10 +99,6 @@
                     }
                 </Select>
             </Field>
-            <Field Class="form-field">
-                <FieldLabel For="FechaEmision">Fecha de emisión</FieldLabel>
-                <DateEdit TValue="DateTime" @bind-SelectedValue="selectedCreationDate" ElementId="FechaEmision" />
-            </Field>
         </fieldset>
     </Form>
     <!-- Botón fuera del formulario -->
@@ -277,14 +273,9 @@
     private Guid? selectedPeriodoId;
     private Guid? selectedCarreraId;
     private Guid? selectedDirectrizId;
-    private DateTime? selectedCreationDate { get; set; }
 
     // Lista completa de indicadores obtenida de la API
     private List<IndicadorDto> indicatorList = new();
-
-    // Datos para gráficas (resultado)
-    private int totalIndicators = 0;
-    private int completedIndicators = 0;
 
     // Lista real filtrada
     private List<IndicadorDto> filteredIndicators = new();
@@ -340,15 +331,15 @@
         // Si alguno de estos filtros no está seleccionado, no se generan las gráficas y se muestra el mensaje indicando que se deben seleccionar los filtros.
         if (selectedGrupoId != Guid.Empty &&
             selectedPeriodoId != Guid.Empty &&
-            selectedCarreraId != Guid.Empty)
+            selectedCarreraId != Guid.Empty &&
+            selectedDirectrizId != Guid.Empty)
         {
             filteredIndicators = indicatorList
              .Where(i =>
                  (!selectedGrupoId.HasValue || selectedGrupoId == Guid.Empty || i.GrupoId == selectedGrupoId) &&
                  (!selectedDirectrizId.HasValue || selectedDirectrizId == Guid.Empty || i.DirectrizId == selectedDirectrizId) &&
                  (!selectedPeriodoId.HasValue || selectedPeriodoId == Guid.Empty || i.PeriodoId == selectedPeriodoId) &&
-                 (!selectedCarreraId.HasValue || selectedCarreraId == Guid.Empty || i.CarreraId == selectedCarreraId) &&
-                 (!selectedCreationDate.HasValue || i.FechaEmision.Date == selectedCreationDate.Value.Date)
+                 (!selectedCarreraId.HasValue || selectedCarreraId == Guid.Empty || i.CarreraId == selectedCarreraId)
              )
              .ToList();
 

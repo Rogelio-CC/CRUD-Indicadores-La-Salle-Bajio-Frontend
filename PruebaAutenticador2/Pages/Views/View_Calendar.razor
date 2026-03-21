@@ -45,18 +45,6 @@
                     }
                 </Select>
             </Field>
-            <Field Class="form-field">
-                <FieldLabel For="Fecha de inicio">Fecha de inicio</FieldLabel>
-                <DateEdit TValue="DateTime?"
-                          Date="@filterStart"
-                          DateChanged="(value) => { filterStart = value; ApplyFilters(); }" />
-            </Field>
-            <Field Class="form-field">
-                <FieldLabel For="Fecha de finalizacion">Fecha de finalización</FieldLabel>
-                <DateEdit TValue="DateTime?"
-                          Date="@filterEnd"
-                          DateChanged="(value) => { filterEnd = value; ApplyFilters(); }" />
-            </Field>
         </fieldset>
     </Form>
 </Div>
@@ -185,8 +173,6 @@
     private int currentMonth = DateTime.Now.Month;
     private CalendarEvent selectedEvent = new();
     private string filterTitle = string.Empty;
-    private DateTime? filterStart;
-    private DateTime? filterEnd;
     private List<CalendarEvent> AcademicEvents = new();
     private List<CalendarEvent> filteredEvents = new();
     private bool isLoading = false;
@@ -227,13 +213,11 @@
     private void ApplyFilters()
     {
         filteredEvents = AcademicEvents.Where(ev =>
-            (string.IsNullOrWhiteSpace(filterTitle) || ev.Titulo.Contains(filterTitle, StringComparison.OrdinalIgnoreCase)) &&
-            (!filterStart.HasValue || ev.FechaInicio >= filterStart.Value) &&
-            (!filterEnd.HasValue || ev.FechaFin <= filterEnd.Value)
+            (string.IsNullOrWhiteSpace(filterTitle) || ev.Titulo.Contains(filterTitle, StringComparison.OrdinalIgnoreCase))
         ).ToList();
 
         // Si NO hay filtros aplicados, regresar al mes actual
-        bool noFilters = string.IsNullOrWhiteSpace(filterTitle) && !filterStart.HasValue && !filterEnd.HasValue;
+        bool noFilters = string.IsNullOrWhiteSpace(filterTitle);
         if (noFilters)
         {
             currentYear = DateTime.Now.Year;

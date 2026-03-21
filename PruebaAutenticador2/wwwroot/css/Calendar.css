@@ -26,8 +26,7 @@ h1 {
     box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.10);
     border-radius: 10px;
     background-color: white;
-    margin: 30px 30px 30px;
-    justify-self: center; /*Ayuda a posicionar al contenedor al centro junto con sus elementos*/
+    margin: 30px auto; /*Centra el contenedor*/
 }
 
 /*Formulario de búsqueda del calendario académico*/
