@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de CreateUpdateGuideline es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de CreateUpdateGuideline es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaDirectrices/creacionDirectriz"
 @page "/home/vistaDirectrices/creacionDirectriz/{guidelineId:guid}"
 @attribute [Authorize]
@@ -13,6 +13,7 @@
 @inject UsuarioApiService UsuarioApiService
 @inject FacultadApiService FacultadApiService
 @inject PeriodoEscolarApiService PeriodoEscolarApiService
+@inject ComentarioApiService ComentarioApiService
 @inject AuthStateService AuthState
 @using System.Net
 
@@ -76,6 +77,20 @@
                             {
                                 <SelectItem TValue="Guid" Value="@pe.Id">
                                     @pe.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="comentarioAsociado">Comentario asociado (una vez cambiado el valor "Ninguno" ya pedirá un comentario forzosamente. Si no se necesita uno, dejar el valor predeterminado)</FieldLabel>
+                        <Select Class="form-select" TValue="Guid?" ElementId="comentarioAsociado" @bind-SelectedValue=currentGuideline.ComentarioId>
+                        <SelectItem TValue="Guid?" Value="Guid.Empty">Ninguno</SelectItem>
+                            @foreach (var co in comentarios)
+                            {
+                                <SelectItem TValue="Guid" Value="@co.Id">
+                                    @co.Nombre
                                 </SelectItem>
                             }
                         </Select>
@@ -160,6 +175,7 @@
     private List<UsuarioComboDTO> usuarios = new();
     private List<FacultadComboDTO> facultades = new();
     private List<PeriodoEscolarComboDTO> periodos = new();
+    private List<ComentarioComboDTO> comentarios = new();
 
     private Guideline currentGuideline = new();
     private string pageTitle = "";
@@ -197,6 +213,7 @@
             usuarios = await UsuarioApiService.GetComboAsync();
             facultades = await FacultadApiService.GetComboAsync();
             periodos = await PeriodoEscolarApiService.GetComboAsync();
+            comentarios = await ComentarioApiService.GetComboAsync();
 
             if (guidelineId is not null && guidelineId != Guid.Empty)
             {
@@ -229,7 +246,8 @@
                     Descripcion = dto.Descripcion,
                     FacultadId = dto.FacultadId,
                     CreadorId = dto.CreadorId,
-                    PeriodoId = dto.PeriodoId
+                    PeriodoId = dto.PeriodoId,
+                    ComentarioId = dto.ComentarioId,
                 };
 
                 pageTitle = "Editar directriz";
@@ -276,7 +294,8 @@
                 Descripcion = currentGuideline.Descripcion,
                 FacultadId = currentGuideline.FacultadId,
                 CreadorId = currentGuideline.CreadorId,
-                PeriodoId = currentGuideline.PeriodoId
+                PeriodoId = currentGuideline.PeriodoId,
+                ComentarioId = currentGuideline.ComentarioId,
             };
 
             if (guidelineId is null || guidelineId == Guid.Empty){

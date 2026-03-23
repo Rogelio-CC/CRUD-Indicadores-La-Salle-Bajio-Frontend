@@ -1,12 +1,12 @@
-﻿using PruebaAutenticador2.Shared.DTOS.Comentario;
-using PruebaAutenticador2.Shared.DTOS.Directriz;
+﻿using PruebaAutenticador2.Classes;
+using PruebaAutenticador2.Shared.DTOS.Comentario;
 using PruebaAutenticador2.Shared.DTOS.ListaCombos;
-using PruebaAutenticador2.Classes;
 using System.Net;
 
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para ComentarioApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class ComentarioApiService
     {
         private readonly HttpClient _http;
@@ -16,7 +16,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todos los comentarios
+        // Método para obtener todos los comentarios.
         public async Task<ApiResponse<List<ComentarioDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<ComentarioDto>>();
@@ -50,7 +50,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener un comentario por su ID
+        // Método para obtener un comentario por su ID.
         public async Task<ApiResponse<ComentarioDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<ComentarioDto>();
@@ -88,7 +88,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear un nuevo comentario
+        // Método para crear un nuevo comentario.
         public async Task<ApiResponse<bool>> CreateAsync(ComentarioCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -126,7 +126,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar un comentario existente   
+        // Método para actualizar un comentario existente.  
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, ComentarioCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -163,7 +163,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar un comentario por su ID
+        // Método para eliminar un comentario por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -199,6 +199,13 @@ namespace PruebaAutenticador2.Services
             }
 
             return result;
+        }
+
+        // Método para obtener una lista de directrices en formato de combo (ID y Nombre) para su uso en interfaces.
+        public async Task<List<ComentarioComboDTO>> GetComboAsync()
+        {
+            return await _http.GetFromJsonAsync<List<ComentarioComboDTO>>("api/comentarios/combo")
+                   ?? new();
         }
     }
 }

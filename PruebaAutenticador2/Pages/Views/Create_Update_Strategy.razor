@@ -1,13 +1,15 @@
-﻿<!-- La estructura .razor de CreateUpdateStrategy es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de CreateUpdateStrategy es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaEstrategias/creacionEstrategia"
 @page "/home/vistaEstrategias/creacionEstrategia/{strategyId:guid}"
 @attribute [Authorize]
+
 @inject NavigationManager NavManager
 @inject EstrategiaApiService EstrategiaApiService
 @inject UsuarioApiService UsuarioApiService
 @inject PeriodoEscolarApiService PeriodoEscolarApiService
 @inject IndicadorApiService IndicadorApiService
 @inject CarreraApiService CarreraApiService
+@inject ComentarioApiService ComentarioApiService
 @using PruebaAutenticador2.Services
 @using PruebaAutenticador2.Shared.DTOS.Estrategia
 @using PruebaAutenticador2.Shared.DTOS.ListaCombos
@@ -95,6 +97,20 @@
                         </Select>
                     </Field>
                 </Validation>
+                <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="comentarioAsociado">Comentario asociado (una vez cambiado el valor "Ninguno" ya pedirá un comentario forzosamente. Si no se necesita uno, dejar el valor predeterminado)</FieldLabel>
+                        <Select Class="form-select" TValue="Guid?" ElementId="comentarioAsociado" @bind-SelectedValue=currentStrategy.ComentarioId>
+                        <SelectItem TValue="Guid?" Value="Guid.Empty">Ninguno</SelectItem>
+                            @foreach (var co in comentarios)
+                            {
+                                <SelectItem TValue="Guid" Value="@co.Id">
+                                    @co.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
             </Validations>
         </fieldset>
     </Form>
@@ -176,6 +192,7 @@
     private List<IndicadorComboDTO> indicadores = new();
     private List<CarreraComboDTO> carreras = new();
     private List<PeriodoEscolarComboDTO> periodos = new();
+    private List<ComentarioComboDTO> comentarios = new();
 
     private Strategy currentStrategy = new();
     private string pageTitle = "";
@@ -214,6 +231,7 @@
             indicadores = await IndicadorApiService.GetComboAsync();
             carreras = await CarreraApiService.GetComboAsync();
             periodos = await PeriodoEscolarApiService.GetComboAsync();
+            comentarios = await ComentarioApiService.GetComboAsync();
 
             if (strategyId is not null && strategyId != Guid.Empty)
             {
@@ -248,6 +266,7 @@
                     CreadorId = dto.CreadorId,
                     PeriodoId = dto.PeriodoId,
                     CarreraId = dto.CarreraId,
+                    ComentarioId = dto.ComentarioId,
                 };
 
                 pageTitle = "Editar directriz";
@@ -294,6 +313,7 @@
                 CreadorId = currentStrategy.CreadorId,
                 PeriodoId = currentStrategy.PeriodoId,
                 CarreraId = currentStrategy.CarreraId,
+                ComentarioId = currentStrategy.ComentarioId,
             };
 
             if (strategyId is null || strategyId == Guid.Empty){

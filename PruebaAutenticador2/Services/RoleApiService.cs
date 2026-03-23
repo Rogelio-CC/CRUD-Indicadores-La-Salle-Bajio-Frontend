@@ -4,6 +4,7 @@ using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para RoleApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class RoleApiService
     {
         private readonly HttpClient _http;
@@ -13,7 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todos los roles
+        // Método para obtener todos los roles.
         public async Task<ApiResponse<List<Role>>> GetAllAsync()
         {
             var result = new ApiResponse<List<Role>>();
@@ -46,7 +47,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener un rol por su ID
+        // Método para obtener un rol por su ID.
         public async Task<ApiResponse<Role?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<Role?>();
@@ -84,7 +85,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear un nuevo rol
+        // Método para crear un nuevo rol.
         public async Task<ApiResponse<bool>> CreateAsync(Role role)
         {
             var result = new ApiResponse<bool>();
@@ -122,7 +123,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar un rol existente
+        // Método para actualizar un rol existente.
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, Role role)
         {
             var result = new ApiResponse<bool>();
@@ -159,7 +160,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar un rol por su ID
+        // Método para eliminar un rol por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -197,7 +198,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una lista de roles en formato de combo (ID y nombre) para su uso en interfaces
+        // Método para obtener una lista de roles en formato de combo (ID y nombre) para su uso en interfaces.
         public async Task<List<RolComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<RolComboDTO>>("api/roles/combo")

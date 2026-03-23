@@ -1,38 +1,38 @@
-﻿<!--Ruta de la interfaz-->
+﻿<!-- Ruta de la interfaz. -->
 @page "/"
 
-<!--Importación de librerías/servicios-->
+<!-- Importación de librerías/servicios. -->
 @inject NavigationManager NavManager;
 @inject AuthenticationStateProvider AuthProvider;
 
-<!--Importaciones de estilos CSS-->
+<!-- Importaciones de estilos CSS. -->
 <link rel="stylesheet" href="css/LoginPage.css"/>
 <link rel="stylesheet" href="css/fonts.css"/>
 
-<!--Título principal de la pestaña-->
+<!-- Título principal de la pestaña. -->
 <PageTitle>Inicio de sesión</PageTitle>
 
-<!--Contenedor principal-->
+<!-- Contenedor principal. -->
 <Div Class="login-page">
-    <!--Contenedor para los elementos del lado izquierdo-->
+    <!-- Contenedor para los elementos del lado izquierdo. -->
     <Div Class="left-section">
-        <!--Imagen de fondo-->
+        <!-- Imagen de fondo. -->
         <Div Class="background">
             <img src="Images/fondo_login.jpg" alt="Background" class="background-image" />
         </Div>
-        <!--Card que contiene el logo de la Salle y un título, al igual que un pequeño texto hasta el fondo de la card-->
+        <!-- Card que contiene el logo de la Salle y un título, al igual que un pequeño texto hasta el fondo de la card. -->
         <Div class="login-card-left">
             <img src="Images/logo_salle.png" alt="Logo Universidad La Salle" class="logo" />
             <h2 style="font-family:IndivisaFontBold">Gestión de indicadores</h2>
             <Login />
             <p class="footer-text" style="font-family:IndivisaFont">
                 Universidad La Salle Bajío - Av. Universidad 602, Col. Lomas del Campestre, León, Gto. México. Tel (477) 10 85 00.<br>
-                Todos los Derechos Reservados © 04/02/2025.
+                Todos los Derechos Reservados © @DateTime.Now.Year.
             </p>
         </Div>
     </Div>
 
-    <!--Contenedor para los elementos del lado derecho-->
+    <!-- Contenedor para los elementos del lado derecho. -->
     <Div Class="right-section">
         <Div class="image-right">
             <img src="Images/FondoSalle.jpg" alt="Imagen derecha" />

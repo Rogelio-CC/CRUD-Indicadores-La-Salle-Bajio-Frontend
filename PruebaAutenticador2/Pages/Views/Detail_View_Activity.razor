@@ -1,9 +1,9 @@
-﻿<!--Ruta de la interfaz-->
+﻿<!-- Ruta de la interfaz. -->
 @page "/home/vistaActividades/detalleActividad/{activityId:guid}"
-<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página. -->
 @attribute [Authorize]
 
-<!--Importación de librerías/servicios-->
+<!-- Importación de librerías/servicios. -->
 @inject NavigationManager NavManager
 @inject ActividadApiService ActividadApiService
 @using PruebaAutenticador2.Classes
@@ -11,29 +11,29 @@
 @using System.Net
 @inject AuthStateService AuthState
 
-<!--Importaciones de estilos CSS-->
+<!-- Importaciones de estilos CSS. -->
 <link rel="stylesheet" href="css/DetailV.css" />
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/Footer.css" />
 <link rel="stylesheet" href="css/Fonts.css" />
 
-<!--Título principal de la pestaña-->
+<!-- Título principal de la pestaña. -->
 <PageTitle>Detalle de la actividad</PageTitle>
 
-<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del navbar en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
 
-<!--Título principal de la pantalla-->
+<!-- Título principal de la pantalla. -->
 <h1>Detalles de la actividad</h1>
 
-<!--Línea de seperación entre el título de la página y el contenido-->
+<!-- Línea de seperación entre el título de la página y el contenido. -->
 <Divider Class="separate-line-detail" />
 
-<!--Contenedor que contiene el formulario de detalles-->
+<!-- Contenedor que contiene el formulario de detalles. -->
 <Div Class="container-detail">
     <Form>
         <fieldset class="form-grid">
-            <!-- Fila 1 de agrupación de inputs y labels-->
+            <!-- Fila 1 de agrupación de inputs y labels. -->
             <Field Class="form-field">
                 <FieldLabel For="descripcion">Descripción</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentActivity.DescripcionActividad" ReadOnly="true" ElementId="descripcion" />
@@ -47,7 +47,7 @@
                 <TextEdit Class="form-control" Text="@currentActivity.Estrategia" ReadOnly="true" ElementId="estrategiaAsociada" />
             </Field>
 
-            <!-- Fila 2 de agrupación de inputs y labels-->
+            <!-- Fila 2 de agrupación de inputs y labels. -->
             <Field Class="form-field">
                 <FieldLabel For="creadorAAsociado">Creador asociado</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentActivity.Creador" ReadOnly="true" ElementId="creadorAAsociado" />
@@ -61,7 +61,7 @@
                 <TextEdit Class="form-control" Text="@(currentActivity.FechaCumplimiento?.ToString("dd/MM/yyyy") ?? "")" ReadOnly="true" ElementId="fechaDeCumplimiento" />
             </Field>
 
-            <!-- Fila 1 de agrupación de inputs y labels-->
+            <!-- Fila 3 de agrupación de inputs y labels. -->
             <Field Class="form-field">
                 <FieldLabel For="actividadCumplida">¿Se cumplió la actividad?</FieldLabel>
                 <TextEdit Class="form-control" Text="@(currentActivity.ActividadCumplida ? "Sí" : "No")" ReadOnly="true" ElementId="actividadCumplida" />
@@ -74,9 +74,13 @@
                 <FieldLabel For="carreraAsociada">Carrera asociada</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentActivity.Carrera" ReadOnly="true" ElementId="carreraAsociada" />
             </Field>
+            <Field Class="form-field">
+                <FieldLabel For="comentarioAsociado">Comentario asociado</FieldLabel>
+                <TextEdit Class="form-control" Text="@(currentActivity.Comentario ?? "")" ReadOnly="true" ElementId="comentarioAsociado" />
+            </Field>
         </fieldset>
     </Form>
-    <!--Pequeño contenedor para el botón "Regresar" -->
+    <!-- Pequeño contenedor para el botón "Regresar". -->
     <Div Class="form-submit">
         <Button Style="font-family:IndivisaFont;
                        background-color: #002855;
@@ -90,10 +94,10 @@
     </Div>
 </Div>
 
-<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del footer en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Footer />
 
-<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando". -->
 @if (isLoading)
 {
     <Div Style="position: fixed;
@@ -113,7 +117,7 @@
     </Div>
 }
 
-<!-- Modal para mostrar el mensaje de error -->
+<!-- Modal para mostrar el mensaje de error. -->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -127,23 +131,23 @@
 
 
 @code {
-    // Parámetro que se recibe desde la URL para identificar la actividad a mostrar
+    // Parámetro que se recibe desde la URL para identificar la actividad a mostrar.
     [Parameter]
     public Guid? activityId { get; set; }
 
-    // Variable para almacenar la actividad actual que se va a mostrar en la pantalla
+    // Variable para almacenar la actividad actual que se va a mostrar en la pantalla.
     private Activity currentActivity = new();
 
-    // Variable para controlar la visualización de la pantalla de carga mientras se obtienen los datos de la actividad
+    // Variable para controlar la visualización de la pantalla de carga mientras se obtienen los datos de la actividad.
     private bool isLoading = false;
 
-    // Variable para almacenar el mensaje de error en caso de que ocurra un error al obtener los datos de la actividad
+    // Variable para almacenar el mensaje de error en caso de que ocurra un error al obtener los datos de la actividad.
     private string? errorMessage;
 
-    // Referencia al componente Modal para mostrar el mensaje de error
+    // Referencia al componente Modal para mostrar el mensaje de error.
     private Modal modalToShowErrorMessage;
 
-    // Método que se ejecuta cada vez que se establecen los parámetros del componente (en este caso, cada vez que se navega a esta página con un nuevo activityId)
+    // Método que se ejecuta cada vez que se establecen los parámetros del componente (en este caso, cada vez que se navega a esta página con un nuevo activityId).
     protected override async Task OnParametersSetAsync()
     {
         try
@@ -153,10 +157,10 @@
 
             if (activityId is not null && activityId != Guid.Empty)
             {
-                // Se hace una llamada al servicio API para obtener los detalles de la actividad utilizando el ID proporcionado en la URL
+                // Se hace una llamada al servicio API para obtener los detalles de la actividad utilizando el ID proporcionado en la URL.
                 var responseToGetId = await ActividadApiService.GetByIdAsync(activityId.Value);
 
-                // Si la respuesta no es exitosa, se maneja el error según el código de estado HTTP devuelto por la API
+                // Si la respuesta no es exitosa, se maneja el error según el código de estado HTTP devuelto por la API.
                 if (!responseToGetId.Success)
                 {
                     switch (responseToGetId.StatusCode)
@@ -175,7 +179,7 @@
                     return;
                 }
 
-                var dto = responseToGetId.Data; // Se obtiene el DTO de la respuesta y se asigna a la variable "dto"
+                var dto = responseToGetId.Data; // Se obtiene el DTO de la respuesta y se asigna a la variable "dto".
 
                 currentActivity = new Activity
                 {
@@ -193,11 +197,13 @@
                     Periodo = dto.Periodo,
                     CarreraId = dto.CarreraId,
                     Carrera = dto.Carrera,
+                    Comentario = dto.Comentario,
+                    ComentarioId = dto.ComentarioId,
                 };
             }
 
         }
-        // Si ocurre cualquier excepción durante el proceso de obtención de los datos de la actividad, se muestra un mensaje de error genérico indicando que no se pudo conectar con el servidor
+        // Si ocurre cualquier excepción durante el proceso de obtención de los datos de la actividad, se muestra un mensaje de error genérico indicando que no se pudo conectar con el servidor.
         catch (Exception)
         {
             errorMessage = "No se pudo conectar con el servidor.";
@@ -209,14 +215,14 @@
         }
     }
 
-    //Función para regresar a la pantalla principal
+    //Función para regresar a la pantalla principal.
     private void goBack()
     {
         NavManager.NavigateTo("/home/vistaActividades");
 
     }
 
-    // Función para ocultar el modal de mensaje de error
+    // Función para ocultar el modal de mensaje de error.
     private Task HideModal(Modal modal)
     {
         NavManager.NavigateTo("/home/vistaActividades");

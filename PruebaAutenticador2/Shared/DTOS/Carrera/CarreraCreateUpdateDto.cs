@@ -1,10 +1,12 @@
 ﻿namespace PruebaAutenticador2.Shared.DTOS.Carrera
 {
-    // DTO para crear o actualizar una carrera
+    // DTO utilizado para crear o actualizar una carrera.
     public class CarreraCreateUpdateDto
     {
-        public Guid Id { get; set; }
+        // Nombre de la carrera.
         public string NombreCarrera { get; set; } = null!;
+
+        // Identificador de la facultad a la que pertenece.
         public Guid FacultadId { get; set; }
     }
 }

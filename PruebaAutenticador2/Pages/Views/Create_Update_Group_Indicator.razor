@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de CreateUpdateGroupOfIndicator es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de CreateUpdateGroupOfIndicator es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaIndicadores/vistaGruposIndicadores/creacionGrupoIndicadores"
 @page "/home/vistaIndicadores/vistaGruposIndicadores/creacionGrupoIndicadores/{GOIsId:guid}"
 @attribute [Authorize]
@@ -31,7 +31,7 @@
                 <Validation Validator="ValidationRule.IsSelected">
                     <Field Class="form-field">
                         <FieldLabel For="numeroDelGrupo">Número del grupo</FieldLabel>
-                        <NumericEdit Class="form-control" ElementId="numeroDelGrupo" @bind-Value=currentGroupOfIndicators.numeroGrupo />
+                        <NumericEdit Class="form-control" ElementId="numeroDelGrupo" @bind-Value=currentGroupOfIndicators.NumeroGrupo />
                     </Field>
                 </Validation>
                 <Validation Validator="ValidationRule.IsNotEmpty">

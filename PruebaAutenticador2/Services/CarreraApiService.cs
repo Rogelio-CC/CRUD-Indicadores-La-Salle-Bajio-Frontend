@@ -3,6 +3,7 @@ using PruebaAutenticador2.Shared.DTOS.ListaCombos;
 using PruebaAutenticador2.Classes;
 using System.Net;
 
+// La estructura para CarreraApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
 namespace PruebaAutenticador2.Services
 {
     public class CarreraApiService
@@ -14,7 +15,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todas las carreras
+        // Método para obtener todas las carreras.
         public async Task<ApiResponse<List<CarreraDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<CarreraDto>>();
@@ -48,7 +49,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una carrera por su ID
+        // Método para obtener una carrera por su ID.
         public async Task<ApiResponse<CarreraDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<CarreraDto>();
@@ -86,7 +87,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear una nueva carrera
+        // Método para crear una nueva carrera.
         public async Task<ApiResponse<bool>> CreateAsync(CarreraCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -124,7 +125,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar una carrera existente
+        // Método para actualizar una carrera existente.
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, CarreraCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -161,7 +162,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar una carrera por su ID
+        // Método para eliminar una carrera por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -199,7 +200,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una lista de carreras en formato de combo (ID y nombre) para su uso en interfaces
+        // Método para obtener una lista de carreras en formato de combo (ID y nombre) para su uso en interfaces.
         public async Task<List<CarreraComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<CarreraComboDTO>>("api/carreras/combo")

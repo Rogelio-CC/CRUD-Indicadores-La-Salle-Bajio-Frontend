@@ -4,6 +4,7 @@ using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para PeriodoEscolarApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class PeriodoEscolarApiService
     {
         private readonly HttpClient _http;
@@ -13,7 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todos los periodos escolares
+        // Método para obtener todos los periodos escolares.
         public async Task<ApiResponse<List<SchoolTerm>>> GetAllAsync()
         {
             var result = new ApiResponse<List<SchoolTerm>>();
@@ -46,7 +47,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener un periodo escolar por su ID
+        // Método para obtener un periodo escolar por su ID.
         public async Task<ApiResponse<SchoolTerm?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<SchoolTerm?>();
@@ -84,7 +85,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear un nuevo periodo escolar
+        // Método para crear un nuevo periodo escolar.
         public async Task<ApiResponse<bool>> CreateAsync(SchoolTerm schoolTerm)
         {
             var result = new ApiResponse<bool>();
@@ -122,7 +123,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar un periodo escolar existente
+        // Método para actualizar un periodo escolar existente.
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, SchoolTerm schoolTerm)
         {
             var result = new ApiResponse<bool>();
@@ -159,7 +160,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar un periodo escolar por su ID
+        // Método para eliminar un periodo escolar por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -197,7 +198,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una lista de periodos escolares en formato de combo (ID y nombre) para su uso en interfaces
+        // Método para obtener una lista de periodos escolares en formato de combo (ID y nombre) para su uso en interfaces.
         public async Task<List<PeriodoEscolarComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<PeriodoEscolarComboDTO>>("api/periodos-escolares/combo")

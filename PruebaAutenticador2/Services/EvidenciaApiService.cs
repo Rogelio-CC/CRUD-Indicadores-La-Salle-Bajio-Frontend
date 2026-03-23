@@ -5,6 +5,7 @@ using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para EvidenciaApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class EvidenciaApiService
     {
         private readonly HttpClient _http;
@@ -14,7 +15,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todas las evidencias asociadas a un indicador específico
+        // Método para obtener todas las evidencias asociadas a un indicador específico.
         public async Task<ApiResponse<List<EvidenciaDto>>> GetAllAsync(Guid indicadorId)
         {
             var result = new ApiResponse<List<EvidenciaDto>>();
@@ -53,7 +54,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para subir una nueva evidencia asociada a un indicador específico
+        // Método para subir una nueva evidencia asociada a un indicador específico.
         public async Task<ApiResponse<bool>> UploadAsync(Guid indicadorId, IFileEntry file)
         {
 
@@ -98,7 +99,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar una evidencia específica asociada a un indicador específico
+        // Método para eliminar una evidencia específica asociada a un indicador específico.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid indicadorId, Guid evidenciaId)
         {
             var result = new ApiResponse<bool>();

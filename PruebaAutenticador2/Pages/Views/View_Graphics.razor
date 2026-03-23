@@ -1,6 +1,6 @@
-﻿<!--Ruta de la interfaz-->
+﻿<!-- Ruta de la interfaz. -->
 @page "/home/vistaIndicadores/vistaGruposIndicadores/vistaGraficas"
-<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página. -->
 @attribute [Authorize]
 
 <!--Importación de librerías/servicios-->
@@ -13,25 +13,25 @@
 @using PruebaAutenticador2.Shared.DTOS.ListaCombos
 @inject AuthStateService AuthState
 
-<!--Importaciones de estilos CSS-->
+<!-- Importaciones de estilos CSS. -->
 <link rel="stylesheet" href="css/GraphSearch.css" />
 <link rel="stylesheet" href="css/Nabvar.css" />
 <Link rel="stylesheet" href="~/css/Fonts.css"/>
 <link rel="stylesheet" href="css/Footer.css" />
 
-<!--Título principal de la pestaña-->
+<!-- Título principal de la pestaña. -->
 <PageTitle>Búsqueda de Gráficas</PageTitle>
 
-<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del navbar en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
 
-<!--Título principal de la pantalla-->
+<!-- Título principal de la pantalla. -->
 <h1>Gráficas generadas</h1>
 
-<!--Línea de seperación entre el título de la página y el contenido-->
+<!-- Línea de seperación entre el título de la página y el contenido. -->
 <Divider Class="separate-line-detail" />
 
-<!--Contenedor del formulario para mostrar resultados de las gráficas-->
+<!-- Contenedor del formulario para mostrar resultados de las gráficas. -->
 <Container Class="container-search">
     <Form>
         <fieldset class="form-search">
@@ -101,7 +101,7 @@
             </Field>
         </fieldset>
     </Form>
-    <!-- Botón fuera del formulario -->
+    <!-- Botón fuera del formulario. -->
     <Div Class="form-submit">
         <Button Style="font-family:IndivisaFont;
                        background-color: #002855;
@@ -116,26 +116,26 @@
     </Div>
 </Container>
 
-<!--Contenedor del formulario para mostrar resultados de las gráficas-->
+<!-- Contenedor del formulario para mostrar resultados de las gráficas. -->
 <Container Class="container-graphics">
     <Div Class="title-container">
         <h3 style="padding-top: 30px;">
             Resultados de la búsqueda
         </h3>
     </Div>
-    <!--Si graficasCargadas es true, se cargan las gráficas-->
+    <!-- Si graficasCargadas es true, se cargan las gráficas. -->
     @if (graficasCargadas)
     {
         <Div Class="dashboard-grid">
 
-            <!-- CARD 1 -->
+            <!-- CARD 1. -->
             <Div Class="dashboard-card">
-                <!-- Título de la gráfica -->
+                <!-- Título de la gráfica. -->
                 <Div Class="card-header">
                     Cantidad total de indicadores del grupo
                 </Div>
 
-                <!-- Tamaño, tipo y propiedades (Categoría y valor) de la gráfica -->
+                <!-- Tamaño, tipo y propiedades (Categoría y valor) de la gráfica. -->
                 <RadzenChart Style="height:260px;">
                     <RadzenColumnSeries Data="@totalIndicadoresPorGrupoData"
                                         CategoryProperty="Categoria"
@@ -143,7 +143,7 @@
                 </RadzenChart>
             </Div>
 
-            <!-- CARD 2 -->
+            <!-- CARD 2. -->
             <Div Class="dashboard-card">
                 <Div Class="card-header">
                     Cantidad total de indicadores cumplidos del grupo
@@ -158,7 +158,7 @@
                 </RadzenChart>
             </Div>
 
-            <!-- CARD 3 -->
+            <!-- CARD 3. -->
             <Div Class="dashboard-card">
                 <Div Class="card-header">
                     Porcentaje de cumplimiento de los indicadores del grupo
@@ -173,7 +173,7 @@
                 </RadzenChart>
             </Div>
 
-            <!-- CARD 4 -->
+            <!-- CARD 4. -->
             <Div Class="dashboard-card">
                 <Div Class="card-header">
                     Cantidad total de indicadores del grupo por directriz
@@ -188,7 +188,7 @@
                 </RadzenChart>
             </Div>
 
-            <!-- CARD 5 -->
+            <!-- CARD 5. -->
             <Div Class="dashboard-card">
                 <Div Class="card-header">
                     Cantidad total de indicadores del grupo por periodo
@@ -203,7 +203,7 @@
                 </RadzenChart>
             </Div>
 
-            <!-- CARD 6 -->
+            <!-- CARD 6. -->
             <Div Class="dashboard-card">
                 <Div Class="card-header">
                     Cantidad total de indicadores del grupo por carrera
@@ -222,7 +222,7 @@
     }
     else
     {
-        <!-- Mensaje que aparece en caso de que los filtros no esten seleccionados correctamente y se presione el botón del formulario -->
+        <!-- Mensaje que aparece en caso de que los filtros no esten seleccionados correctamente y se presione el botón del formulario. -->
         <Column>
             <p class="text-center greyText">Seleccione filtros y haga clic en "Buscar" para ver las gráficas.</p>
         </Column>
@@ -230,10 +230,10 @@
     
 </Container>
 
-<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del footer en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Footer/>
 
-<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando". -->
 @if (isLoading)
 {
     <Div Style="position: fixed;
@@ -253,7 +253,7 @@
     </Div>
 }
 
-<!-- Modal para mostrar el mensaje de error -->
+<!-- Modal para mostrar el mensaje de error. -->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -267,26 +267,26 @@
 
 @code {
 
-    // Variables para filtros de búsqueda
+    // Variables para filtros de búsqueda.
     private bool graficasCargadas = false;
     private Guid? selectedGrupoId;
     private Guid? selectedPeriodoId;
     private Guid? selectedCarreraId;
     private Guid? selectedDirectrizId;
 
-    // Lista completa de indicadores obtenida de la API
+    // Lista completa de indicadores obtenida de la API.
     private List<IndicadorDto> indicatorList = new();
 
-    // Lista real filtrada
+    // Lista real filtrada.
     private List<IndicadorDto> filteredIndicators = new();
 
-    // Variable para controlar la visualización de la pantalla de carga
+    // Variable para controlar la visualización de la pantalla de carga.
     private bool isLoading = false;
 
-    // Variable para almacenar el mensaje de error
+    // Variable para almacenar el mensaje de error.
     private string? errorMessage;
 
-    // Referencia al modal para mostrar el mensaje de error
+    // Referencia al modal para mostrar el mensaje de error.
     private Modal modalToShowErrorMessage;
 
     // Al iniciar la página, se cargan todos los indicadores desde la API para poder mostrar las opciones de filtros y generar las gráficas.
@@ -343,7 +343,7 @@
              )
              .ToList();
 
-             //Gráfico 1
+             //Gráfico 1.
             totalIndicadoresPorGrupoData = filteredIndicators
             .GroupBy(i => i.Grupo)
             .Select(g => new BarData
@@ -353,7 +353,7 @@
             })
             .ToArray();
 
-            //Gráfico 2
+            //Gráfico 2.
             var total = filteredIndicators.Count;
             var cumplidos = filteredIndicators.Count(i => i.FechaCumplimiento != null);
             var noCumplidos = total - cumplidos;
@@ -372,7 +372,7 @@
                 }
             };
 
-            // Gráfico 3
+            // Gráfico 3.
             int porcentajeCumplido = total == 0 ? 0 : (int)((double)cumplidos / total * 100);
             int porcentajeRestante = 100 - porcentajeCumplido;
 
@@ -390,7 +390,7 @@
                 }
             };
 
-            //Gráfico 4
+            //Gráfico 4.
             totalIndicadoresGrupoPorDirectrizData = filteredIndicators
             .GroupBy(i => i.Directriz)
             .Select(g => new BarData
@@ -400,7 +400,7 @@
             })
             .ToArray();
 
-            //Gráfico 5
+            //Gráfico 5.
             totalIndicadoresGrupoPorPeriodoData = filteredIndicators
             .GroupBy(i => i.Periodo)
             .Select(g => new BarData
@@ -410,7 +410,7 @@
             })
             .ToArray();
 
-            //Gráfico 6
+            //Gráfico 6.
             totalIndicadoresGrupoPorCarreraData = filteredIndicators
             .GroupBy(i => i.Carrera)
             .Select(g => new BarData
@@ -428,23 +428,23 @@
         }
     }
 
-    // Método para ocultar el modal de mensaje de error
+    // Método para ocultar el modal de mensaje de error.
     private Task HideModal(Modal modal)
     {
         return modal.Hide();
     }
 
-    // Variable para controlar la visualización de las etiquetas de datos en las gráficas
+    // Variable para controlar la visualización de las etiquetas de datos en las gráficas.
     bool showDataLabels = true;
 
-    // Clases para representar los datos de las gráficas (categoría y valor), dependiendo si es de tipo pie o barra
+    // Clases para representar los datos de las gráficas (categoría y valor), dependiendo si es de tipo pie o barra.
     class PieData
     {
         public string Categoria { get; set; }
         public int Valor { get; set; }
     }
 
-    // Variable para almacenar los datos del gráfico pastel de porcentaje de cumplimiento
+    // Variable para almacenar los datos del gráfico pastel de porcentaje de cumplimiento.
     private PieData[] porcentajeCumplimientoData;
 
     class BarData
@@ -453,7 +453,7 @@
         public int Valor { get; set; }
     }
 
-    // Variables para almacenar los datos de las gráficas de barras
+    // Variables para almacenar los datos de las gráficas de barras.
     private BarData[] totalIndicadoresPorGrupoData;
     private BarData[] cumplimientoData;
     private BarData[] totalIndicadoresGrupoPorDirectrizData;

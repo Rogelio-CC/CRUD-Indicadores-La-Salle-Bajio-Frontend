@@ -1,30 +1,30 @@
-﻿<!--Ruta de la interfaz-->
+﻿<!-- Ruta de la interfaz. -->
 @page "/home"
 @attribute [Authorize]
 
-<!--Importación de librerías/servicios-->
+<!-- Importación de librerías/servicios. -->
 @inject AuthStateService AuthState;
 @inject NavigationManager NavManager;
 @using PruebaAutenticador2.Classes;
 @using PruebaAutenticador2.Services;
 @inject IJSRuntime JS;
 
-<!--Importaciones de estilos CSS-->
+<!-- Importaciones de estilos CSS. -->
 <link rel="stylesheet" href="css/Nabvar.css"/>
 <link rel="stylesheet" href="css/Welcome.css" />
 <link rel="stylesheet" href="css/Footer.css" />
 
-<!--Título principal de la pestaña-->
+<!-- Título principal de la pestaña. -->
 <PageTitle>Interfaz principal</PageTitle>
 
 <Layout>
-    <!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
+    <!-- Se llama al elemento .razor del navbar en mayoría de las pantallas. -->
     <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
 
-    <!--Se muestra el correo del usuario autenticado-->
+    <!-- Se muestra el correo del usuario autenticado. -->
     <LoginDisplay />
 
-    <!--Se mostrará la misma pantalla, pero bloqueando algunas secciones dependiendo del tipo de rol-->
+    <!-- Se mostrará la misma pantalla, pero bloqueando algunas secciones dependiendo del tipo de rol. -->
     @if (AuthState.Role == "Administrador")
     {
         <Div Class="container-section">
@@ -483,10 +483,10 @@
     }
     else
     {
-        <!--Si se logra llegar aquí sin un rol identificado, mandará este mensaje-->
+        <!-- Si se logra llegar aquí sin un rol identificado, mandará este mensaje. -->
         <Paragraph>No tienes los permisos necesarios para acceder.</Paragraph>
     }
-    <!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
+    <!-- Se llama al elemento .razor del footer en mayoría de las pantallas. -->
     <PruebaAutenticador2.Pages.ReusableComponents.Footer />
 
 </Layout>

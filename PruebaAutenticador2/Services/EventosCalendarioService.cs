@@ -3,6 +3,7 @@ using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para EventoCalendarioService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos (en este caso, solo existe uno).
     public class EventosCalendarioService
     {
         private readonly HttpClient _http;
@@ -12,7 +13,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todos los eventos del calendario
+        // Método para obtener todos los eventos del calendario.
         public async Task<ApiResponse<List<CalendarEvent>>> GetAllAsync()
         {
             var result = new ApiResponse<List<CalendarEvent>>();

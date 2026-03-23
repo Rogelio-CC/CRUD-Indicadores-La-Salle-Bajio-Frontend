@@ -5,6 +5,7 @@ using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para EstrategiaApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class EstrategiaApiService
     {
         private readonly HttpClient _http;
@@ -14,7 +15,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todas las estrategias
+        // Método para obtener todas las estrategias.
         public async Task<ApiResponse<List<EstrategiaDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<EstrategiaDto>>();
@@ -48,7 +49,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una estrategia por su ID
+        // Método para obtener una estrategia por su ID.
         public async Task<ApiResponse<EstrategiaDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<EstrategiaDto>();
@@ -86,7 +87,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear una nueva estrategia
+        // Método para crear una nueva estrategia.
         public async Task<ApiResponse<bool>> CreateAsync(EstrategiaCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -124,7 +125,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar una estrategia existente
+        // Método para actualizar una estrategia existente.
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, EstrategiaCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -161,7 +162,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar una estrategia por su ID
+        // Método para eliminar una estrategia por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -199,7 +200,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener la lista de estrategias en formato combo (ID y nombre) para para su uso en interfaces
+        // Método para obtener la lista de estrategias en formato combo (ID y nombre) para para su uso en interfaces.
         public async Task<List<EstrategiaComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<EstrategiaComboDTO>>("api/estrategias/combo")

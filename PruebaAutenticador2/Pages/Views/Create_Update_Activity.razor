@@ -1,16 +1,17 @@
-﻿<!--Ruta de la interfaz-->
+﻿<!-- Ruta de la interfaz. -->
 @page "/home/vistaActividades/creacionActividad"
 @page "/home/vistaActividades/creacionActividad/{activityId:guid}"
-<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página. -->
 @attribute [Authorize]
 
-<!--Importación de librerías/servicios-->
+<!-- Importación de librerías/servicios. -->
 @inject NavigationManager NavManager
 @inject ActividadApiService ActividadApiService
 @inject UsuarioApiService UsuarioApiService
 @inject PeriodoEscolarApiService PeriodoEscolarApiService
 @inject CarreraApiService CarreraApiService
 @inject EstrategiaApiService EstrategiaApiService
+@inject ComentarioApiService ComentarioApiService
 @inject EmailService EmailService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @using PruebaAutenticador2.Classes
@@ -21,32 +22,32 @@
 @using System.Net
 @inject AuthStateService AuthState
 
-<!--Importaciones de estilos CSS-->
+<!-- Importaciones de estilos CSS. -->
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/AllForms.css" />
 <link rel="stylesheet" href="css/Fonts.css" />
 <link rel="stylesheet" href="css/Footer.css" />
 
-<!--Título principal de la pestaña-->
+<!-- Título principal de la pestaña. -->
 <PageTitle>@pageTitle</PageTitle>
 
-<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del navbar en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
 
-<!--Título principal de la pantalla-->
+<!-- Título principal de la pantalla. -->
 <h1>Actividad</h1>
 
-<!--Línea de seperación entre el título de la página y el contenido-->
+<!-- Línea de seperación entre el título de la página y el contenido. -->
 <Divider Class="separate-line-register" />
 
-<!--Contenedor del formulario de registro/actualización-->
+<!-- Contenedor del formulario de registro/actualización. -->
 <Div Class="container-register">
     <Form>
         <fieldset class="form-grid">
-            <!-- Se agrega Validations para la verificación correcta de los inputs -->
+            <!-- Se agrega Validations para la verificación correcta de los inputs. -->
             <Validations @ref="validations" Mode="ValidationMode.Auto" Model="currentActivity">
 
-                <!-- Dentro de Validations, se pueden poner diversos Validation individuales para agregar una regla que ayude a cumplir que el input este completado, por ejemplo -->
+                <!-- Dentro de Validations, se pueden poner diversos Validation individuales para agregar una regla que ayude a cumplir que el input este completado, por ejemplo. -->
                 <Validation Validator="@ValidationRule.IsNotEmpty">
                     <Field Class="form-field">
                         <FieldLabel For="descripcion">Descripción</FieldLabel>
@@ -78,13 +79,13 @@
                     <NumericEdit TValue="decimal" Class="form-control" ElementId="cantidadLograda" @bind-Value=currentActivity.CantidadLograda />
                 </Field>
 
-                <!-- Se puede poner Validation personalizado, como en este caso para evaluar que este llenado correctamente el valor de un ID -->
+                <!-- Se puede poner Validation personalizado, como en este caso para evaluar que este llenado correctamente el valor de un ID. -->
                 <Validation Validator="ValidateGuidSelection">
                     <Field Class="form-field">
                         <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
                         <Select Class="form-select" TValue="Guid" ElementId="creadorAsociado" @bind-SelectedValue=currentActivity.CreadorId>
                             <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
-                            <!-- Se usa un foreach para visualizar la lista de elementos existentes (para esta ocasión, muestra una lista de usuarios existentes.) -->
+                            <!-- Se usa un foreach para visualizar la lista de elementos existentes (para esta ocasión, muestra una lista de usuarios existentes). -->
                             @foreach (var u in usuarios)
                             {
                                 <SelectItem TValue="Guid" Value="@u.Id">
@@ -139,8 +140,23 @@
                         </Select>
                     </Field>
                 </Validation>
+
+                 <Validation Validator="ValidateGuidSelection">
+                    <Field Class="form-field">
+                        <FieldLabel For="comentarioAsociado">Comentario asociado (una vez cambiado el valor "Ninguno" ya pedirá un comentario forzosamente. Si no se necesita uno, dejar el valor predeterminado)</FieldLabel>
+                        <Select Class="form-select" TValue="Guid?" ElementId="comentarioAsociado" @bind-SelectedValue=currentActivity.ComentarioId>
+                        <SelectItem TValue="Guid?" Value=Guid.Empty">Ninguno</SelectItem>
+                            @foreach (var co in comentarios)
+                            {
+                                <SelectItem TValue="Guid" Value="@co.Id">
+                                    @co.Nombre
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                </Validation>
             </Validations>
-            <!-- Elementos como Actividad e Indicador contienen esta parte de agregar una fecha y hora de recordatorio de manera opcional -->
+            <!-- Elementos como Actividad e Indicador contienen esta parte de agregar una fecha y hora de recordatorio de manera opcional. -->
             <Field Class="form-field">
                 <FieldLabel For="fechaRecordatorio">Fecha de actulización</FieldLabel>
                 <DateEdit TValue="DateTime?" Disabled="@(!remiderActivateActivity)" ElementId="fechaRecordatorio" @bind-Date=FechaRecordatorio />
@@ -151,7 +167,7 @@
             </Field>
         </fieldset>
         <Div Style="display: flex; align-items: center; justify-content: center; font-family:IndivisaFont;">
-            <!-- CheckBox que ayuda a que se habiliten o no los inputs referentes al recordatorio. Si el rol es Maestro o Investigador, entonces se deshabilita esta opción.-->
+            <!-- CheckBox que ayuda a que se habiliten o no los inputs referentes al recordatorio. Si el rol es Maestro o Investigador, entonces se deshabilita esta opción. -->
             <Check TValue="bool" @bind-Checked="remiderActivateActivity" Disabled="@(AuthState.Role == "Maestro" || AuthState.Role == "Investigador")">Activar recordatorio de modificación de la actividad</Check>
         </Div>
     </Form>
@@ -179,10 +195,10 @@
     </Div>
 </Div>
 
-<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del footer en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Footer />
 
-<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando". -->
 @if (isLoading)
 {
     <Div Style="position: fixed; 
@@ -202,7 +218,7 @@
     </Div>
 }
 
-<!-- Modal para mostrar el mensaje de error -->
+<!-- Modal para mostrar el mensaje de error. -->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -214,7 +230,7 @@
     </ModalContent>
 </Modal>
 
-<!-- Modal para mostrar el mensaje de error y redireccionar a la pantalla de vista de elementos (en este caso, vista de actividades) -->
+<!-- Modal para mostrar el mensaje de error y redireccionar a la pantalla de vista de elementos (en este caso, vista de actividades). -->
 <Modal @ref="@modalToShowErrorMessageAndRedirectViewPage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -238,6 +254,7 @@
     private List<EstrategiaComboDTO> estrategias = new();
     private List<PeriodoEscolarComboDTO> periodos = new();
     private List<CarreraComboDTO> carreras = new();
+    private List<ComentarioComboDTO> comentarios = new();
 
     // Variable que sirve para válidar que el checkbox este activado
     private bool remiderActivateActivity { get; set; } = false;
@@ -302,6 +319,7 @@
             estrategias = await EstrategiaApiService.GetComboAsync();
             periodos = await PeriodoEscolarApiService.GetComboAsync();
             carreras = await CarreraApiService.GetComboAsync();
+            comentarios = await ComentarioApiService.GetComboAsync();
 
             if (activityId is not null && activityId != Guid.Empty)
             {
@@ -341,6 +359,7 @@
                     CreadorId = dto.CreadorId,
                     PeriodoId = dto.PeriodoId,
                     CarreraId = dto.CarreraId,
+                    ComentarioId = dto.ComentarioId,
                 };
 
                 pageTitle = "Editar Actividad";
@@ -348,7 +367,7 @@
             }
             else
             {
-                // Si no se proporciona un activityId, se asume que se está creando una nueva actividad, por lo que se inicializa currentActivity con una nueva instancia de Activity
+                // Si no se proporciona un activityId, se asume que se está creando una nueva actividad, por lo que se inicializa currentActivity con una nueva instancia de Activity.
                 currentActivity = new Activity();
                 pageTitle = "Crear Actividad";
                 buttonText = "Crear";
@@ -386,6 +405,7 @@
             isLoading = true;
             StateHasChanged();
 
+
             var dto = new ActividadCreateUpdateDto
             {
                 DescripcionActividad = currentActivity.DescripcionActividad,
@@ -396,6 +416,7 @@
                 CreadorId = currentActivity.CreadorId,
                 PeriodoId = currentActivity.PeriodoId,
                 CarreraId = currentActivity.CarreraId,
+                ComentarioId = currentActivity.ComentarioId,
             };
 
             if (activityId is null || activityId == Guid.Empty)

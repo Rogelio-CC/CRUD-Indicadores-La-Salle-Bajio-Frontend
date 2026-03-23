@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de CRUDUsers es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de CRUDUsers es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaUsuarios"
 @attribute [Authorize]
 
@@ -208,7 +208,7 @@
         NavManager.NavigateTo("/home/vistaUsuarios/creacionUsuario");
     }
 
-    private Guid userToDelete; // para mantener el ID del usuario a borrar
+    private Guid userToDelete;
 
     private void viewUser(Guid id)
     {

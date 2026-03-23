@@ -5,6 +5,7 @@ using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para IndicadorApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class IndicadorApiService
     {
         private readonly HttpClient _http;
@@ -14,7 +15,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todos los indicadores
+        // Método para obtener todos los indicadores.
         public async Task<ApiResponse<List<IndicadorDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<IndicadorDto>>();
@@ -48,7 +49,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener un indicador por su ID
+        // Método para obtener un indicador por su ID.
         public async Task<ApiResponse<IndicadorDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<IndicadorDto?>();
@@ -86,7 +87,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear un nuevo indicador
+        // Método para crear un nuevo indicador.
         public async Task<ApiResponse<IndicadorDto>> CreateAsync(IndicadorCreateUpdateDto dto)
         {
             var result = new ApiResponse<IndicadorDto>();
@@ -124,7 +125,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar un indicador existente
+        // Método para actualizar un indicador existente.
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, IndicadorCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -161,7 +162,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar un indicador por su ID
+        // Método para eliminar un indicador por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -199,7 +200,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener la lista de indicadores en formato de combo (ID y nombre) para su uso en interfaces
+        // Método para obtener la lista de indicadores en formato de combo (ID y nombre) para su uso en interfaces.
         public async Task<List<IndicadorComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<IndicadorComboDTO>>("api/indicadores/combo")

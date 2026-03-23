@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de CRUDGroupOfIndicators es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de CRUDGroupOfIndicators es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaIndicadores/vistaGruposIndicadores"
 @attribute [Authorize]
 
@@ -60,7 +60,7 @@
             @foreach (var groupOfIndicators in filteredGroupOfIndicators)
             {
                 <TableRow>
-                    <TableRowCell MobileModeCaption="Número del grupo">@groupOfIndicators.numeroGrupo</TableRowCell>
+                    <TableRowCell MobileModeCaption="Número del grupo">@groupOfIndicators.NumeroGrupo</TableRowCell>
                     <TableRowCell MobileModeCaption="Descripción">@groupOfIndicators.DescripcionGrupo</TableRowCell>
                     <TableRowCell>
                         <Div Class="buttons-container">

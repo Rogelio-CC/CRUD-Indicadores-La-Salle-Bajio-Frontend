@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de DetailViewIndicator es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de DetailViewIndicator es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaIndicadores/detalleIndicador/{indicatorId:guid}"
 @attribute [Authorize]
 
@@ -30,7 +30,7 @@
 <Div Class="container-detail">
     <Form>
         <fieldset class="form-grid">
-            <!-- Fila 1 -->
+            <!-- Fila 1. -->
             <Field Class="form-field">
                 <FieldLabel For="descripcion">Descripción</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentIndicator.DescripcionIndicador" ReadOnly="true" ElementId="descripcion" />
@@ -48,7 +48,7 @@
                 <TextEdit Class="form-control" Text="@currentIndicator.Directriz" ReadOnly="true" ElementId="directrizaAsociado" />
             </Field>
 
-            <!-- Fila 2 -->
+            <!-- Fila 2. -->
             <Field Class="form-field">
                 <FieldLabel For="grupoAsociado">Grupo asociado</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentIndicator.Grupo" ReadOnly="true" ElementId="grupoAsociado" />
@@ -69,7 +69,7 @@
                           ElementId="fechaDeCumplimiento" />
             </Field>
 
-            <!-- Fila 3 -->
+            <!-- Fila 3. -->
             <Field Class="form-field">
                 <FieldLabel For="periodoEscolarAsociado">Período Escolar asociado</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentIndicator.Periodo" ReadOnly="true" ElementId="periodoEscolarAsociado" />
@@ -83,7 +83,7 @@
                 <TextEdit Class="form-control" Text="@currentIndicator.CantidadEvidencias.ToString()" ReadOnly="true" ElementId="cantidadEvidenciasNecesarias" />
             </Field>
 
-            <!-- Fila 4 -->
+            <!-- Fila 4. -->
             <Field Class="form-field">
                 <FieldLabel For="indicadorCumplido">¿Se cumplió el indicador?</FieldLabel>
                 <TextEdit Class="form-control" Text="@(currentIndicator.IndicadorCompletado ? "Sí" : "No")" ReadOnly="true" ElementId="indicadorCumplido" />
@@ -97,7 +97,7 @@
                 <TextEdit Class="form-control" Text="@(currentIndicator.ResponsableAccionCorrectiva ?? "")" ReadOnly="true" ElementId="resopnsableAC" />
             </Field>
         </fieldset>
-        <!-- Lista de las evidencias que estan subidas al indicador actual mostrado -->
+        <!-- Lista de las evidencias que estan subidas al indicador actual mostrado. -->
         <Field Class="container-evidencias">
             <FieldLabel Class="label-evidencias" For="evidencias">Evidencias</FieldLabel>
             @if (evidencias.Any())
@@ -116,7 +116,7 @@
                 </ul>
 
                 <p class="estado-evidencias">
-                    <!-- Mensaje en caso de que faltan evidencias por subir para completar el indicador -->
+                    <!-- Mensaje en caso de que faltan evidencias por subir para completar el indicador. -->
                     @if (evidencias.Count < currentIndicator.CantidadEvidencias)
                     {
                         <span style="color: #b22222;">⚠️ Faltan @(currentIndicator.CantidadEvidencias - evidencias.Count) evidencias por completar.</span>

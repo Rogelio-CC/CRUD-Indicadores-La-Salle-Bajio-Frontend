@@ -1,22 +1,45 @@
 ﻿namespace PruebaAutenticador2.Classes
 {
-    // Atributos de la clase Estrategia
+    // Representa una estrategia diseñada para cumplir un indicador.
     public class Strategy
     {
+        // Identificador único de la estrategia.
         public Guid Id { get; set; }
+
+        // Descripción de la estrategia.
         public string DescripcionEstrategia { get; set; } = null!;
+
+        // Fecha en que se emitió la estrategia.
         public DateTime FechaEmision { get; set; }
 
+        // Identificador del indicador a la que pertenece la estrategia.
         public Guid IndicadorId { get; set; }
+
+        // Nombre del indicador.
         public string Indicador { get; set; } = string.Empty;
 
+        // Identificador del usuario que creó la estrategia.
         public Guid CreadorId { get; set; }
+
+        // Nombre del usuario creador.
         public string Creador { get; set; } = string.Empty;
 
+        // Identificador del período escolar a la que aplica la estrategia.
         public Guid PeriodoId { get; set; }
+
+        // Nombre del período escolar.
         public string Periodo { get; set; } = string.Empty;
 
+        // Identificador de la carrera a la que pertenece la estrategia.
         public Guid CarreraId { get; set; }
+
+        // Nombre de la carrera.
         public string Carrera { get; set; } = string.Empty;
+
+        // Identificador del comentario vinculado.
+        public Guid? ComentarioId { get; set; }
+
+        // Nombre del comentario.
+        public string? Comentario { get; set; }
     }
 }

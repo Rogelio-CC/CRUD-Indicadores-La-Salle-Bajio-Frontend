@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de DetailViewFaculty es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de DetailViewFaculty es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaFacultades/detalleFacultad/{facultyId:guid}"
 @attribute [Authorize]
 
@@ -25,7 +25,7 @@
 <Div Class="container-detail">
     <Form>
         <fieldset class="form-grid">
-            <!-- Fila 1 -->
+            <!-- Fila 1. -->
             <Field Class="form-field">
                 <FieldLabel For="nombreDeLaFacultad">Nombre de la facultad</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentFaculty.Nombre" ReadOnly="true" ElementId="nombreDeLaFacultad" />
@@ -39,7 +39,7 @@
                 <TextEdit Class="form-control" Text="@currentFaculty.Vision" ReadOnly="true" ElementId="vision" />
             </Field>
 
-            <!-- Fila 2 -->
+            <!-- Fila 2. -->
             <Field Class="form-field">
                 <FieldLabel For="slogan">Slogan</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentFaculty.Slogan" ReadOnly="true" ElementId="slogan" />
@@ -53,7 +53,7 @@
                 <TextEdit Class="form-control" Text="@currentFaculty.FechaEmision.ToString("dd/MM/yyyy")" ReadOnly="true" ElementId="fechaDeEmision" />
             </Field>
 
-            <!-- Fila 3 -->
+            <!-- Fila 3. -->
             <Field Class="form-field">
                 <FieldLabel For="fechaDeEdicion">Fecha de edición</FieldLabel>
                 <TextEdit Class="form-control" Text="@(currentFaculty.FechaEdicion?.ToString("dd/MM/yyyy") ?? "No hay fecha")" ReadOnly="true" ElementId="fechaDeEdicion" />

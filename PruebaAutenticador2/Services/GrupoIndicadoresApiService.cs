@@ -1,10 +1,10 @@
 ﻿using PruebaAutenticador2.Classes;
 using PruebaAutenticador2.Shared.DTOS.ListaCombos;
-using PruebaAutenticador2.Classes;
 using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para GrupoIndicadoresApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class GrupoIndicadoresApiService
     {
         private readonly HttpClient _http;
@@ -14,7 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todos los grupos de indicadores
+        // Método para obtener todos los grupos de indicadores.
         public async Task<ApiResponse<List<GroupOfIndicators>>> GetAllAsync()
         {
             var result = new ApiResponse<List<GroupOfIndicators>>();
@@ -47,7 +47,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener un grupo de indicadores por su ID
+        // Método para obtener un grupo de indicadores por su ID.
         public async Task<ApiResponse<GroupOfIndicators?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<GroupOfIndicators?>();
@@ -85,7 +85,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear un nuevo grupo de indicadores
+        // Método para crear un nuevo grupo de indicadores.
         public async Task<ApiResponse<bool>> CreateAsync(GroupOfIndicators goi)
         {
             var result = new ApiResponse<bool>();
@@ -123,7 +123,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar un grupo de indicadores existente
+        // Método para actualizar un grupo de indicadores existente.
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, GroupOfIndicators goi)
         {
             var result = new ApiResponse<bool>();
@@ -160,7 +160,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar un grupo de indicadores por su ID
+        // Método para eliminar un grupo de indicadores por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -198,7 +198,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una lista de grupos de indicadores en formato de combo (ID y nombre) para su uso en interfaces
+        // Método para obtener una lista de grupos de indicadores en formato de combo (ID y nombre) para su uso en interfaces.
         public async Task<List<GrupoIndicadoresComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<GrupoIndicadoresComboDTO>>("api/grupo-indicadores/combo")

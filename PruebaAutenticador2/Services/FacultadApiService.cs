@@ -4,6 +4,7 @@ using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para FacultadApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class FacultadApiService
     {
         private readonly HttpClient _http;
@@ -13,7 +14,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todas las facultades
+        // Método para obtener todas las facultades.
         public async Task<ApiResponse<List<Faculty>>> GetAllAsync()
         {
             var result = new ApiResponse<List<Faculty>>();
@@ -46,7 +47,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una facultad por su ID
+        // Método para obtener una facultad por su ID.
         public async Task<ApiResponse<Faculty?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<Faculty>();
@@ -84,7 +85,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear una nueva facultad
+        // Método para crear una nueva facultad.
         public async Task<ApiResponse<bool>> CreateAsync(Faculty Faculty)
         {
             var result = new ApiResponse<bool>();
@@ -122,7 +123,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar una facultad existente
+        // Método para actualizar una facultad existente.
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, Faculty Faculty)
         {
             var result = new ApiResponse<bool>();
@@ -159,7 +160,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar una facultad por su ID
+        // Método para eliminar una facultad por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -197,7 +198,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una lista de facultades en formato de combo (ID y nombre) para su uso en interfaces
+        // Método para obtener una lista de facultades en formato de combo (ID y nombre) para su uso en interfaces.
         public async Task<List<FacultadComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<FacultadComboDTO>>("api/facultades/combo")

@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de CreateUpdateComment es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de CreateUpdateComment es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaIndicadores/creacionIndicador"
 @page "/home/vistaIndicadores/creacionIndicador/{indicatorId:guid}"
 @attribute [Authorize]
@@ -130,7 +130,7 @@
                         </Field>
                     </Validation>
 
-                    <!-- Se cargan evidencias "temporales" para, cuando se presione el botón Aceptar, guardarlos posteriormente como evidencias permanentes -->
+                    <!-- Se cargan evidencias "temporales" para, cuando se presione el botón Aceptar, guardarlos posteriormente como evidencias permanentes. -->
                     <Field Class="form-field">
                         <FieldLabel for="nuevasEvidencias">@evidenceText</FieldLabel>
                     <FileEdit Changed="@OnFilesChanged" Disabled="@(currentIndicator.Id == Guid.Empty)" Multiple Class="form-control" ElementId="nuevasEvidencias" />
@@ -151,7 +151,7 @@
                         </Field>
                     </Validation>
 
-                    <!-- Se muestra, en una lista, las evidencias temporales que se van agregando. Al final y cuando se presione el botón Aceptar, pasan a ser evidencias permanentes -->
+                    <!-- Se muestra, en una lista, las evidencias temporales que se van agregando. Al final y cuando se presione el botón Aceptar, pasan a ser evidencias permanentes. -->
                     <Field Class="container-evidencias">
                         <FieldLabel Class="label-evidencias" For="evidencias">Lista de evidencias</FieldLabel>
                         @if (evidenciasTemp.Any())
@@ -169,7 +169,7 @@
                                         <span class="tipo-evidencia">(pendiente de guardar)</span>
                                     }
 
-                                    <!-- Botón que elimina la evidencia temporal para que no se guarde posteriormente como una evidencia permanente -->
+                                    <!-- Botón que elimina la evidencia temporal para que no se guarde posteriormente como una evidencia permanente. -->
                                     <Button Clicked="() => confirmDelete(e)">Eliminar</Button>
                                 </li>
                             }
@@ -178,7 +178,7 @@
                         }
                         else
                         {
-                        <!-- Mensaje que se muestra en caso de no haberse agregado alguna evidencia temporal aún -->
+                        <!-- Mensaje que se muestra en caso de no haberse agregado alguna evidencia temporal aún. -->
                             <p style="color: #b22222;">No se han subido evidencias aún.</p>
                         }
 
@@ -285,7 +285,7 @@
 
     </Div>
 
-<!-- Modal para mostrar mensaje en caso de que las evidencia subidas sean más que la cantidad de evidencias necesarias -->
+<!-- Modal para mostrar mensaje en caso de que las evidencia subidas sean más que la cantidad de evidencias necesarias. -->
 <Modal @ref="@modalRefByMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -297,7 +297,7 @@
     </ModalContent>
 </Modal>
 
-<!-- Modal para mostrar si se dese borrar la evidencia temporal actual -->
+<!-- Modal para mostrar si se dese borrar la evidencia temporal actual. -->
 <Modal @ref="modalRefByDeleteEvidence">
     <ModalContent Centered>
         <ModalHeader Style="background-color: #002855;">
@@ -316,7 +316,7 @@
     </ModalContent>
 </Modal>
 
-<!-- Modal para mostrar aviso de dejar la cantidad de evidencia actual. Posteriormente, no se podrá modificar -->
+<!-- Modal para mostrar aviso de dejar la cantidad de evidencia actual. Posteriormente, no se podrá modificar. -->
 <Modal @ref="modalRefByIndicatorSubmitedAlready">
     <ModalContent Centered>
         <ModalHeader Style="background-color: #002855;">
@@ -641,7 +641,7 @@
                     return;
                 }
 
-                // eliminar evidencias marcadas
+                // eliminar evidencias marcadas.
                 foreach (var e in evidenciasTemp.Where(x => x.MarcarEvidenciaParaEliminar && !x.EsNuevaEvidencia))
                 {
                     var responseToDeleteEvidence = await EvidenciaApiService.DeleteAsync(currentIndicator.Id, e.Id!.Value);
@@ -665,7 +665,7 @@
                     }
                 }
 
-                // subir nuevas evidencias
+                // subir nuevas evidencias.
                 foreach (var e in evidenciasTemp.Where(x => x.EsNuevaEvidencia))
                 {
                     var responseToUploadEvidences = await EvidenciaApiService.UploadAsync(currentIndicator.Id, e.file!);
@@ -808,7 +808,7 @@
             disabledInputs = true;
             disabledComplimentDateInput = false;
 
-            // Limpias lo que ya no aplica
+            // Limpias lo que ya no se aplica.
             currentIndicator.AccionCorrectiva = string.Empty;
             currentIndicator.ResponsableAccionCorrectivaId = null;
         }
@@ -817,7 +817,7 @@
             disabledInputs = false;
             disabledComplimentDateInput = true;
 
-            // Limpias lo que ya no aplica
+            // Limpias lo que ya no se aplica.
             currentIndicator.FechaCumplimiento = null;
         }
     }

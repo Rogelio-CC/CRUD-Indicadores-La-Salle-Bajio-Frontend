@@ -1,9 +1,9 @@
-﻿<!--Ruta de la interfaz-->
+﻿<!-- Ruta de la interfaz -->
 @page "/home/verCalendario/"
-<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página. -->
 @attribute [Authorize]
 
-<!--Importación de librerías/servicios-->
+<!-- Importación de librerías/servicios. -->
 @inject NavigationManager NavManager
 @using System.Globalization
 @using PruebaAutenticador2.Classes
@@ -11,24 +11,24 @@
 @inject AuthStateService AuthState
 @inject EventosCalendarioService EventosCalendarioService
 
-<!--Importaciones de estilos CSS-->
+<!-- Importaciones de estilos CSS. -->
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/Footer.css" />
 <link rel="stylesheet" href="css/Calendar.css" />
 
-<!--Título principal de la pestaña-->
+<!-- Título principal de la pestaña. -->
 <PageTitle>Vista de las gráficas</PageTitle>
 
-<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del navbar en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role"/>
 
-<!--Título principal de la pantalla-->
+<!-- Título principal de la pantalla. -->
 <h1>Calendario</h1>
 
-<!--Línea de seperación entre el título de la página y el contenido-->
+<!-- Línea de seperación entre el título de la página y el contenido. -->
 <Divider Class="separate-line-calendar" />
 
-<!--Contenedor del formulario para buscar algun evento del calendario-->
+<!-- Contenedor del formulario para buscar algun evento del calendario. -->
 <Div Class = "container-search">
     <Form>
         <fieldset class="form-search">
@@ -49,9 +49,9 @@
     </Form>
 </Div>
 
-<!--Contenedor principal del calendario-->
+<!-- Contenedor principal del calendario. -->
 <Div class="academic-calendar-container">
-    <!-- Encabezado con navegación -->
+    <!-- Encabezado con navegación. -->
     <Div Class="calendar-navigation">
         <Button @onclick="() => ChangeMonth(-1)">
             <Icon Name="IconName.ChevronLeft" Style="color:white"/>
@@ -66,7 +66,7 @@
         </Button>
     </Div>
 
-    <!-- Días de la semana (fila horizontal) -->
+    <!-- Días de la semana (fila horizontal). -->
     <Div Class="weekdays-header">
         @foreach (var day in Enum.GetValues(typeof(DayOfWeek)))
         {
@@ -76,16 +76,16 @@
         }
     </Div>
 
-    <!-- Cuadrícula de días -->
+    <!-- Cuadrícula de días. -->
     <Div Class="calendar-grid">
         @{
-            // Obtener las semanas del mes actual
+            // Obtener las semanas del mes actual.
             var weeks = GetWeeksInMonth(currentYear, currentMonth);
 
-            // Mostrar solo las semanas que contengan días del mes actual
+            // Mostrar solo las semanas que contengan días del mes actual.
             var weeksToShow = weeks.Where(week => week.Any(day => day != DateTime.MinValue));
         }
-        <!--Visualización de los días y las semanas correspondientes al mes y al evento, mostrando el color asociado al evento-->
+        <!-- Visualización de los días y las semanas correspondientes al mes y al evento, mostrando el color asociado al evento. -->
         @foreach (var week in weeksToShow)
         {
             <div class="calendar-row">
@@ -97,7 +97,7 @@
                         @if (day != DateTime.MinValue)
                         {
                             <div class="day-number">@day.Day</div>
-                            <!--Visualización de los eventos y, cuando se presiona alguno de estos, muestra el modal para ver información de ese evento-->
+                            <!-- Visualización de los eventos y, cuando se presiona alguno de estos, muestra el modal para ver información de ese evento. -->
                             @foreach (var eventItem in GetAcademicEvents(day))
                             {
                                 <Div class="calendar-event" @onclick="() => ShowModal(eventItem)">
@@ -112,7 +112,7 @@
     </Div>
 </Div>
 
-<!--Modal para mostrar información de algun evento-->
+<!-- Modal para mostrar información de algun evento. -->
 <Modal @ref="@modalRef" Class="event-modal">
     <ModalContent Centered="true">
         <ModalBody>
@@ -129,7 +129,7 @@
     </ModalContent>
 </Modal>
 
-<!--Modal para mostrar mensaje de error-->
+<!-- Modal para mostrar mensaje de error. -->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -141,10 +141,10 @@
     </ModalContent>
 </Modal>
 
-<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del footer en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Footer/>
 
-<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando". -->
 @if (isLoading)
 {
     <Div Style="position: fixed;
@@ -216,7 +216,7 @@
             (string.IsNullOrWhiteSpace(filterTitle) || ev.Titulo.Contains(filterTitle, StringComparison.OrdinalIgnoreCase))
         ).ToList();
 
-        // Si NO hay filtros aplicados, regresar al mes actual
+        // Si NO hay filtros aplicados, regresar al mes actual.
         bool noFilters = string.IsNullOrWhiteSpace(filterTitle);
         if (noFilters)
         {
@@ -225,13 +225,13 @@
             return;
         }
 
-        // Si hay eventos filtrados, mover al mes del primer evento encontrado
+        // Si hay eventos filtrados, mover al mes del primer evento encontrado.
         if (filteredEvents.Count > 0)
         {
-            // Ordenar los eventos filtrados por fecha de inicio y tomar el primero para establecer el mes y año actuales
+            // Ordenar los eventos filtrados por fecha de inicio y tomar el primero para establecer el mes y año actuales.
             var firstEvent = filteredEvents.OrderBy(e => e.FechaInicio).First();
 
-            // Establecer el mes y año actuales al mes del primer evento encontrado
+            // Establecer el mes y año actuales al mes del primer evento encontrado.
             currentYear = firstEvent.FechaInicio.Year;
             currentMonth = firstEvent.FechaInicio.Month;
         }
@@ -262,7 +262,7 @@
             currentDay = currentDay.AddDays(-1);
         }
 
-        // Llenar las semanas del mes, asegurando que se muestren al menos 6 filas de semanas
+        // Llenar las semanas del mes, asegurando que se muestren al menos 6 filas de semanas.
         while (currentDay <= lastDay || weeks.Count < 6)
         {
             for (int i = 0; i < 7; i++)
@@ -290,7 +290,7 @@
         var events = GetAcademicEvents(day);
         if (events.Any())
         {
-            // Aquí es donde se toma el color del primer evento
+            // Aquí es donde se toma el color del primer evento.
             return events.First().Color!;
         }
         return "";

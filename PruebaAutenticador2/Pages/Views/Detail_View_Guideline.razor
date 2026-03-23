@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de DetailViewGuideline es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de DetailViewGuideline es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaDirectrices/detalleDirectriz/{guidelineId:guid}"
 @attribute [Authorize]
 
@@ -25,7 +25,7 @@
 <Div Class="container-detail">
     <Form>
         <fieldset class="form-grid">
-            <!-- Fila 1 -->
+            <!-- Fila 1. -->
             <Field Class="form-field">
                 <FieldLabel For="descripcion">Descripción</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentGuideline.Descripcion" ReadOnly="true" ElementId="descripcion" />
@@ -35,7 +35,7 @@
                 <TextEdit Class="form-control" Text="@currentGuideline.Facultad" ReadOnly="true" ElementId="facultadAsociada" />
             </Field>
 
-            <!-- Fila 2 -->
+            <!-- Fila 2. -->
             <Field Class="form-field">
                 <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentGuideline.Creador" ReadOnly="true" ElementId="creadorAsociado" />
@@ -43,6 +43,10 @@
             <Field Class="form-field">
                 <FieldLabel For="periodoEscolarAsociado">Período Escolar asociado</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentGuideline.Periodo" ReadOnly="true" ElementId="periodoEscolarAsociado" />
+            </Field>
+            <Field Class="form-field">
+                <FieldLabel For="comentarioAsociado">Comentario asociado</FieldLabel>
+                <TextEdit Class="form-control" Text="@(currentGuideline.Comentario ?? "")" ReadOnly="true" ElementId="comentarioAsociado" />
             </Field>
         </fieldset>
     </Form>
@@ -147,7 +151,9 @@
                     CreadorId = dto.CreadorId,
                     Creador = dto.Creador,
                     PeriodoId = dto.PeriodoId,
-                    Periodo = dto.Periodo
+                    Periodo = dto.Periodo,
+                    Comentario = dto.Comentario,
+                    ComentarioId = dto.ComentarioId,
                 };
             }
 

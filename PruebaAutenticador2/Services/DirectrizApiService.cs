@@ -5,6 +5,7 @@ using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para DirectrizApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class DirectrizApiService
     {
         private readonly HttpClient _http;
@@ -14,7 +15,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todas las directrices
+        // Método para obtener todas las directrices.
         public async Task<ApiResponse<List<DirectrizDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<DirectrizDto>>();
@@ -48,7 +49,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una directriz por su ID
+        // Método para obtener una directriz por su ID.
         public async Task<ApiResponse<DirectrizDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<DirectrizDto>();
@@ -86,7 +87,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear una nueva directriz
+        // Método para crear una nueva directriz.
         public async Task<ApiResponse<bool>> CreateAsync(DirectrizCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -124,7 +125,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar una directriz existente
+        // Método para actualizar una directriz existente.
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, DirectrizCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -161,7 +162,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar una directriz por su ID
+        // Método para eliminar una directriz por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -199,7 +200,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una lista de directrices en formato de combo (ID y Nombre) para su uso en interfaces
+        // Método para obtener una lista de directrices en formato de combo (ID y Nombre) para su uso en interfaces.
         public async Task<List<DirectrizComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<DirectrizComboDTO>>("api/directrices/combo")

@@ -1,9 +1,9 @@
-﻿<!--Ruta de la interfaz-->
+﻿<!-- Ruta de la interfaz. -->
 @page "/redirect"
-<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página. -->
 @attribute [Authorize]
 
-<!--Importación de librerías/servicios-->
+<!-- Importación de librerías/servicios. -->
 @using PruebaAutenticador2.Services
 @inject AuthenticationStateProvider AuthProvider
 @inject AuthApiService AuthApi
@@ -11,7 +11,7 @@
 @inject NavigationManager Nav
 @inject TokenStorageService tokenStorageService;
 
-<!-- Se reutiliza esta misma pantalla de carga para indicar que esta evaluando a que pantalla mandar al usuario, dependiendo si esta autenticado o no -->
+<!-- Se reutiliza esta misma pantalla de carga para indicar que esta evaluando a que pantalla mandar al usuario, dependiendo si esta autenticado o no. -->
 <Div Style="position: fixed;
             top: 0;
             left: 0;
@@ -51,7 +51,7 @@
             return;
         }
 
-        // Intentar iniciar sesión en la API para obtener el token JWT
+        // Intentar iniciar sesión en la API para obtener el token JWT.
         var loginResponse = await AuthApi.LoginAsync(email);
 
         // Si la respuesta de inicio de sesión es nula, se redirige a una página de error indicando que el usuario no fue encontrado.
@@ -61,11 +61,11 @@
             return;
         }
 
-        // Guardar en memoria el token JWT
+        // Guardar en memoria el token JWT.
         AuthState.SetToken(loginResponse.Token);
         await tokenStorageService.SetTokenAsync(loginResponse.Token);
 
-        // Extraer rol del token  y  Id del usuario
+        // Extraer rol del token y Id del usuario.
         var rol = JwtHelper.GetRole(loginResponse.Token);
         var idUser = JwtHelper.GetIdUser(loginResponse.Token);
 
@@ -88,7 +88,7 @@
             return;
         }
 
-        // Guardar rol y Id del usuario en memoria
+        // Guardar rol y Id del usuario en memoria.
         AuthState.SetRole(rol);
         AuthState.SetIdUser(idUser);
 

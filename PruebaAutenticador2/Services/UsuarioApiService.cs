@@ -5,6 +5,7 @@ using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
+    // La estructura para UsuarioApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
     public class UsuarioApiService
     {
         private readonly HttpClient _http;
@@ -14,7 +15,7 @@ namespace PruebaAutenticador2.Services
             _http = http;
         }
 
-        // Método para obtener todos los usuarios
+        // Método para obtener todos los usuarios.
         public async Task<ApiResponse<List<UsuarioDto>>> GetAllAsync()
         {
             var result = new ApiResponse<List<UsuarioDto>>();
@@ -48,7 +49,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener un usuario por su ID
+        // Método para obtener un usuario por su ID.
         public async Task<ApiResponse<UsuarioDto?>> GetByIdAsync(Guid id)
         {
             var result = new ApiResponse<UsuarioDto?>();
@@ -86,7 +87,7 @@ namespace PruebaAutenticador2.Services
             return result!;
         }
 
-        // Método para crear un nuevo usuario
+        // Método para crear un nuevo usuario.
         public async Task<ApiResponse<bool>> CreateAsync(UsuarioCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -124,7 +125,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para actualizar un usuario existente
+        // Método para actualizar un usuario existente.
         public async Task<ApiResponse<bool>> UpdateAsync(Guid id, UsuarioCreateUpdateDto dto)
         {
             var result = new ApiResponse<bool>();
@@ -161,7 +162,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar un usuario por su ID
+        // Método para eliminar un usuario por su ID.
         public async Task<ApiResponse<bool>> DeleteAsync(Guid id)
         {
             var result = new ApiResponse<bool>();
@@ -199,7 +200,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener un usuario por su correo electrónico
+        // Método para obtener un usuario por su correo electrónico.
         public async Task<ApiResponse<UsuarioDto?>> GetByEmailAsync(string email)
         {
             var result = new ApiResponse<UsuarioDto?>();
@@ -237,7 +238,7 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para obtener una lista de usuarios en formato combo (ID y nombre) para su uso en interfaces
+        // Método para obtener una lista de usuarios en formato combo (ID y nombre) para su uso en interfaces.
         public async Task<List<UsuarioComboDTO>> GetComboAsync()
         {
             return await _http.GetFromJsonAsync<List<UsuarioComboDTO>>("api/usuarios/combo")

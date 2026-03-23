@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de CRUDStrategies es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de CRUDStrategies es la misma que CRUDActivities,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaEstrategias"
 @attribute [Authorize]
 
@@ -212,7 +212,7 @@
         NavManager.NavigateTo("/home/vistaEstrategias/creacionEstrategia");
     }
 
-    private Guid strategyToDelete; // para mantener el ID del usuario a borrar
+    private Guid strategyToDelete; 
 
     private void viewStrategy(Guid id)
     {

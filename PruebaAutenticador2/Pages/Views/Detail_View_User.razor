@@ -1,4 +1,4 @@
-﻿<!-- La estructura .razor de DetailViewUser es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+﻿<!-- La estructura .razor de DetailViewUser es la misma que DetailViewActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
 @page "/home/vistaUsuarios/detalleUsuario/{userId:guid}"
 @attribute [Authorize]
 
@@ -25,7 +25,7 @@
 <Div Class="container-detail">
     <Form>
         <fieldset class="form-grid">
-            <!-- Fila 1 -->
+            <!-- Fila 1. -->
             <Field Class="form-field">
                 <FieldLabel For="nombreUsuario">Nombre del usuario</FieldLabel> 
                 <TextEdit Class="form-control" Text="@currentUser.NombreUsuario" ReadOnly="true" ElementId="nombreUsuario"/>
@@ -39,7 +39,7 @@
                 <TextEdit Class="form-control" Text="@currentUser.TipoUsuario" ReadOnly="true" ElementId="tipoDeUsuario" />
             </Field>
 
-            <!-- Fila 2 -->
+            <!-- Fila 2. -->
             <Field Class="form-field">
                 <FieldLabel For="rolAsociado">Rol asociado</FieldLabel>
                 <TextEdit Class="form-control" Text="@currentUser.Rol" ReadOnly="true" ElementId="rolAsociado" />

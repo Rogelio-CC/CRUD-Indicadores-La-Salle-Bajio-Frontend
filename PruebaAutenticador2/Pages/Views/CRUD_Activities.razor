@@ -1,9 +1,9 @@
-﻿<!--Ruta de la interfaz-->
+﻿<!-- Ruta de la interfaz. -->
 @page "/home/vistaActividades"
-<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página. -->
 @attribute [Authorize]
 
-<!--Importación de librerías/servicios-->
+<!-- Importación de librerías/servicios. -->
 @inject NavigationManager NavManager
 @inject ActividadApiService ActividadApiService
 @using PruebaAutenticador2.Classes
@@ -11,19 +11,19 @@
 @using PruebaAutenticador2.Shared.DTOS.Actividad
 @inject AuthStateService AuthState
 
-<!--Importaciones de estilos CSS-->
+<!-- Importaciones de estilos CSS. -->
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/Tables.css" />
 <link rel="stylesheet" href="css/Fonts.css" />
 <link rel="stylesheet" href="css/Footer.css" />
 
-<!--Título principal de la pestaña-->
+<!-- Título principal de la pestaña. -->
 <PageTitle>Lista de actividades</PageTitle>
 
-<!--Se llama al elemento .razor del navbar en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del navbar en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
 
-<!--Contenedor de encabezado donde contiene el título principal de la página y bótones-->
+<!-- Contenedor de encabezado donde contiene el título principal de la página y bótones. -->
 <Div Class="header-section">
     <h1 class="title-general">Lista de actividades</h1>
     <Div Class="header-buttons">
@@ -36,10 +36,10 @@
     </Div>
 </Div>
 
-<!--Línea de seperación entre el contenedor del encabezado y el contenido-->
+<!-- Línea de seperación entre el contenedor del encabezado y el contenido. -->
 <Divider Class="separate-line" />
 
-<!--Barra de búsqueda-->
+<!-- Barra de búsqueda. -->
 <Div Class="search-container">
     <Span Class="search-icon">
         <i class="fas fa-search"></i>
@@ -47,16 +47,16 @@
     <TextEdit Placeholder="Busca por descripción" Class="search-bar" Text="@searchText" TextChanged="@OnSearchChanged" />
 </Div>
 
-<!--Condición para mostrar la tabla dependiendo del rol del usuario-->
+<!-- Condición para mostrar la tabla dependiendo del rol del usuario. -->
 @if (AuthState.Role == "maestro" || AuthState.Role == "investigador")
 {
-    <!--Contenedor que contiene la tabla-->
+    <!-- Contenedor que contiene la tabla. -->
     <Div Class="table-container">
-        <!--Tabla-->
+        <!-- Tabla. -->
         <Table Bordered ResponsiveMode="TableResponsiveMode.Mobile" align="left" Class="all-table">
-            <!--Encabezado de la tabla-->
+            <!-- Encabezado de la tabla. -->
             <TableHeader>
-                <!--Fila del encabezado de la tabla-->
+                <!-- Fila del encabezado de la tabla. -->
                 <TableRow>
                     <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
                         Descripción
@@ -72,17 +72,17 @@
                     </TableHeaderCell>
                 </TableRow>
             </TableHeader>
-            <!--Contenido de la tabla-->
+            <!-- Contenido de la tabla. -->
             <TableBody>
                 @foreach (var activity in filteredActivities)
                 {
-                    <!--Fila 1 de la tabla-->
+                    <!-- Fila de la tabla. -->
                     <TableRow>
                         <TableRowCell MobileModeCaption="Descripción">@activity.DescripcionActividad</TableRowCell>
                         <TableRowCell MobileModeCaption="Creador aosciado">@activity.Creador</TableRowCell>
                         <TableRowCell MobileModeCaption="Estrategia asociada">@activity.Estrategia</TableRowCell>
                         <TableRowCell>
-                            <!--Contenedor para los botones de acciones-->
+                            <!-- Contenedor para los botones de acciones. -->
                             <Div Class="buttons-container">
                                 <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => viewActivity(activity.Id)">
                                     Detalles
@@ -103,13 +103,13 @@
 }
 else
 {
-    <!--Contenedor que contiene la tabla-->
+    <!-- Contenedor que contiene la tabla. -->
     <Div Class="table-container">
-        <!--Tabla-->
+        <!-- Tabla. -->
         <Table Bordered ResponsiveMode="TableResponsiveMode.Mobile" align="left" Class="all-table">
-            <!--Encabezado de la tabla-->
+            <!-- Encabezado de la tabla. -->
             <TableHeader>
-                <!--Fila del encabezado de la tabla-->
+                <!-- Fila del encabezado de la tabla. -->
                 <TableRow>
                     <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
                         Descripción
@@ -125,17 +125,17 @@ else
                     </TableHeaderCell>
                 </TableRow>
             </TableHeader>
-            <!--Contenido de la tabla-->
+            <!-- Contenido de la tabla. -->
             <TableBody>
                 @foreach (var activity in filteredActivities)
                 {
-                    <!--Fila 1 de la tabla-->
+                    <!-- Fila de la tabla. -->
                     <TableRow>
                         <TableRowCell MobileModeCaption="Descripción">@activity.DescripcionActividad</TableRowCell>
                         <TableRowCell MobileModeCaption="Creador aosciado">@activity.Creador</TableRowCell>
                         <TableRowCell MobileModeCaption="Estrategia asociada">@activity.Estrategia</TableRowCell>
                         <TableRowCell>
-                            <!--Contenedor para los botones de acciones-->
+                            <!-- Contenedor para los botones de acciones. -->
                             <Div Class="buttons-container">
                                 <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => viewActivity(activity.Id)">
                                     Detalles
@@ -158,10 +158,10 @@ else
     </Div>
 }
 
-<!--Se llama al elemento .razor del footer en mayoría de las pantallas-->
+<!-- Se llama al elemento .razor del footer en mayoría de las pantallas. -->
 <PruebaAutenticador2.Pages.ReusableComponents.Footer />
 
-<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando" -->
+<!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando". -->
 @if (isLoading)
 {
     <Div Style="position: fixed;
@@ -182,7 +182,7 @@ else
 }
 
 
-<!-- Modal para elminar o no una actividad (en este caso)-->
+<!-- Modal para elminar o no una actividad (en este caso). -->
 <Modal @ref="modalRef">
     <ModalContent Centered>
         <ModalHeader Style="background-color: #002855;">
@@ -201,7 +201,7 @@ else
     </ModalContent>
 </Modal>
 
-<!-- Modal para mostrar un mensaje de error -->
+<!-- Modal para mostrar un mensaje de error. -->
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
@@ -215,28 +215,28 @@ else
 
 @code {
 
-    // Lista de actividades que se muestra en la tabla
+    // Lista de actividades que se muestra en la tabla.
     private List<ActividadDto> activityList = new();
 
-    // Texto de búsqueda para filtrar las actividades por descripción
+    // Texto de búsqueda para filtrar las actividades por descripción.
     private string searchText = "";
 
-    // Lista de actividades filtradas según el texto de búsqueda
+    // Lista de actividades filtradas según el texto de búsqueda.
     private List<ActividadDto> filteredActivities = new();
 
-    // Variable para controlar la visualización de la pantalla de carga
+    // Variable para controlar la visualización de la pantalla de carga.
     private bool isLoading = false;
 
-    // Variable para almacenar el mensaje de error en caso de que ocurra un error al cargar las actividades
+    // Variable para almacenar el mensaje de error en caso de que ocurra un error al cargar las actividades.
     private string? errorMessage;
 
-    // Función que se ejecuta al inicializar el componente, carga las actividades desde la API
+    // Función que se ejecuta al inicializar el componente, carga las actividades desde la API.
     protected override async Task OnInitializedAsync()
     {
         await LoadActivities();
     }
 
-    // Función para cargar las actividades desde la API
+    // Función para cargar las actividades desde la API.
     private async Task LoadActivities()
     {
         try
@@ -244,14 +244,14 @@ else
             isLoading = true;
             StateHasChanged();
 
-            var response = await ActividadApiService.GetAllAsync(); // Llama al servicio de API para obtener todas las actividades
+            var response = await ActividadApiService.GetAllAsync(); // Llama al servicio de API para obtener todas las actividades.
 
-            activityList = response.Data!.OrderBy(r => r.DescripcionActividad).ToList(); // Ordena la lista de actividades por descripción de forma ascendente
+            activityList = response.Data!.OrderBy(r => r.DescripcionActividad).ToList(); // Ordena la lista de actividades por descripción de forma ascendente.
 
-            filteredActivities = activityList; // Inicialmente, la lista filtrada es igual a la lista completa de actividades
+            filteredActivities = activityList; // Inicialmente, la lista filtrada es igual a la lista completa de actividades.
 
         }
-        // Si ocurre un error al cargar las actividades, se muestra un mensaje de error en un modal
+        // Si ocurre un error al cargar las actividades, se muestra un mensaje de error en un modal.
         catch (Exception)
         {
             errorMessage = "No se pudo conectar con el servidor.";
@@ -264,7 +264,7 @@ else
        
     }
 
-    //Función para buscar una actividad por descripción
+    //Función para buscar una actividad por descripción.
     private void OnSearchChanged(string value)
     {
         searchText = value;
@@ -282,7 +282,7 @@ else
         }
     }
 
-    // Función para verificar si el usuario tiene permiso para editar o eliminar una actividad
+    // Función para verificar si el usuario tiene permiso para editar o eliminar una actividad.
     private bool CanEditOrDelete(Guid creadorId)
     {
         if (AuthState.Role == "Administrador") return true;
@@ -292,13 +292,13 @@ else
         return creadorId.ToString() == AuthState.IdUser;
     }
 
-    // Métodos para navegar a diferentes páginas dependiendo de la acción que se quiera realizar (ver detalles, editar o agregar una actividad)
+    // Métodos para navegar a diferentes páginas dependiendo de la acción que se quiera realizar (ver detalles, editar o agregar una actividad).
     private void addActivity()
     {
         NavManager.NavigateTo("/home/vistaActividades/creacionActividad");
     }
 
-    // Variable para almacenar el ID de la actividad que se desea eliminar
+    // Variable para almacenar el ID de la actividad que se desea eliminar.
     private Guid activityToDelete;
 
     private void viewActivity(Guid id)
@@ -311,14 +311,14 @@ else
         NavManager.NavigateTo($"/home/vistaActividades/creacionActividad/{id}");
     }
 
-    // Función para mostrar el modal de confirmación de eliminación y almacenar el ID de la actividad que se desea eliminar
+    // Función para mostrar el modal de confirmación de eliminación y almacenar el ID de la actividad que se desea eliminar.
     private Task confirmDelete(Guid id)
     {
         activityToDelete = id;
         return modalRef.Show();
     }
 
-    // Función para eliminar una actividad, se llama al servicio de API para eliminar la actividad y luego recarga la lista de actividades
+    // Función para eliminar una actividad, se llama al servicio de API para eliminar la actividad y luego recarga la lista de actividades.
     private async Task deleteActivity()
     {
         var response = await ActividadApiService.DeleteAsync(activityToDelete);
@@ -330,18 +330,18 @@ else
             return;
         }
 
-        // Recargar la lista de actividades después de eliminar una actividad
+        // Recargar la lista de actividades después de eliminar una actividad.
         await LoadActivities();
         await modalRef.Hide();
     }
 
-    //Función para regresar a la pantalla principal
+    //Función para regresar a la pantalla principal.
     private void goBack()
     {
         NavManager.NavigateTo("/home");
     }
 
-    // Variables y funciones de mostrar y ocultar el modal
+    // Variables y funciones de mostrar y ocultar el modal.
     private Modal modalRef;
     private Modal modalToShowErrorMessage;
 
