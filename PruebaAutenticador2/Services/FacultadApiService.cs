@@ -86,20 +86,20 @@ namespace PruebaAutenticador2.Services
         }
 
         // Método para crear una nueva facultad.
-        public async Task<ApiResponse<bool>> CreateAsync(Faculty Faculty)
+        public async Task<ApiResponse<Faculty>> CreateAsync(Faculty Faculty)
         {
-            var result = new ApiResponse<bool>();
+            var result = new ApiResponse<Faculty>();
 
             try
             {
-                var response = await _http.PostAsJsonAsync("api/facultades", Faculty);
+                var response = await _http.PostAsJsonAsync("api/facultades/crear", Faculty);
 
                 result.StatusCode = response.StatusCode;
 
                 if (response.IsSuccessStatusCode)
                 {
                     result.Success = true;
-                    result.Data = true;
+                    result.Data = await response.Content.ReadFromJsonAsync<Faculty>();
                 }
                 else
                 {

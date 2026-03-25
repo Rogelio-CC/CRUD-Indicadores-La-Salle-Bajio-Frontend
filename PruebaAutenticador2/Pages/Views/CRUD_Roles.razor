@@ -46,9 +46,6 @@
                     Nombre del rol
                 </TableHeaderCell>
                 <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
-                    Permisos
-                </TableHeaderCell>
-                <TableHeaderCell Style="background-color: #002855; color: #ffffff; text-align: center; font-weight: bold;">
                     Acciones
                 </TableHeaderCell>
             </TableRow>
@@ -58,7 +55,6 @@
             {
                 <TableRow>
                     <TableRowCell MobileModeCaption="Nombre del rol">@role.Nombre</TableRowCell>
-                    <TableRowCell MobileModeCaption="Permisos">@role.Permisos</TableRowCell>
                     <TableRowCell>
                         <Div Class="buttons-container">
                             <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-left: 15px;" Clicked="() => editRole(role.Id)">

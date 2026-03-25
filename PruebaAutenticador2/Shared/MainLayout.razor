@@ -65,7 +65,7 @@
     private void Reload()
     {
         errorBoundary?.Recover();
-        Navigation.NavigateTo(Navigation.Uri);
+        Navigation.NavigateTo(Navigation.Uri, true);
     }
 
     // Método para inicializar el componente, cargando el token desde el almacenamiento y configurando el estado de autenticación.

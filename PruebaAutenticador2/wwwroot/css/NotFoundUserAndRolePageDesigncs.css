@@ -1,0 +1,73 @@
+﻿/* css/Fonts.css */
+@import "Fonts.css";
+
+/* Estilos para el nuevo diseño de error */
+.container-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.error-card {
+    border-radius: 12px;
+    max-width: 600px;
+    width: 100%;
+}
+
+.error-header {
+    background-color: #002855;
+    color: white;
+    padding: 30px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.error-icon {
+    font-size: 3rem;
+    color: #A00000;
+    margin-bottom: 20px;
+}
+
+.error-header heading {
+    font-family: IndivisaFontBold;
+    font-size: 1.5rem;
+    text-align: center;
+}
+
+.error-list {
+    margin-top: 20px;
+}
+
+.error-list-item {
+    font-family: IndivisaFont;
+    border: 0;
+    display: flex;
+    align-items: center;
+}
+
+.error-list-icon {
+    font-size: 1rem;
+    color: #A00000;
+    margin-right: 10px;
+}
+
+.error-actions button {
+    margin: 10px;
+}
+
+.btn-indivisa-blue {
+    background-color: #002855;
+    border-color: #002855;
+    color: white;
+}
+
+.error-footer {
+    padding: 15px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+    font-family: IndivisaFont;
+}

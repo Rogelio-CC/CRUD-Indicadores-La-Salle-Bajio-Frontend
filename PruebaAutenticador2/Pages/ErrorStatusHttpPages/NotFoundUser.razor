@@ -1,15 +1,49 @@
-﻿<!-- Ruta de la interfaz -->
+﻿<!-- Ruta de la interfaz. -->
 @page "/usuario-no-encontrado"
-<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página. -->
 @attribute [Authorize]
+@inject NavigationManager Nav
 
+<!-- Esta interfaz muestra un mensaje cuando el usuario no fue encontrado en el proceso de ingreso o por otros motivos -->
 <link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/NotFoundUserAndRolePageDesigncs.css" />
 
-<!-- Muestra este aviso en esta interfaz cuaando sucede alguna de las cosas descritas en este mismo mensaje -->
-<Heading Size="HeadingSize.Is5" Style="font-family:IndivisaFontBold;">Hubo un problema a la hora de encontrar al usuario.</Heading>
-<Heading Size="HeadingSize.Is6" Style="font-family:IndivisaFont;">Puede ser por las siguientes causas:</Heading>
-<ListGroup>
-    <ListGroupItem Border="Blazorise.Border.Is0" Style="font-family:IndivisaFont;">Servidor Caído.</ListGroupItem>
-    <ListGroupItem Border="Blazorise.Border.Is0" Style="font-family:IndivisaFont;">El usuario no existe en nuestro sistema.</ListGroupItem>
-    <ListGroupItem Border="Blazorise.Border.Is0" Style="font-family:IndivisaFont;">Un error inesperado del servidor.</ListGroupItem>
-</ListGroup>
+<Container Class="container-error">
+    <Card Class="error-card shadow">
+        <CardHeader Class="error-header bg-indivisa-blue text-white">
+            <Icon Name="IconName.AlertOff" Size="IconSize.ExtraLarge" Class="error-icon" />
+            <Heading Size="HeadingSize.Is5" Style="font-family:IndivisaFontBold;">HUBO UN PROBLEMA AL ENCONTRAR AL USUARIO</Heading>
+        </CardHeader>
+        <CardBody>
+            <Heading Size="HeadingSize.Is6" Style="font-family:IndivisaFont;">POSIBLES CAUSAS:</Heading>
+            <ListGroup Class="error-list">
+                <ListGroupItem Style="font-family:IndivisaFont;">
+                    <Icon Name="IconName.Alert" Class="error-list-icon" />
+                    SERVIDOR CAÍDO.
+                </ListGroupItem>
+                <ListGroupItem Style="font-family:IndivisaFont;">
+                    <Icon Name="IconName.Alert" Class="error-list-icon" />
+                    EL USUARIO NO EXISTE EN NUESTRO SISTEMA.
+                </ListGroupItem>
+                <ListGroupItem Style="font-family:IndivisaFont;">
+                    <Icon Name="IconName.Alert" Class="error-list-icon" />
+                    UN ERROR INESPERADO DEL SERVIDOR.
+                </ListGroupItem>
+            </ListGroup>
+            <Div Class="error-actions text-center mt-4">
+                <Button Color="Color.Primary" Class="btn-indivisa-blue" Style="font-family:IndivisaFont;" Clicked="LogoutAsync">Salir</Button>
+            </Div>
+        </CardBody>
+        <CardFooter Class="error-footer text-center">
+            <Paragraph Style="font-family:IndivisaFont;">UNIVERSIDAD LA SALLE BAJÍO. TODOS LOS DERECHOS RESERVADOS © @DateTime.Now.Year. </Paragraph>
+        </CardFooter>
+    </Card>
+</Container>
+
+@code {
+    // Método para cerrar sesión de microsoft.
+    private void LogoutAsync()
+    {
+        Nav.NavigateTo("MicrosoftIdentity/Account/SignOut", true);
+    }
+}

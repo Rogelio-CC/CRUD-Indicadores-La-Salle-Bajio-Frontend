@@ -1,9 +1,51 @@
-﻿<!-- Ruta de la interfaz -->
+﻿<!-- Ruta de la interfaz. -->
 @page "/rol-no-identificado"
-<!-- Se requiere que el usuario esté autenticado para acceder a esta página -->
+<!-- Se requiere que el usuario esté autenticado para acceder a esta página. -->
 @attribute [Authorize]
+@inject NavigationManager Nav
+
+<!-- Esta interfaz muestra un mensaje cuando el rol no fue encontrado en el proceso de ingreso o por otros motivos. -->
 
 <link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/NotFoundUserAndRolePageDesigncs.css" />
 
-<!-- Muestra este mensaje en esta interfaz cuaando el rol no fue encontrado en el proceso de ingreso -->
-<Heading Size="HeadingSize.Is5" Style="font-family:IndivisaFontBold;">Hubo un problema a la hora de identificar el rol.</Heading>
+<Container Class="container-error">
+    <Card Class="error-card shadow">
+        <CardHeader Class="error-header bg-indivisa-blue text-white">
+            <Icon Name="IconName.AlertOff" Size="IconSize.ExtraLarge" Class="error-icon" />
+            <Heading Size="HeadingSize.Is5" Style="font-family:IndivisaFontBold;">HUBO UN PROBLEMA A LA HORA DE IDENTIFICAR EL ROL DEL USUARIO</Heading>
+        </CardHeader>
+        <CardBody>
+            <Heading Size="HeadingSize.Is6" Style="font-family:IndivisaFont;">POSIBLES CAUSAS:</Heading>
+            <ListGroup Class="error-list">
+                <ListGroupItem Style="font-family:IndivisaFont;">
+                    <Icon Name="IconName.Alert" Class="error-list-icon" />
+                    EL ROL NO EXISTE E EL SISTEMA.
+                </ListGroupItem>
+                <ListGroupItem Style="font-family:IndivisaFont;">
+                    <Icon Name="IconName.Alert" Class="error-list-icon" />
+                    EL ROL NO FUE REGISTRADO CORRECTAMENTE.
+                </ListGroupItem>
+                <ListGroupItem Style="font-family:IndivisaFont;">
+                    <Icon Name="IconName.Alert" Class="error-list-icon" />
+                    UN ERROR INESPERADO DEL SERVIDOR.
+                </ListGroupItem>
+            </ListGroup>
+            <Div Class="error-actions text-center mt-4">
+                <Button Color="Color.Primary" Class="btn-indivisa-blue" Style="font-family:IndivisaFont;" Clicked="LogoutAsync">Salir</Button>
+            </Div>
+        </CardBody>
+        <CardFooter Class="error-footer text-center">
+            <Paragraph Style="font-family:IndivisaFont;">UNIVERSIDAD LA SALLE BAJÍO. TODOS LOS DERECHOS RESERVADOS © @DateTime.Now.Year. </Paragraph>
+        </CardFooter>
+    </Card>
+</Container>
+
+@code {
+    // Método para cerrar sesión de microsoft.
+    private void LogoutAsync()
+    {
+        Nav.NavigateTo("MicrosoftIdentity/Account/SignOut", true);
+    }
+}
+

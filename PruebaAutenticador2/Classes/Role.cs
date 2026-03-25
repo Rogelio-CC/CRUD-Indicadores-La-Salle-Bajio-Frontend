@@ -9,8 +9,5 @@
 
         // Nombre del rol.
         public string Nombre { get; set; } = string.Empty;
-
-        // Permisos del rol (ejemplo: agregar únicamente actividades).
-        public string Permisos { get; set; } = string.Empty;
     }
 }

@@ -22,7 +22,6 @@ namespace PruebaAutenticador2.Classes
         public bool MarcarEvidenciaParaEliminar { get; set; }
 
         // Atributo usado para pasar el archivo temporal a uno permanente cuando se crea el indicador.
-        // El tipo IFileEntry es exclusivamente de la librería Blazorise.
-        public IFileEntry? file { get; set; }
+        public byte[] Contenido { get; set; }
     }
 }

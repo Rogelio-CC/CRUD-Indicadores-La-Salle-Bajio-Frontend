@@ -1,0 +1,61 @@
+﻿/*Código CSS que aplica unicamente a la vista del archivo de políticas subido en Detail_View_Faculty*/
+
+/* Etiquetas del archivo de políticas */
+.label-archivo {
+    color: #002855;
+    font-family: IndivisaFontBold;
+    font-size: 1rem;
+    text-transform: uppercase;
+}
+
+/* Contenedor del archivo subido por el usuario */
+.container-archivo {
+    justify-items: start;
+}
+
+/* Estilos para mostrar el archivo en forma de lista */
+.list-archivo {
+    list-style: none;
+    padding-left: 0;
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    font-family: IndivisaFont;
+}
+
+/* Estilos para el elemento del archivo subido por el usuario */
+.item-archivo {
+    margin-bottom: 8px;
+    background: #f7f9fb;
+    padding: 13px 15px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+    /* Estilos para el enlace del elemento del archivo subido por el usuario */
+    .item-archivo a {
+        text-decoration: none;
+        color: #002855;
+        font-weight: 600;
+    }
+        /* Efecto para el enlace del elemento del archivo subido por el usuario al pasar el cursor por encima */
+        .item-archivo a:hover {
+            text-decoration: underline;
+        }
+
+/* Estilos para el tipo pdf del elemento del archivo subido por el usuario */
+.tipo-archivo {
+    margin-left: 8px;
+    color: #555;
+    font-size: 0.9em;
+}
+
+/* Responsividad para móviles (anchura )*/
+@media (min-width: 320px) and (max-width: 768px) {
+    .container-archivo {
+        justify-items: center;
+    }
+}

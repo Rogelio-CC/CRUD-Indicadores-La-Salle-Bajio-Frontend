@@ -17,15 +17,9 @@
         public string Vision { get; set; } = null!;
 
         // Frase o dicho muy usado en la facultad.
-        public string Slogan { get; set; } = null!;
-
-        // Política (norma o principio) asociada a la facultad.
-        public string PoliticaAsociada { get; set; } = null!;
+        public string? Slogan { get; set; }
 
         // Fecha en la que se emite la facultad.
         public DateTime FechaEmision { get; set; }
-
-        // Fecha en la que se editó la facultad.
-        public DateTime? FechaEdicion { get; set; }
     }
 }

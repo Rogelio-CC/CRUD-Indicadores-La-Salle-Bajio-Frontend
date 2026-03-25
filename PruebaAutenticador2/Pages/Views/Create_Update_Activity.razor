@@ -449,7 +449,17 @@
                 // Si ambos valores están presentes, se llama al método EnviarCorreo para enviar un correo electrónico con los detalles del recordatorio.
                 if (HoraRecordatorio != null && FechaRecordatorio != null)
                 {
-                    await EnviarCorreo();
+                    try
+                    {
+                        await EnviarCorreo();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Loguea el error pero no rompas la app
+                        Console.WriteLine($"Error enviando correo: {ex.Message}");
+                        errorMessage = "La actividad se guardó, pero no pudimos enviar el correo de recordatorio.";
+                        await modalToShowErrorMessage.Show();
+                    }
                 }
             }
             else
@@ -491,7 +501,17 @@
 
                 if (HoraRecordatorio != null && FechaRecordatorio != null)
                 {
-                    await EnviarCorreo();
+                    try
+                    {
+                        await EnviarCorreo();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Loguea el error pero no rompas la app
+                        Console.WriteLine($"Error enviando correo: {ex.Message}");
+                        errorMessage = "La actividad se guardó, pero no pudimos enviar el correo de recordatorio.";
+                        await modalToShowErrorMessage.Show();
+                    }
                 }
             }
 

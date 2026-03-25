@@ -2,15 +2,20 @@
 
 /* Estilos generales para el dashboard de gráficos y búsqueda de datos */
 
+html, body {
+    height: 100%;
+    overflow: hidden; /* 🚀 elimina scroll global */
+}
+
 /* Título principal del dashboard de gráficos y búsqueda de datos */
-h1 {
+/*h1 {
     margin: 30px 30px 20px;
     font-size: 2em;
     text-transform: uppercase;
     color: #002855;
     font-family: IndivisaFontBold;
     text-align: center;
-}
+}*/
 
 /* Línea separadora del dashboard de gráficos y búsqueda de datos */
 .separate-line-detail {
@@ -20,13 +25,14 @@ h1 {
     margin: 0 auto;
 }
 
-/* Contenedor del dashboard de gráficos y búsqueda de datos */
+/* Asegura que el contenedor principal de búsqueda no cambie de tamaño */
 .container-search {
-    width: 50%;
+    width: 96%; /* Siempre mantiene el mismo ancho que las gráficas */
     margin: 30px auto;
     box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.10);
     border-radius: 10px;
     background-color: white;
+    min-height: 200px; /* Altura mínima para evitar saltos visuales al cargar */
 }
 
 /* Formulario de búsqueda de datos */
@@ -43,18 +49,21 @@ form {
         text-transform: uppercase;
     }
 
-/* Contenedor de los inputs del formulario de búsqueda de datos */
+/* Contenedor de los inputs: Evita que se estiren o encojan drásticamente */
 .form-search {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    flex-wrap: wrap; /* Permite que los filtros bajen de fila si la pantalla se achica */
+    gap: 10px; /* Más espacio entre ellos para que se vea limpio */
     margin-bottom: 1rem;
+    justify-content: center; /* Mantiene los filtros centrados */
 }
 
-/* Contenedor de cada campo del formulario de búsqueda de datos */
+/* Contenedor de cada campo: Les damos un tamaño mínimo */
 .form-field-search {
     display: flex;
     flex-direction: column;
+    max-width: 300px; /* Evita que un solo input ocupe toda la pantalla */
 }
 
 /* Estilos para los campos de selección del formulario de búsqueda de datos */
@@ -87,15 +96,15 @@ form {
 /* Grid tipo BI para visualización de los dashboards */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
 }
 
 /* Card */
 .dashboard-card {
     background-color: #ffffff;
     border-radius: 12px;
-    padding: 16px 18px;
+    padding: 7px 9px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     transition: transform 0.2s ease;
 }
@@ -126,22 +135,44 @@ form {
 
 /* Contenedor de cada gráfica del dashboard */
 .container-graphics {
-    width: 96%;
     box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.10);
     border-radius: 10px;
     background-color: white;
-    margin: 24px auto;
-    margin-bottom: 250px;
-    padding: 20px;
+    margin: 8px auto;
+    margin-bottom: 8px;
+    padding: 10px;
     justify-self: center;
+    width: 98%;
 }
 
 /* Contenedor del título principal del dashboard de gráficos y búsqueda de datos */
-.title-container {
+/*.title-container {
     font-family: IndivisaFontBold;
     color: #002855;
     text-align: center;
+}*/
+
+/* Mejora la visibilidad de los textos dentro de Radzen */
+.rz-tick-text {
+    fill: #002855 !important; /* Color personalizado para las etiquetas del eje */
+    font-weight: bold;
+    font-size: 11px;
 }
+
+.sidebar-content {
+    padding: 10px;
+    width: 280px;
+}
+
+    .sidebar-content .container-search {
+        width: 100%;
+        box-shadow: none;
+    }
+
+    .sidebar-content form {
+        padding: 1rem;
+    }
+
 
 /* Responsividad para móviles (anchura )*/
 @media (min-width: 320px) and (max-width: 768px) {

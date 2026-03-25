@@ -22,216 +22,224 @@
 <!-- Título principal de la pestaña. -->
 <PageTitle>Búsqueda de Gráficas</PageTitle>
 
-<!-- Se llama al elemento .razor del navbar en mayoría de las pantallas. -->
-<PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
 
-<!-- Título principal de la pantalla. -->
-<h1>Gráficas generadas</h1>
+<Layout Sider>
+    <!-- SIDEBAR -->
+    <LayoutSider>
+        <LayoutSiderContent>
+            <Bar @ref="sidebar"
+                 Mode="BarMode.VerticalInline"
+                 Breakpoint="Breakpoint.Desktop"
+                 Background="Background.White"
+                 ThemeContrast="ThemeContrast.Light">
 
-<!-- Línea de seperación entre el título de la página y el contenido. -->
-<Divider Class="separate-line-detail" />
+                @* --- BOTÓN PARA CERRAR EN MÓVIL --- *@
+                <BarItem Class="d-lg-none" Style="padding: 10px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: end;">
+                  <BarToggler Bar=sidebar Style="color: white; margin-right: 10px;" />
+                </BarItem>
 
-<!-- Contenedor del formulario para mostrar resultados de las gráficas. -->
-<Container Class="container-search">
-    <Form>
-        <fieldset class="form-search">
-            <Field Class="form-field-search">
-                <FieldLabel For="DescripcionGrupo">Descripción/Título del grupo de indicadores</FieldLabel>
-                <Select TValue="Guid?" @bind-SelectedValue="selectedGrupoId" Class="form-select-search" ElementId="DescripcionGrupo">
-                    <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
-                   
-                    <!-- Se recorre la lista de indicadores para obtener los grupos existentes. Se agrupan por GrupoId y Grupo para evitar mostrar valores duplicados en la lista desplegable. -->
-                    @foreach (var grupo in indicatorList
-                                        .GroupBy(i => new { i.GrupoId, i.Grupo })
-                                        .Select(g => g.Key))
-                    {
-                        <SelectItem Value="@grupo.GrupoId">
-                            @grupo.Grupo
-                        </SelectItem>
-                    }
-                </Select>
-            </Field>
-            <Field Class="form-field-search">
-                <FieldLabel For="DirectrizAsociado">Directriz asociado</FieldLabel>
-                <Select TValue="Guid?" @bind-SelectedValue="selectedDirectrizId" Class="form-select-search" ElementId="DirectrizAsociado">
-                    <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
 
-                    <!-- Se recorre la lista de indicadores para obtener las directrices existentes. Se agrupan por DirectrizId y Directriz para evitar mostrar valores duplicados en la lista desplegable. -->
-                    @foreach (var directriz in indicatorList
-                                        .GroupBy(i => new { i.DirectrizId, i.Directriz })
-                                        .Select(g => g.Key))
-                    {
-                        <SelectItem Value="@directriz.DirectrizId">
-                            @directriz.Directriz
-                        </SelectItem>
-                    }
-                </Select>
-            </Field>
-            <Field Class="form-field-search">
-                <FieldLabel For="PeriodoEscolarAsociado">Periodo escolar asociado</FieldLabel>
-                <Select TValue="Guid?" @bind-SelectedValue="selectedPeriodoId" Class="form-select-search" ElementId="PeriodoEscolarAsociado">
-                    <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+                <!-- 🔽 AQUÍ VAN TUS FILTROS -->
+                <div class="sidebar-content">
+                    @SidebarFilters()
+                </div>
 
-                    <!-- Se recorre la lista de indicadores para obtener los períodos escolares existentes. Se agrupan por PeriodoId y Periodo para evitar mostrar valores duplicados en la lista desplegable. -->
-                    @foreach (var periodo in indicatorList
-                                        .GroupBy(i => new { i.PeriodoId, i.Periodo })
-                                        .Select(g => g.Key))
-                    {
-                        <SelectItem Value="@periodo.PeriodoId">
-                            @periodo.Periodo
-                        </SelectItem>
-                    }
-                </Select>
-            </Field>
-            <Field Class="form-field-search">
-                <FieldLabel For="CarreraAsociada">Carrera asociada</FieldLabel>
-                <Select TValue="Guid?" @bind-SelectedValue="selectedCarreraId" Class="form-select-search" ElementId="CarreraAsociada">
-                    <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+            </Bar>
+        </LayoutSiderContent>
+    </LayoutSider>
 
-                    <!-- Se recorre la lista de indicadores para obtener las carreras existentes. Se agrupan por CarreraId y Carrera para evitar mostrar valores duplicados en la lista desplegable. -->
-                    @foreach (var carrera in indicatorList
-                                        .GroupBy(i => new { i.CarreraId, i.Carrera })
-                                        .Select(g => g.Key))
-                    {
-                        <SelectItem Value="@carrera.CarreraId">
-                            @carrera.Carrera
-                        </SelectItem>
-                    }
-                </Select>
-            </Field>
-        </fieldset>
-    </Form>
-    <!-- Botón fuera del formulario. -->
-    <Div Class="form-submit">
-        <Button Style="font-family:IndivisaFont;
-                       background-color: #002855;
-                       color: #ffffff;
-                       width:96%;
-                       box-shadow: 0 5px 10px 2px rgba(0, 0, 0, 0.15);
-                       text-transform: uppercase;
-                       margin-bottom: 30px;"
-                Clicked="toSearchGraphics">
-            Buscar
-        </Button>
-    </Div>
-</Container>
+    <!-- CONTENIDO PRINCIPAL -->
+    <Layout>
+        <LayoutHeader Fixed>
+            @* Aquí es donde debe ir tu Navbar principal *@
+            <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
 
-<!-- Contenedor del formulario para mostrar resultados de las gráficas. -->
-<Container Class="container-graphics">
-    <Div Class="title-container">
-        <h3 style="padding-top: 30px;">
-            Resultados de la búsqueda
-        </h3>
-    </Div>
-    <!-- Si graficasCargadas es true, se cargan las gráficas. -->
-    @if (graficasCargadas)
-    {
-        <Div Class="dashboard-grid">
+            <Bar Mode="BarMode.Horizontal"
+                 Background="Background.White"
+                 ThemeContrast="ThemeContrast.Light">
+                <BarToggler Bar=sidebar />
+            </Bar>
+        </LayoutHeader>
 
-            <!-- CARD 1. -->
-            <Div Class="dashboard-card">
-                <!-- Título de la gráfica. -->
-                <Div Class="card-header">
-                    Cantidad total de indicadores del grupo
-                </Div>
+        <LayoutContent Style="height: calc(100vh - 64px); display: flex; flex-direction: column;">
+            <!-- 🔽 AQUÍ VAN TUS DASHBOARDS -->
+            <Container Class="container-graphics">
+                <!-- Si graficasCargadas es true, se cargan las gráficas. -->
+                @if (graficasCargadas)
+                {
+                    <Div Class="dashboard-grid">
 
-                <!-- Tamaño, tipo y propiedades (Categoría y valor) de la gráfica. -->
-                <RadzenChart Style="height:260px;">
-                    <RadzenColumnSeries Data="@totalIndicadoresPorGrupoData"
-                                        CategoryProperty="Categoria"
-                                        ValueProperty="Valor" />
-                </RadzenChart>
-            </Div>
+                        <!-- CARD 1. -->
+                        <Div Class="dashboard-card">
+                            <Div Class="card-header">Cantidad total de indicadores del grupo</Div>
+                            <RadzenChart Style="height:210px;">
+                                <RadzenColumnSeries Data="@totalIndicadoresPorGrupoData"
+                                                    CategoryProperty="Categoria"
+                                                    ValueProperty="Valor">
+                                    <TooltipTemplate Context="data">
+                                        <div style="padding: 5px; color: black;">
+                                            <strong>@data.Categoria</strong>: @data.Valor
+                                        </div>
+                                    </TooltipTemplate>
+                                </RadzenColumnSeries>
 
-            <!-- CARD 2. -->
-            <Div Class="dashboard-card">
-                <Div Class="card-header">
-                    Cantidad total de indicadores cumplidos del grupo
-                </Div>
+                                <RadzenLegend Visible="false" />
 
-                <RadzenChart Style="height:260px;">
-                    <RadzenColumnSeries Data="@cumplimientoData"
-                                     CategoryProperty="Categoria"
-                                     ValueProperty="Valor">
-                        <RadzenSeriesDataLabels Visible="true" />
-                    </RadzenColumnSeries>
-                </RadzenChart>
-            </Div>
+                                <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
+                                    @* Estilo personalizado para las etiquetas del eje X *@
+                                    <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
+                                </RadzenCategoryAxis>
 
-            <!-- CARD 3. -->
-            <Div Class="dashboard-card">
-                <Div Class="card-header">
-                    Porcentaje de cumplimiento de los indicadores del grupo
-                </Div>
+                                <RadzenValueAxis>
+                                    <RadzenGridLines Visible="true" />
+                                </RadzenValueAxis>
+                            </RadzenChart>
+                        </Div>
 
-                <RadzenChart Style="height:260px;">
-                    <RadzenPieSeries Data="@porcentajeCumplimientoData"
-                                     CategoryProperty="Categoria"
-                                     ValueProperty="Valor">
-                        <RadzenSeriesDataLabels Visible="true" />
-                    </RadzenPieSeries>
-                </RadzenChart>
-            </Div>
+                        <!-- CARD 2. -->
+                        <Div Class="dashboard-card">
+                            <Div Class="card-header">Cantidad total de indicadores cumplidos del grupo</Div>
+                            <RadzenChart Style="height:210px;">
+                                <RadzenColumnSeries Data="@cumplimientoData"
+                                                    CategoryProperty="Categoria"
+                                                    ValueProperty="Valor">
+                                    <TooltipTemplate Context="data">
+                                        <div style="padding: 5px; color: black;">
+                                            <strong>@data.Categoria</strong>: @data.Valor
+                                        </div>
+                                    </TooltipTemplate>
+                                </RadzenColumnSeries>
 
-            <!-- CARD 4. -->
-            <Div Class="dashboard-card">
-                <Div Class="card-header">
-                    Cantidad total de indicadores del grupo por directriz
-                </Div>
+                                <RadzenLegend Visible="false" />
 
-                <RadzenChart Style="height:260px;">
-                    <RadzenColumnSeries Data="@totalIndicadoresGrupoPorDirectrizData"
-                                        CategoryProperty="Categoria"
-                                        ValueProperty="Valor">
-                        <RadzenSeriesDataLabels Visible="true" />
-                    </RadzenColumnSeries>
-                </RadzenChart>
-            </Div>
+                                <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
+                                    @* Estilo personalizado para las etiquetas del eje X *@
+                                    <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
+                                </RadzenCategoryAxis>
 
-            <!-- CARD 5. -->
-            <Div Class="dashboard-card">
-                <Div Class="card-header">
-                    Cantidad total de indicadores del grupo por periodo
-                </Div>
+                                <RadzenValueAxis>
+                                    <RadzenGridLines Visible="true" />
+                                </RadzenValueAxis>
+                            </RadzenChart>
+                        </Div>
 
-                <RadzenChart Style="height:260px;">
-                    <RadzenColumnSeries Data="@totalIndicadoresGrupoPorPeriodoData"
-                                        CategoryProperty="Categoria"
-                                        ValueProperty="Valor">
-                        <RadzenSeriesDataLabels Visible="true" />
-                    </RadzenColumnSeries>
-                </RadzenChart>
-            </Div>
+                        <!-- CARD 3. -->
+                        <Div Class="dashboard-card">
+                            <Div Class="card-header">
+                                Porcentaje de cumplimiento de los indicadores del grupo
+                            </Div>
 
-            <!-- CARD 6. -->
-            <Div Class="dashboard-card">
-                <Div Class="card-header">
-                    Cantidad total de indicadores del grupo por carrera
-                </Div>
+                            <RadzenChart Style="height:210px;">
+                                <RadzenPieSeries Data="@porcentajeCumplimientoData"
+                                                 CategoryProperty="Categoria"
+                                                 ValueProperty="Valor">
+                                    <TooltipTemplate Context="data">
+                                        <div style="padding: 5px; color: black;">
+                                            <strong>@data.Categoria</strong>: @data.Valor
+                                        </div>
+                                    </TooltipTemplate>
+                                </RadzenPieSeries>
+                            </RadzenChart>
+                        </Div>
 
-                <RadzenChart Style="height:260px;">
-                    <RadzenColumnSeries Data="@totalIndicadoresGrupoPorCarreraData"
-                                        CategoryProperty="Categoria"
-                                        ValueProperty="Valor">
-                        <RadzenSeriesDataLabels Visible="true" />
-                    </RadzenColumnSeries>
-                </RadzenChart>
-            </Div>
+                        <!-- CARD 4. -->
+                        <Div Class="dashboard-card">
+                            <Div Class="card-header">
+                                Cantidad total de indicadores del grupo por directriz
+                            </Div>
 
-        </Div>
-    }
-    else
-    {
-        <!-- Mensaje que aparece en caso de que los filtros no esten seleccionados correctamente y se presione el botón del formulario. -->
-        <Column>
-            <p class="text-center greyText">Seleccione filtros y haga clic en "Buscar" para ver las gráficas.</p>
-        </Column>
-    }
-    
-</Container>
+                            <RadzenChart Style="height:210px;">
+                                <RadzenColumnSeries Data="@totalIndicadoresGrupoPorDirectrizData"
+                                                    CategoryProperty="Categoria"
+                                                    ValueProperty="Valor">
+                                    <TooltipTemplate Context="data">
+                                        <div style="padding: 5px; color: black;">
+                                            <strong>@data.Categoria</strong>: @data.Valor
+                                        </div>
+                                    </TooltipTemplate>
+                                </RadzenColumnSeries>
+                                <RadzenLegend Visible="false" />
 
-<!-- Se llama al elemento .razor del footer en mayoría de las pantallas. -->
-<PruebaAutenticador2.Pages.ReusableComponents.Footer/>
+                                <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
+                                    @* Estilo personalizado para las etiquetas del eje X *@
+                                    <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
+                                </RadzenCategoryAxis>
+
+                                <RadzenValueAxis>
+                                    <RadzenGridLines Visible="true" />
+                                </RadzenValueAxis>
+
+                            </RadzenChart>
+                        </Div>
+
+                        <!-- CARD 5. -->
+                        <Div Class="dashboard-card">
+                            <Div Class="card-header">
+                                Cantidad total de indicadores del grupo por periodo
+                            </Div>
+
+                            <RadzenChart Style="height:210px;">
+                                <RadzenColumnSeries Data="@totalIndicadoresGrupoPorPeriodoData"
+                                                    CategoryProperty="Categoria"
+                                                    ValueProperty="Valor">
+                                    <TooltipTemplate Context="data">
+                                        <div style="padding: 5px; color: black;">
+                                            <strong>@data.Categoria</strong>: @data.Valor
+                                        </div>
+                                    </TooltipTemplate>
+                                </RadzenColumnSeries>
+                                <RadzenLegend Visible="false" />
+
+                                <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
+                                    @* Estilo personalizado para las etiquetas del eje X *@
+                                    <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
+                                </RadzenCategoryAxis>
+
+                                <RadzenValueAxis>
+                                    <RadzenGridLines Visible="true" />
+                                </RadzenValueAxis>
+
+                            </RadzenChart>
+                        </Div>
+
+                        <!-- CARD 6. -->
+                        <Div Class="dashboard-card">
+                            <Div Class="card-header">
+                                Cantidad total de indicadores del grupo por carrera
+                            </Div>
+
+                            <RadzenChart Style="height:210px;">
+                                <RadzenColumnSeries Data="@totalIndicadoresGrupoPorCarreraData"
+                                                    CategoryProperty="Categoria"
+                                                    ValueProperty="Valor">
+                                    <TooltipTemplate Context="data">
+                                        <div style="padding: 5px; color: black;">
+                                            <strong>@data.Categoria</strong>: @data.Valor
+                                        </div>
+                                    </TooltipTemplate>
+                                </RadzenColumnSeries>
+
+                                <RadzenLegend Visible="false" />
+
+                                <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
+                                    @* Estilo personalizado para las etiquetas del eje X *@
+                                    <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
+                                </RadzenCategoryAxis>
+
+                                <RadzenValueAxis>
+                                    <RadzenGridLines Visible="true" />
+                                </RadzenValueAxis>
+                            </RadzenChart>
+                        </Div>
+
+                    </Div>
+                }
+
+            </Container>
+        </LayoutContent>
+    </Layout>
+</Layout>
+
 
 <!-- Si los elementos todavía no se cargan, muestra la pantalla "cargando". -->
 @if (isLoading)
@@ -273,6 +281,7 @@
     private Guid? selectedPeriodoId;
     private Guid? selectedCarreraId;
     private Guid? selectedDirectrizId;
+    private Bar sidebar = new Bar();
 
     // Lista completa de indicadores obtenida de la API.
     private List<IndicadorDto> indicatorList = new();
@@ -289,11 +298,94 @@
     // Referencia al modal para mostrar el mensaje de error.
     private Modal modalToShowErrorMessage;
 
+    private RenderFragment SidebarFilters() => @<div>
+    <h5 style="text-align:center; margin:5px; font-family:IndivisaFontBold; color:#002855;">Filtros</h5>
+
+    <Container Class="container-search">
+        <Form>
+            <fieldset class="form-search">
+                <Field Class="form-field-search">
+                    <FieldLabel For="DescripcionGrupo">Descripción del grupo</FieldLabel>
+                    <Select TValue="Guid?" SelectedValue="selectedGrupoId" SelectedValueChanged="@OnGrupoChanged" Class="form-select-search" ElementId="DescripcionGrupo">
+                        <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+
+                        <!-- Se recorre la lista de indicadores para obtener los grupos existentes. Se agrupan por GrupoId y Grupo para evitar mostrar valores duplicados en la lista desplegable. -->
+                        @foreach (var grupo in indicatorList
+                                                .GroupBy(i => new { i.GrupoId, i.Grupo
+                        })
+                                                .Select(g => g.Key))
+                                                {
+                            <SelectItem Value="@grupo.GrupoId">
+                                @grupo.Grupo
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Field Class="form-field-search">
+                    <FieldLabel For="DirectrizAsociado">Directriz asociado</FieldLabel>
+                    <Select TValue="Guid?" SelectedValue="selectedDirectrizId" SelectedValueChanged="@OnDirectrizChanged" Class="form-select-search" ElementId="DirectrizAsociado">
+                        <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+
+                        <!-- Se recorre la lista de indicadores para obtener las directrices existentes. Se agrupan por DirectrizId y Directriz para evitar mostrar valores duplicados en la lista desplegable. -->
+                        @foreach (var directriz in indicatorList
+                                                .GroupBy(i => new { i.DirectrizId, i.Directriz })
+                                                .Select(g => g.Key))
+                        {
+                            <SelectItem Value="@directriz.DirectrizId">
+                                @directriz.Directriz
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Field Class="form-field-search">
+                    <FieldLabel For="PeriodoEscolarAsociado">Periodo escolar asociado</FieldLabel>
+                    <Select TValue="Guid?" SelectedValue="@selectedPeriodoId" SelectedValueChanged="@OnPeriodoChanged" Class="form-select-search" ElementId="PeriodoEscolarAsociado">
+                        <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+
+                        <!-- Se recorre la lista de indicadores para obtener los períodos escolares existentes. Se agrupan por PeriodoId y Periodo para evitar mostrar valores duplicados en la lista desplegable. -->
+                        @foreach (var periodo in indicatorList
+                                                .GroupBy(i => new { i.PeriodoId, i.Periodo })
+                                                .Select(g => g.Key))
+                        {
+                            <SelectItem Value="@periodo.PeriodoId">
+                                @periodo.Periodo
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Field Class="form-field-search">
+                    <FieldLabel For="CarreraAsociada">Carrera asociada</FieldLabel>
+                    <Select TValue="Guid?" SelectedValue="selectedCarreraId" SelectedValueChanged="@OnCarreraChanged" Class="form-select-search" ElementId="CarreraAsociada">
+                        <SelectItem Value=Guid.Empty>Ninguno</SelectItem>
+
+                        <!-- Se recorre la lista de indicadores para obtener las carreras existentes. Se agrupan por CarreraId y Carrera para evitar mostrar valores duplicados en la lista desplegable. -->
+                        @foreach (var carrera in indicatorList
+                                                .GroupBy(i => new { i.CarreraId, i.Carrera })
+                                                .Select(g => g.Key))
+                        {
+                            <SelectItem Value="@carrera.CarreraId">
+                                @carrera.Carrera
+                            </SelectItem>
+                        }
+                    </Select>
+                </Field>
+            </fieldset>
+        </Form>
+    </Container>
+</div>;
+
     // Al iniciar la página, se cargan todos los indicadores desde la API para poder mostrar las opciones de filtros y generar las gráficas.
     protected override async Task OnInitializedAsync()
     {
         await LoadAllIndicators();
+        RefreshData();
     }
+
+    // Métodos para detectar cambios en tiempo real
+    private void OnGrupoChanged(Guid? val) { selectedGrupoId = val; RefreshData(); }
+    private void OnDirectrizChanged(Guid? val) { selectedDirectrizId = val; RefreshData(); }
+    private void OnPeriodoChanged(Guid? val) { selectedPeriodoId = val; RefreshData(); }
+    private void OnCarreraChanged(Guid? val) { selectedCarreraId = val; RefreshData(); }
 
     // Método para cargar todos los indicadores desde la API. 
     // Se muestra la pantalla de carga mientras se obtienen los datos. 
@@ -324,22 +416,17 @@
     }
 
     // Método que se ejecuta al hacer clic en el botón "Buscar". Filtra la lista de indicadores según los filtros seleccionados y genera los datos para las gráficas.
-    private void toSearchGraphics()
+    private void RefreshData()
     {
         // Se verifica que los filtros de grupo, periodo y carrera estén seleccionados (no sean nulos ni Guid.Empty) 
         // para poder generar las gráficas. 
         // Si alguno de estos filtros no está seleccionado, no se generan las gráficas y se muestra el mensaje indicando que se deben seleccionar los filtros.
-        if (selectedGrupoId != Guid.Empty &&
-            selectedPeriodoId != Guid.Empty &&
-            selectedCarreraId != Guid.Empty &&
-            selectedDirectrizId != Guid.Empty)
-        {
             filteredIndicators = indicatorList
              .Where(i =>
-                 (!selectedGrupoId.HasValue || selectedGrupoId == Guid.Empty || i.GrupoId == selectedGrupoId) &&
-                 (!selectedDirectrizId.HasValue || selectedDirectrizId == Guid.Empty || i.DirectrizId == selectedDirectrizId) &&
-                 (!selectedPeriodoId.HasValue || selectedPeriodoId == Guid.Empty || i.PeriodoId == selectedPeriodoId) &&
-                 (!selectedCarreraId.HasValue || selectedCarreraId == Guid.Empty || i.CarreraId == selectedCarreraId)
+                (selectedGrupoId == null || selectedGrupoId == Guid.Empty || i.GrupoId == selectedGrupoId) &&
+                (selectedDirectrizId == null || selectedDirectrizId == Guid.Empty || i.DirectrizId == selectedDirectrizId) &&
+                (selectedPeriodoId == null || selectedPeriodoId == Guid.Empty || i.PeriodoId == selectedPeriodoId) &&
+                (selectedCarreraId == null || selectedCarreraId == Guid.Empty || i.CarreraId == selectedCarreraId)
              )
              .ToList();
 
@@ -421,11 +508,7 @@
             .ToArray();
 
             graficasCargadas = true;
-        }
-        else
-        {
-            graficasCargadas = false;
-        }
+            StateHasChanged();
     }
 
     // Método para ocultar el modal de mensaje de error.
@@ -445,7 +528,7 @@
     }
 
     // Variable para almacenar los datos del gráfico pastel de porcentaje de cumplimiento.
-    private PieData[] porcentajeCumplimientoData;
+    private PieData[] porcentajeCumplimientoData = [];
 
     class BarData
     {
@@ -454,10 +537,10 @@
     }
 
     // Variables para almacenar los datos de las gráficas de barras.
-    private BarData[] totalIndicadoresPorGrupoData;
-    private BarData[] cumplimientoData;
-    private BarData[] totalIndicadoresGrupoPorDirectrizData;
-    private BarData[] totalIndicadoresGrupoPorPeriodoData;
-    private BarData[] totalIndicadoresGrupoPorCarreraData;
+    private BarData[] totalIndicadoresPorGrupoData = [];
+    private BarData[] cumplimientoData = [];
+    private BarData[] totalIndicadoresGrupoPorDirectrizData = [];
+    private BarData[] totalIndicadoresGrupoPorPeriodoData = [];
+    private BarData[] totalIndicadoresGrupoPorCarreraData = [];
 
 }

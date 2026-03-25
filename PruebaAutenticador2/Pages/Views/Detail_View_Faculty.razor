@@ -8,8 +8,12 @@
 @using PruebaAutenticador2.Services
 @inject AuthStateService AuthState
 @using System.Net
+@using PruebaAutenticador2.Shared.DTOS.ArchivoPoliticas
+@inject ArchivoPoliticasApiService ArchivoPoliticasApiService
+@inject IJSRuntime JS
 
 <link rel="stylesheet" href="css/DetailV.css" />
+<link rel="stylesheet" href="css/ViewPolicyFile.css" />
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/Footer.css" />
 <link rel="stylesheet" href="css/Fonts.css" />
@@ -32,21 +36,17 @@
             </Field>
             <Field Class="form-field">
                 <FieldLabel For="mision">Misión</FieldLabel>
-                <TextEdit Class="form-control" Text="@currentFaculty.Mision" ReadOnly="true" ElementId="mision" />
+                <MemoEdit Rows="5" Class="form-control" Text="@currentFaculty.Mision" ReadOnly="true" ElementId="mision" />
             </Field>
             <Field Class="form-field">
                 <FieldLabel For="vision">Vision</FieldLabel>
-                <TextEdit Class="form-control" Text="@currentFaculty.Vision" ReadOnly="true" ElementId="vision" />
+                <MemoEdit Rows="5" Class="form-control" Text="@currentFaculty.Vision" ReadOnly="true" ElementId="vision" />
             </Field>
 
             <!-- Fila 2. -->
             <Field Class="form-field">
                 <FieldLabel For="slogan">Slogan</FieldLabel>
-                <TextEdit Class="form-control" Text="@currentFaculty.Slogan" ReadOnly="true" ElementId="slogan" />
-            </Field>
-            <Field Class="form-field">
-                <FieldLabel For="politicaAsociada">Política asociada</FieldLabel> 
-                <TextEdit Class="form-control" Text="@currentFaculty.PoliticaAsociada" ReadOnly="true" ElementId="politicaAsociada" />
+                <TextEdit Class="form-control" Text="@(currentFaculty.Slogan ?? "")" ReadOnly="true" ElementId="slogan" />
             </Field>
             <Field Class="form-field">
                 <FieldLabel For="fechaDeEmision">Fecha de emisión</FieldLabel>
@@ -54,9 +54,27 @@
             </Field>
 
             <!-- Fila 3. -->
-            <Field Class="form-field">
-                <FieldLabel For="fechaDeEdicion">Fecha de edición</FieldLabel>
-                <TextEdit Class="form-control" Text="@(currentFaculty.FechaEdicion?.ToString("dd/MM/yyyy") ?? "No hay fecha")" ReadOnly="true" ElementId="fechaDeEdicion" />
+            <Field Class="container-archivo">
+                <FieldLabel Class="label-archivo" For="archivo">Archivo</FieldLabel>
+                @if (archivoPoliticas.Any())
+                {
+                    <ul class="list-archivo">
+                        @foreach (var archivo in archivoPoliticas)
+                        {
+                            <li class="item-archivo">
+                                <i class="bi bi-file-earmark-text-fill" style="color:#002855; margin-right:6px;"></i>
+                                <Button Clicked="() => DownloadFile(archivo)">
+                                    @archivo.NombreArchivo
+                                </Button>
+                                <span class="tipo-archivo">(@archivo.Tipo)</span>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p style="color: #b22222; font-family:IndivisaFont">No se han subido el archivo.</p>
+                }
             </Field>
         </fieldset>
     </Form>
@@ -114,6 +132,8 @@
 
     private Faculty currentFaculty = new();
 
+    private List<ArchivoPoliticasDto> archivoPoliticas = new();
+
     private bool isLoading = false;
 
     private string? errorMessage;
@@ -158,10 +178,31 @@
                     Mision = faculty.Mision,
                     Vision = faculty.Vision,
                     Slogan = faculty.Slogan,
-                    PoliticaAsociada = faculty.PoliticaAsociada,
                     FechaEmision = faculty.FechaEmision,
-                    FechaEdicion = faculty.FechaEdicion,
                 };
+
+                var responseToGetFile = await ArchivoPoliticasApiService.GetByFacultyIdAsync(currentFaculty.Id);
+
+                if (!responseToGetFile.Success)
+                {
+                    switch (responseToGetFile.StatusCode)
+                    {
+                        case HttpStatusCode.BadRequest:
+                            errorMessage = responseToGetFile.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+
+                        default:
+                            errorMessage = responseToGetFile.ErrorMessage;
+                            await modalToShowErrorMessage.Show();
+                            break;
+                    }
+
+                    return;
+                }
+
+                archivoPoliticas = responseToGetFile.Data!;
+
             }
 
         }
@@ -174,6 +215,23 @@
         {
             isLoading = false;
         }
+    }
+
+    private async Task DownloadFile(ArchivoPoliticasDto archivoP)
+    {
+        var bytes = await ArchivoPoliticasApiService.DownloadAsync(
+            currentFaculty.Id,
+            archivoP.Id
+        );
+
+        // Se llama a la función JavaScript "downloadFile" que se encuentra en el archivo wwwroot/js/download.js,
+        // pasando el nombre del archivo, el tipo y los bytes para que el navegador pueda descargarlo.
+        await JS.InvokeVoidAsync(
+            "downloadFile",
+            archivoP.NombreArchivo,
+            archivoP.Tipo,
+            bytes
+        );
     }
 
     private void goBack()

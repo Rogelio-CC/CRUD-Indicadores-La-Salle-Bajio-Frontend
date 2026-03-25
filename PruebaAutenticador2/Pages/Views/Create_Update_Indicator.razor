@@ -49,22 +49,23 @@
                     </Validation>
 
                     <Field Class="form-field">
-                        <FieldLabel For="estandar">Estándar (se calculará cuando se hagan los cambios)</FieldLabel>
+                        <FieldLabel For="estandar">Estándar (se calculará cuando se apliquen los cambios)</FieldLabel>
                         <NumericEdit TValue="decimal" @bind-Value="currentIndicator.Estandar" Class="form-control" ElementId="estandar" ReadOnly />
                     </Field>
 
-
+                @if(currentIndicator.Id != Guid.Empty)
+                {
                     <Validation Validator="ValidationRule.IsSelected">
                         <Field Class="form-field">
                             <FieldLabel For="indicadorCumplido">¿Se cumplió el indicador?</FieldLabel>
-                            <Select Class="form-select" Disabled="@(currentIndicator.Id == Guid.Empty)" TValue="bool" ElementId="indicadorCumplido" SelectedValue="@currentIndicator.IndicadorCompletado" SelectedValueChanged="@OnSelectedValueChanged">
+                            <Select Class="form-select" TValue="bool" ElementId="indicadorCumplido" SelectedValue="@currentIndicator.IndicadorCompletado" SelectedValueChanged="@OnSelectedValueChanged">
                                 <SelectItem TValue="bool" Value=true>Sí</SelectItem>
                                 <SelectItem TValue="bool" Value=false>No</SelectItem>
                             </Select>
                         </Field>
                     </Validation>
-                   
-
+                }
+                
                     <Validation Validator="ValidationRule.IsSelected">
                         <Field Class="form-field">
                             <FieldLabel For="frecuenciaControl">Control de frecuencia</FieldLabel>
@@ -78,10 +79,13 @@
                         </Field>
                     </Validation>
 
-                    <Field Class="form-field">
-                        <FieldLabel For="fechaCumplimientoIndicador">Fecha de cumplimiento</FieldLabel>
-                        <DateEdit TValue="DateTimeOffset?" ElementId="fechaCumplimientoIndicador" Disabled=disabledComplimentDateInput @bind-Date=currentIndicator.FechaCumplimiento />
-                    </Field>
+                    @if(currentIndicator.Id != Guid.Empty)
+                    {
+                        <Field Class="form-field">
+                            <FieldLabel For="fechaCumplimientoIndicador">Fecha de cumplimiento</FieldLabel>
+                            <DateEdit TValue="DateTimeOffset?" ElementId="fechaCumplimientoIndicador" Disabled=disabledComplimentDateInput @bind-Date=currentIndicator.FechaCumplimiento />
+                        </Field>
+                    }
 
                     <Validation Validator="ValidateGuidSelection">
                         <Field Class="form-field">
@@ -131,11 +135,13 @@
                     </Validation>
 
                     <!-- Se cargan evidencias "temporales" para, cuando se presione el botón Aceptar, guardarlos posteriormente como evidencias permanentes. -->
+                @if (currentIndicator.Id != Guid.Empty)
+                {
                     <Field Class="form-field">
                         <FieldLabel for="nuevasEvidencias">@evidenceText</FieldLabel>
-                    <FileEdit Changed="@OnFilesChanged" Disabled="@(currentIndicator.Id == Guid.Empty)" Multiple Class="form-control" ElementId="nuevasEvidencias" />
+                        <FileEdit Changed="@OnFilesChanged" Disabled="@(currentIndicator.Id == Guid.Empty)" Multiple Class="form-control" ElementId="nuevasEvidencias" />
                     </Field>
-
+                }
                     <Validation Validator="ValidateGuidSelection">
                         <Field Class="form-field">
                             <FieldLabel For="creadorAsociado">Creador asociado</FieldLabel>
@@ -151,38 +157,43 @@
                         </Field>
                     </Validation>
 
-                    <!-- Se muestra, en una lista, las evidencias temporales que se van agregando. Al final y cuando se presione el botón Aceptar, pasan a ser evidencias permanentes. -->
-                    <Field Class="container-evidencias">
-                        <FieldLabel Class="label-evidencias" For="evidencias">Lista de evidencias</FieldLabel>
-                        @if (evidenciasTemp.Any())
-                        {
-                            <ul class="list-evidencias">
-                            @foreach (var e in evidenciasTemp.Where(x => !x.MarcarEvidenciaParaEliminar))
+                <!-- Se muestra, en una lista, las evidencias temporales que se van agregando. Al final y cuando se presione el botón Aceptar, pasan a ser evidencias permanentes. -->
+                    @if (currentIndicator.Id != Guid.Empty)
+                    {
+                        <Field Class="container-evidencias">
+                            <FieldLabel Class="label-evidencias" For="evidencias">Lista de evidencias</FieldLabel>
+                            @if (evidenciasTemp.Any())
                             {
-                                <li class="item-evidencia @(e.EsNuevaEvidencia ? "temporal" : "")">
-                                    <i class="bi bi-file-earmark-text-fill"></i>
-
-                                    <span>@e.NombreArchivo</span>
-
-                                    @if (e.EsNuevaEvidencia)
+                                <ul class="list-evidencias">
+                                    @foreach (var e in evidenciasTemp.Where(x => !x.MarcarEvidenciaParaEliminar))
                                     {
-                                        <span class="tipo-evidencia">(pendiente de guardar)</span>
+                                        <li class="item-evidencia @(e.EsNuevaEvidencia ? "temporal" : "")">
+                                            <i class="bi bi-file-earmark-text-fill"></i>
+
+                                            <span>@e.NombreArchivo</span>
+
+                                            @if (e.EsNuevaEvidencia)
+                                            {
+                                                <span class="tipo-evidencia">(pendiente de guardar)</span>
+                                            }
+
+                                            <!-- Botón que elimina la evidencia temporal para que no se guarde posteriormente como una evidencia permanente. -->
+                                            <Button Clicked="() => confirmDelete(e)">Eliminar</Button>
+                                        </li>
                                     }
 
-                                    <!-- Botón que elimina la evidencia temporal para que no se guarde posteriormente como una evidencia permanente. -->
-                                    <Button Clicked="() => confirmDelete(e)">Eliminar</Button>
-                                </li>
+                                </ul>
+                            }
+                            else
+                            {
+                                <!-- Mensaje que se muestra en caso de no haberse agregado alguna evidencia temporal aún. -->
+                                <p style="color: #b22222;">No se han subido evidencias aún.</p>
                             }
 
-                            </ul>
-                        }
-                        else
-                        {
-                        <!-- Mensaje que se muestra en caso de no haberse agregado alguna evidencia temporal aún. -->
-                            <p style="color: #b22222;">No se han subido evidencias aún.</p>
-                        }
-
-                    </Field>
+                        </Field>
+                    
+                    }
+                
                     <Validation Validator="ValidateGuidSelection">
                         <Field Class="form-field">
                             <FieldLabel For="periodoEscolarAsociado">Período escolar asociado</FieldLabel>
@@ -198,10 +209,13 @@
                         </Field>
                     </Validation>
 
-                    <Field Class="form-field">
-                        <FieldLabel For="accionCorrectiva">Acción correctiva</FieldLabel>
-                        <TextEdit Class="form-control" ElementId="accionCorrectiva" Disabled=disabledInputs @bind-Text="currentIndicator.AccionCorrectiva" />
-                    </Field>
+                    @if (currentIndicator.Id != Guid.Empty)
+                    {
+                        <Field Class="form-field">
+                            <FieldLabel For="accionCorrectiva">Acción correctiva</FieldLabel>
+                            <TextEdit Class="form-control" ElementId="accionCorrectiva" Disabled=disabledInputs @bind-Text="currentIndicator.AccionCorrectiva" />
+                        </Field>
+                    }
 
                     <Validation Validator="ValidateGuidSelection">
                         <Field Class="form-field">
@@ -218,18 +232,22 @@
                         </Field>
                     </Validation>
                     
-                    <Field Class="form-field">
-                        <FieldLabel For="resopnsableAC">Responsable de la acción correctiva</FieldLabel>
-                        <Select Class="form-select" TValue="Guid?" ElementId="resopnsableAC" Disabled=disabledInputs @bind-SelectedValue="currentIndicator.ResponsableAccionCorrectivaId">
-                        <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
-                        @foreach (var ra in usuarios)
-                        {
-                            <SelectItem TValue="Guid" Value="@ra.Id">
-                                @ra.Nombre
-                            </SelectItem>
-                        }
-                        </Select>
-                    </Field>
+                     @if (currentIndicator.Id != Guid.Empty)
+                    {
+                        <Field Class="form-field">
+                            <FieldLabel For="resopnsableAC">Responsable de la acción correctiva</FieldLabel>
+                            <Select Class="form-select" TValue="Guid?" ElementId="resopnsableAC" Disabled=disabledInputs @bind-SelectedValue="currentIndicator.ResponsableAccionCorrectivaId">
+                                <SelectItem TValue="Guid" Value="Guid.Empty">Selecciona alguna de las opciones</SelectItem>
+                                @foreach (var ra in usuarios)
+                                {
+                                    <SelectItem TValue="Guid" Value="@ra.Id">
+                                        @ra.Nombre
+                                    </SelectItem>
+                                }
+                            </Select>
+                        </Field>
+                    }
+                   
                 </Validations>
 
                 <Field Class="form-field">
@@ -533,14 +551,17 @@
     {
         if (await validations.ValidateAll())
         {
-            if(currentIndicator.CantidadEvidencias >= evidenciasTemp.Count())
+            // FILTRO: Contar solo las que se van a quedar (nuevas + no eliminadas)
+            int conteoRealFinal = evidenciasTemp.Count(x => !x.MarcarEvidenciaParaEliminar);
+
+            if (currentIndicator.CantidadEvidencias >= conteoRealFinal)
             {
                 await saveIndicator();
             }
             else
             {
                 await modalRefByMessage.Show();
-                
+
             }
 
         }
@@ -601,7 +622,17 @@
 
                 if (HoraRecordatorio != null && FechaRecordatorio != null)
                 {
-                    await EnviarCorreo();
+                    try
+                    {
+                        await EnviarCorreo();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Loguea el error pero no rompas la app
+                        Console.WriteLine($"Error enviando correo: {ex.Message}");
+                        errorMessage = "La actividad se guardó, pero no pudimos enviar el correo de recordatorio.";
+                        await modalToShowErrorMessage.Show();
+                    }
                 }
             }
             else
@@ -668,7 +699,7 @@
                 // subir nuevas evidencias.
                 foreach (var e in evidenciasTemp.Where(x => x.EsNuevaEvidencia))
                 {
-                    var responseToUploadEvidences = await EvidenciaApiService.UploadAsync(currentIndicator.Id, e.file!);
+                    var responseToUploadEvidences = await EvidenciaApiService.UploadAsync(currentIndicator.Id, e.Contenido, e.NombreArchivo);
 
                     if (!responseToUploadEvidences.Success)
                     {
@@ -691,7 +722,17 @@
 
                 if (HoraRecordatorio != null && FechaRecordatorio != null)
                 {
-                    await EnviarCorreo();
+                    try
+                    {
+                        await EnviarCorreo();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Loguea el error pero no rompas la app
+                        Console.WriteLine($"Error enviando correo: {ex.Message}");
+                        errorMessage = "La actividad se guardó, pero no pudimos enviar el correo de recordatorio.";
+                        await modalToShowErrorMessage.Show();
+                    }
                 }
             }
 
@@ -733,13 +774,17 @@
     {
         foreach (var file in e.Files)
         {
+            // Leemos el archivo a un MemoryStream inmediatamente
+            using var stream = new MemoryStream();
+            await file.WriteToStreamAsync(stream);
+
             evidenciasTemp.Add(new EvidenciaTemporal
             {
                 Id = null,
                 NombreArchivo = file.Name,
                 Tipo = file.Type,
                 EsNuevaEvidencia = true,
-                file = file
+                Contenido = stream.ToArray()
             });
         }
     }

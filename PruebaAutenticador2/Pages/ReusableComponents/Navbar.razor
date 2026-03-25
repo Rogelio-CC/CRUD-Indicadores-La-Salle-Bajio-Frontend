@@ -15,10 +15,6 @@
         </Button>
     </BarBrand>
     <Div Class="right-elements">
-        <Button Class="icon-button"
-                Clicked="goToCalendar">
-            <Icon Name="IconName.Calendar" Style="color: #ffffff;" IconSize="IconSize.x2" />
-        </Button>
         <Div Class=outline-image @onclick="ShowModal">
             <img src="https://cdn.pixabay.com/photo/2017/11/10/05/48/user-2935527_1280.png" alt="Imagen circular" />
         </Div>
@@ -30,10 +26,6 @@
         <Button Class="mobile-menu-item" Clicked="goBackHome">
             <img src="Images/icono_lasallebajio_BLANCO.png" alt="Universidad La Salle Bajío" class="logo-size" />
             <Span Style="font-family: IndivisaFont;">Inicio</Span>
-        </Button>
-        <Button Class="mobile-menu-item" Clicked="goToCalendar">
-            <Icon Name="IconName.Calendar" Style="color: #ffffff;" />
-            <Span Style="font-family: IndivisaFont;">Calendario</Span>
         </Button>
         <Button Class="mobile-menu-item" Clicked="ShowModal">
             <Icon Name="IconName.User" Style="color: #ffffff;" />
@@ -82,11 +74,6 @@
 
     private void goBackHome(){
         NavManager.NavigateTo("/home");
-    }
-
-    private void goToCalendar(){
-        NavManager.NavigateTo("/home/verCalendario");
-
     }
 
     // Métodos para mostrar y ocultar el modal

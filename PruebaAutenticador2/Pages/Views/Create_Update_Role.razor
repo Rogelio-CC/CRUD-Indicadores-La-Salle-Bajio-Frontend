@@ -34,12 +34,6 @@
                         <TextEdit Class="form-control" ElementId="nombreRol" @bind-Text=currentRole.Nombre/>
                     </Field>
                 </Validation>
-                <Validation Validator="@ValidationRule.IsNotEmpty">
-                    <Field Class="form-field">
-                        <FieldLabel For="permisos">Permisos</FieldLabel>
-                        <TextEdit Class="form-control" ElementId="permisos" @bind-Text=currentRole.Permisos/>
-                    </Field>
-                </Validation>
             </Validations>
         </fieldset>
     </Form>

@@ -1,35 +1,34 @@
 ﻿using Blazorise;
 using PruebaAutenticador2.Classes;
-using PruebaAutenticador2.Shared.DTOS.Evidencia;
+using PruebaAutenticador2.Shared.DTOS.ArchivoPoliticas;
 using System.Net;
 
 namespace PruebaAutenticador2.Services
 {
-    // La estructura para EvidenciaApiService es la misma que ActividadApiService, por lo que solo aquí se indican los métodos.
-    public class EvidenciaApiService
+    public class ArchivoPoliticasApiService
     {
         private readonly HttpClient _http;
 
-        public EvidenciaApiService(HttpClient http)
+        public ArchivoPoliticasApiService(HttpClient http)
         {
             _http = http;
         }
 
-        // Método para obtener todas las evidencias asociadas a un indicador específico.
-        public async Task<ApiResponse<List<EvidenciaDto>>> GetAllAsync(Guid indicadorId)
+        // Método para obtener el archivo de políticas asociado a una facultad específica.
+        public async Task<ApiResponse<List<ArchivoPoliticasDto>>> GetByFacultyIdAsync(Guid facultadId)
         {
-            var result = new ApiResponse<List<EvidenciaDto>>();
+            var result = new ApiResponse<List<ArchivoPoliticasDto>>();
 
             try
             {
-                var response = await _http.GetAsync($"api/indicadores/{indicadorId}/evidencias");
+                var response = await _http.GetAsync($"api/facultades/{facultadId}/archivoPoliticas");
 
                 result.StatusCode = response.StatusCode;
 
                 if (response.IsSuccessStatusCode)
                 {
                     result.Success = true;
-                    result.Data = await response.Content.ReadFromJsonAsync<List<EvidenciaDto>>();
+                    result.Data = await response.Content.ReadFromJsonAsync<List<ArchivoPoliticasDto>>();
                 }
                 else
                 {
@@ -54,22 +53,21 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para subir una nueva evidencia asociada a un indicador específico.
-        public async Task<ApiResponse<bool>> UploadAsync(Guid indicadorId, /*IFileEntry file*/ byte[] contenido, string nombreArchivo)
+        // Método para subir el archivo de políticas asociado a una facultad específica.
+        public async Task<ApiResponse<bool>> UploadAsync(Guid facultadId, IFileEntry file)
         {
 
             var result = new ApiResponse<bool>();
 
             try
             {
-                // Se crea un contenido del archivo a partir de su selección hecha por el usuario y se prepara para ser enviado a la solicitud HTTP utilizando MultipartFormDataContent,
+                // Se crea un Stream a partir del archivo seleccionado por el usuario y se prepara el contenido para la solicitud HTTP utilizando MultipartFormDataContent,
                 // que es necesario para enviar archivos a través de HTTP.
-
+                using var stream = file.OpenReadStream(file.Size);
                 using var content = new MultipartFormDataContent();
-                var fileContent = new ByteArrayContent(contenido);
-                content.Add(fileContent, "file", nombreArchivo);
+                content.Add(new StreamContent(stream), "file", file.Name);
 
-                var response = await _http.PostAsync($"api/indicadores/{indicadorId}/evidencias", content);
+                var response = await _http.PostAsync($"api/facultades/{facultadId}/archivoPoliticas", content);
 
                 result.StatusCode = response.StatusCode;
 
@@ -100,14 +98,14 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para eliminar una evidencia específica asociada a un indicador específico.
-        public async Task<ApiResponse<bool>> DeleteAsync(Guid indicadorId, Guid evidenciaId)
+        // Método para eliminar el archivo de políticas asociado a una facultad específica.
+        public async Task<ApiResponse<bool>> DeleteAsync(Guid facultadId, Guid archivoPoliticasId)
         {
             var result = new ApiResponse<bool>();
 
             try
             {
-                var response = await _http.DeleteAsync($"api/indicadores/{indicadorId}/evidencias/{evidenciaId}");
+                var response = await _http.DeleteAsync($"api/facultades/{facultadId}/archivoPoliticas/{archivoPoliticasId}");
 
                 result.StatusCode = response.StatusCode;
 
@@ -138,13 +136,10 @@ namespace PruebaAutenticador2.Services
             return result;
         }
 
-        // Método para descargar una evidencia específica asociada a un indicador específico, que retorna el contenido del archivo como un arreglo de bytes.
-        public async Task<byte[]> DownloadAsync(Guid indicadorId, Guid evidenciaId)
+        // Método para descargar el archivo de políticas asociado a una facultad específica, que retorna el contenido del archivo como un arreglo de bytes.
+        public async Task<byte[]> DownloadAsync(Guid facultadId, Guid archivoPoliticasId)
         {
-            return await _http.GetByteArrayAsync($"api/indicadores/{indicadorId}/evidencias/{evidenciaId}/download");
+            return await _http.GetByteArrayAsync($"api/facultades/{facultadId}/archivoPoliticas/{archivoPoliticasId}/download");
         }
-
-
-
     }
 }

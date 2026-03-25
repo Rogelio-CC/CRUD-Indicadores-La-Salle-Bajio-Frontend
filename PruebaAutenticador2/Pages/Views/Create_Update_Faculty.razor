@@ -10,11 +10,13 @@
 @using System.ComponentModel.DataAnnotations
 @inject AuthStateService AuthState
 @using System.Net
+@inject ArchivoPoliticasApiService ArchivoPoliticasApiService
 
 <link rel="stylesheet" href="css/Nabvar.css" />
 <link rel="stylesheet" href="css/AllForms.css" />
 <link rel="stylesheet" href="css/Fonts.css" />
 <link rel="stylesheet" href="css/Footer.css" />
+<link rel="stylesheet" href="css/ViewPolicyFile.css" />
 
 <PageTitle>@pageTitle</PageTitle>
 
@@ -34,30 +36,60 @@
                         <TextEdit Class="form-control" ElementId="nombreFacultad" @bind-Text=currentFaculty.Nombre />
                     </Field>
                 </Validation>
+                <Field Class="form-field">
+                    <FieldLabel For="slogan">Slogan</FieldLabel>
+                    <TextEdit Class="form-control" ElementId="slogan" @bind-Text=currentFaculty.Slogan />
+                </Field>
                 <Validation Validator="ValidationRule.IsNotEmpty">
                     <Field Class="form-field">
                         <FieldLabel For="mision">Misión</FieldLabel>
-                        <TextEdit Class="form-control" ElementId="mision" @bind-Text=currentFaculty.Mision />
+                        <MemoEdit Rows="5" ReplaceTab TabSize="4" Class="form-control" ElementId="mision" @bind-Text=currentFaculty.Mision />
                     </Field>
                 </Validation>
                 <Validation Validator="ValidationRule.IsNotEmpty">
                     <Field Class="form-field">
                         <FieldLabel For="vision">Visión</FieldLabel>
-                        <TextEdit Class="form-control" ElementId="vision" @bind-Text=currentFaculty.Vision />
+                        <MemoEdit Rows="5" ReplaceTab TabSize="4" Class="form-control" ElementId="vision" @bind-Text=currentFaculty.Vision />
                     </Field>
                 </Validation>
-                <Validation Validator="ValidationRule.IsNotEmpty">
+                @if(currentFaculty.Id != Guid.Empty)
+                {
                     <Field Class="form-field">
-                        <FieldLabel For="slogan">Slogan</FieldLabel>
-                        <TextEdit Class="form-control" ElementId="slogan" @bind-Text=currentFaculty.Slogan />
+                        <!-- El input se bloquea cuando detecta que ya se subio un archivo temporal. -->
+                        <FieldLabel for="nuevoArchivoPoliticas">Adjuntar archivo de políticas en formato PDF</FieldLabel>
+                        <FileEdit Changed="@OnFilesChanged" Disabled="@(archivoPoliticasTemp !=null && archivoPoliticasTemp.Any(x=> !x.MarcarEvidenciaParaEliminar))" Class="form-control" ElementId="nuevoArchivoPoliticas" />
+                        @if (archivoPoliticasTemp != null && archivoPoliticasTemp.Any(x => !x.MarcarEvidenciaParaEliminar))
+                        {
+                            <div class="text-muted mt-1" style="font-size: 0.85rem; font-family:IndivisaFont">
+                                <i class="bi bi-info-circle" style="color:#002855"></i> Debe eliminar el archivo actual para subir uno nuevo.
+                            </div>
+                        }
                     </Field>
-                </Validation>
-                <Validation Validator="ValidationRule.IsNotEmpty">
-                    <Field Class="form-field">
-                        <FieldLabel For="politicaAsociada">Política asociada</FieldLabel>
-                        <TextEdit Class="form-control" ElementId="politicaAsociada" @bind-Text=currentFaculty.PoliticaAsociada />
+                    <Field Class="container-archivo">
+                        <FieldLabel Class="label-archivo" For="archivo">Archivo</FieldLabel>
+                        @if (archivoPoliticasTemp.Any())
+                        {
+                            <ul class="list-archivo">
+                                @foreach (var e in archivoPoliticasTemp.Where(x => !x.MarcarEvidenciaParaEliminar))
+                                {
+                                    <li class="item-archivo @(e.EsNuevoArchivo ? "temporal" : "")">
+                                        <i class="bi bi-file-earmark-text-fill"></i>
+
+                                        <span>@e.NombreArchivo</span>
+
+                                        @if (e.EsNuevoArchivo)
+                                        {
+                                            <span class="tipo-archivo">(pendiente de guardar)</span>
+                                        }
+
+                                        <Button Clicked="() => confirmDelete(e)">Eliminar</Button>
+                                    </li>
+                                }
+
+                            </ul>
+                        }
                     </Field>
-                </Validation>
+                }
             </Validations>
         </fieldset>
     </Form>
@@ -128,6 +160,25 @@
     </ModalContent>
 </Modal>
 
+<Modal @ref="modalRefByDeleteFile">
+    <ModalContent Centered>
+        <ModalHeader Style="background-color: #002855;">
+            <ModalTitle Style="font-family:IndivisaFontBold; color: #ffffff;">Eliminación del archivo de políticas</ModalTitle>
+            <CloseButton Style="background-color: #ffffff; opacity: 1;" />
+        </ModalHeader>
+        <ModalBody>
+            <Field>
+                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar esta evidencia?</FieldLabel>
+            </Field>
+        </ModalBody>
+        <ModalFooter>
+            <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => HideModal(modalRefByDeleteFile, false)">No</Button>
+            <Button Style="font-family:IndivisaFont; background-color: #CF152D; color: #ffffff;" Clicked="@RemoveEvidence">Si</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
+
 @code {
     // La estructura de CreateUpdateFaculty es la misma que CreateUpdateActivity, por lo que se reutiliza varias partes de código de esa vista para esta,
     //  como la validación del Guid, el manejo de errores, entre otros.
@@ -135,6 +186,8 @@
     public Guid? facultyId { get; set; }
 
     private Faculty currentFaculty = new();
+    private List<ArchivoPoliticasTemporal> archivoPoliticasTemp = new();
+    private ArchivoPoliticasTemporal archivoPoliticasT;
     private string pageTitle = "Crear facultad";
     private string buttonText = "Crear";
 
@@ -147,6 +200,10 @@
     private Modal modalToShowErrorMessage;
 
     private Modal modalToShowErrorMessageAndRedirectViewPage;
+
+    private Modal modalRefByDeleteFile;
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -184,6 +241,9 @@
                     pageTitle = "Editar facultad";
                     buttonText = "Actualizar";
                 }
+
+                //Se carga el archivo de las políticas.
+                await LoadFile();
             }
 
         }
@@ -222,7 +282,7 @@
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos de la facultad no deben quedar vacios (son obligatorios). Además, el nombre, la misión, la visión, el slogan y la política asociada de la facultad deben tener al menos 5 caracteres y no debe superar los 100 caracteres.";
+                            errorMessage = "Los campos de la facultad no deben quedar vacios (excepto slogan). Además, el nombre deben tener al menos 5 caracteres y no debe superar los 100 caracteres, mientras que la misión y la visión de la facultad no debe superar los 1000 caracteres.";
                             await modalToShowErrorMessage.Show();
                             break;
 
@@ -239,6 +299,9 @@
 
                     return;
                 }
+
+                currentFaculty.Id = response.Data!.Id;
+
             }
             else
             {
@@ -249,7 +312,7 @@
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos de la facultad no deben quedar vacios (son obligatorios). Además, el nombre, la misión, la visión, el slogan y la política asociada de la facultad deben tener al menos 5 caracteres y no debe superar los 100 caracteres. También puede ser que el ID no coincida.";
+                            errorMessage = "Los campos de la facultad no deben quedar vacios (excepto slogan). Además, el nombre deben tener al menos 5 caracteres y no debe superar los 100 caracteres, mientras que la misión y la visión de la facultad no debe superar los 1000 caracteres. También puede ser que el ID no coincida.";
                             await modalToShowErrorMessage.Show();
                             break;
 
@@ -271,6 +334,54 @@
 
                     return;
                 }
+
+                // eliminar evidencias marcadas.
+                foreach (var e in archivoPoliticasTemp.Where(x => x.MarcarEvidenciaParaEliminar && !x.EsNuevoArchivo))
+                {
+                    var responseToDeleteFile = await ArchivoPoliticasApiService.DeleteAsync(currentFaculty.Id, e.Id!.Value);
+
+                    if (!responseToDeleteFile.Success)
+                    {
+                        switch (responseToDeleteFile.StatusCode)
+                        {
+                            case HttpStatusCode.NotFound:
+                                errorMessage = responseToDeleteFile.ErrorMessage;
+                                await modalToShowErrorMessageAndRedirectViewPage.Show();
+                                break;
+
+                            default:
+                                errorMessage = responseToDeleteFile.ErrorMessage;
+                                await modalToShowErrorMessageAndRedirectViewPage.Show();
+                                break;
+                        }
+
+                        return;
+                    }
+                }
+
+                // subir nuevas evidencias.
+                foreach (var e in archivoPoliticasTemp.Where(x => x.EsNuevoArchivo))
+                {
+                    var responseToUploadFile = await ArchivoPoliticasApiService.UploadAsync(currentFaculty.Id, e.file!);
+
+                    if (!responseToUploadFile.Success)
+                    {
+                        switch (responseToUploadFile.StatusCode)
+                        {
+                            case HttpStatusCode.BadRequest:
+                                errorMessage = responseToUploadFile.ErrorMessage;
+                                await modalToShowErrorMessage.Show();
+                                break;
+
+                            default:
+                                errorMessage = responseToUploadFile.ErrorMessage;
+                                await modalToShowErrorMessageAndRedirectViewPage.Show();
+                                break;
+                        }
+
+                        return;
+                    }
+                }
             }
 
             NavManager.NavigateTo("/home/vistaFacultades");
@@ -279,6 +390,63 @@
         {
             isLoading = false;
         }
+    }
+
+    // Método para cargar el archivo de políticas asociado a la facultad y convertirlo a archivo "temporal" para mostrarla.
+    private async Task LoadFile()
+    {
+        var archivoReal = await ArchivoPoliticasApiService.GetByFacultyIdAsync(currentFaculty.Id);
+
+        if (!archivoReal.Success)
+        {
+            errorMessage = archivoReal.ErrorMessage;
+            modalToShowErrorMessage?.Show();
+            return;
+        }
+
+        archivoPoliticasTemp = archivoReal.Data!.Select(e => new ArchivoPoliticasTemporal
+        {
+            Id = e.Id,
+            NombreArchivo = e.NombreArchivo,
+            Tipo = e.Tipo,
+            EsNuevoArchivo = false,
+            MarcarEvidenciaParaEliminar = false
+        }).ToList();
+    }
+
+    private async Task OnFilesChanged(FileChangedEventArgs e)
+    {
+        foreach (var file in e.Files)
+        {
+            archivoPoliticasTemp.Add(new ArchivoPoliticasTemporal
+            {
+                Id = null,
+                NombreArchivo = file.Name,
+                Tipo = file.Type,
+                EsNuevoArchivo = true,
+                file = file
+            });
+        }
+    }
+
+    private void RemoveEvidence()
+    {
+        if (archivoPoliticasT.EsNuevoArchivo)
+        {
+            archivoPoliticasTemp.Remove(archivoPoliticasT);
+        }
+        else
+        {
+            archivoPoliticasT.MarcarEvidenciaParaEliminar = true;
+        }
+
+        HideModal(modalRefByDeleteFile, false);
+    }
+
+    private Task confirmDelete(ArchivoPoliticasTemporal archivoPT)
+    {
+        archivoPoliticasT = archivoPT;
+        return modalRefByDeleteFile.Show();
     }
 
     private void goBack()
