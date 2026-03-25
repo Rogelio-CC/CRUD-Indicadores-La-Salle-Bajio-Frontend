@@ -10,7 +10,7 @@ using PruebaAutenticador2.Services;
 using Radzen;
 
 //Lectura local del archivo .env (no es necesario en entorno de producción).
-//DotNetEnv.Env.Load();
+DotNetEnv.Env.Load();
 var builder = WebApplication.CreateBuilder(args);
 
 // Se configura el esquema de autenticación y sin redirección automática:
