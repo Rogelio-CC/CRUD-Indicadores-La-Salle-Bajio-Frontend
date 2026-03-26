@@ -33,13 +33,13 @@
                  Background="Background.White"
                  ThemeContrast="ThemeContrast.Light">
 
-                @* --- BOTÓN PARA CERRAR EN MÓVIL --- *@
-                <BarItem Class="d-lg-none" Style="padding: 10px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: end;">
+                @* --- BOTÓN PARA CERRAR EN MÓVIL. SE OCULTA EN TABLET. --- *@
+                <BarItem Class="d-md-none" Style="padding: 10px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: end;">
                   <BarToggler Bar=sidebar Style="color: white; margin-right: 10px;" />
                 </BarItem>
 
 
-                <!-- 🔽 AQUÍ VAN TUS FILTROS -->
+                <!-- AQUÍ VAN LOS FILTROS -->
                 <div class="sidebar-content">
                     @SidebarFilters()
                 </div>
@@ -62,7 +62,7 @@
         </LayoutHeader>
 
         <LayoutContent Style="height: calc(100vh - 64px); display: flex; flex-direction: column;">
-            <!-- 🔽 AQUÍ VAN TUS DASHBOARDS -->
+            <!-- AQUÍ VAN LOS DASHBOARDS -->
             <Container Class="container-graphics">
                 <!-- Si graficasCargadas es true, se cargan las gráficas. -->
                 @if (graficasCargadas)
@@ -113,7 +113,6 @@
                                 <RadzenLegend Visible="false" />
 
                                 <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
-                                    @* Estilo personalizado para las etiquetas del eje X *@
                                     <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
                                 </RadzenCategoryAxis>
 
@@ -161,7 +160,6 @@
                                 <RadzenLegend Visible="false" />
 
                                 <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
-                                    @* Estilo personalizado para las etiquetas del eje X *@
                                     <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
                                 </RadzenCategoryAxis>
 
@@ -191,7 +189,6 @@
                                 <RadzenLegend Visible="false" />
 
                                 <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
-                                    @* Estilo personalizado para las etiquetas del eje X *@
                                     <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
                                 </RadzenCategoryAxis>
 
@@ -222,7 +219,6 @@
                                 <RadzenLegend Visible="false" />
 
                                 <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
-                                    @* Estilo personalizado para las etiquetas del eje X *@
                                     <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
                                 </RadzenCategoryAxis>
 
@@ -298,6 +294,7 @@
     // Referencia al modal para mostrar el mensaje de error.
     private Modal modalToShowErrorMessage;
 
+    // Método que contiene todos los filtros y se manda a llamar para mostrarlos.
     private RenderFragment SidebarFilters() => @<div>
     <h5 style="text-align:center; margin:5px; font-family:IndivisaFontBold; color:#002855;">Filtros</h5>
 

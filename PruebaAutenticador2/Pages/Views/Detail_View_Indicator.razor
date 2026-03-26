@@ -107,7 +107,7 @@
                     {
                         <li class="item-evidencia">
                             <i class="bi bi-file-earmark-text-fill" style="color:#002855; margin-right:6px;"></i>
-                            <Button Clicked="() => DownloadEvidence(evidencia)">
+                            <Button Class="nombreEvidencia" Clicked="() => DownloadEvidence(evidencia)">
                                 @evidencia.NombreArchivo
                             </Button>
                             <span class="tipo-evidencia">(@evidencia.Tipo)</span>
@@ -117,19 +117,25 @@
 
                 <p class="estado-evidencias">
                     <!-- Mensaje en caso de que faltan evidencias por subir para completar el indicador. -->
-                    @if (evidencias.Count < currentIndicator.CantidadEvidencias)
+                    @{
+                        // Calculamos la diferencia una sola vez.
+                        var faltantes = currentIndicator.CantidadEvidencias - evidencias.Count;
+                    }
+                    @if (faltantes > 0)
                     {
-                        <span style="color: #b22222;">⚠️ Faltan @(currentIndicator.CantidadEvidencias - evidencias.Count) evidencias por completar.</span>
+                        <span style="color: #b22222; font-family:IndivisaFontBold;">
+                             @(faltantes == 1 ? "Falta 1 evidencia" : $"Faltan {faltantes} evidencias") por completar.
+                        </span>
                     }
                     else
                     {
-                        <span style="color: #2e8b57;">✅ Se han completado todas las evidencias requeridas.</span>
+                        <span style="color: #2e8b57; font-family:IndivisaFontBold;">Se han completado todas las evidencias requeridas.</span>
                     }
                 </p>
             }
             else
             {
-                <p style="color: #b22222;">No se han subido evidencias aún.</p>
+                <p style="color: #b22222; font-family:IndivisaFontBold;">No se han subido evidencias aún.</p>
             }
         </Field>
     </Form>

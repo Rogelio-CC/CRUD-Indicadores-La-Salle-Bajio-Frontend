@@ -1,4 +1,5 @@
-﻿<!-- La estructura .razor de CreateUpdateFaculty es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
+﻿<!-- La estructura .razor de CreateUpdateFaculty es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta.-->
+<!-- También se reutiliza el código para subir un archivo de políticas como las evidencias en CreateUpdateIndicator. -->
 @page "/home/vistaFacultades/creacionFacultad"
 @page "/home/vistaFacultades/creacionFacultad/{facultyId:guid}"
 @attribute [Authorize]
@@ -57,11 +58,11 @@
                     <Field Class="form-field">
                         <!-- El input se bloquea cuando detecta que ya se subio un archivo temporal. -->
                         <FieldLabel for="nuevoArchivoPoliticas">Adjuntar archivo de políticas en formato PDF</FieldLabel>
-                        <FileEdit Changed="@OnFilesChanged" Disabled="@(archivoPoliticasTemp !=null && archivoPoliticasTemp.Any(x=> !x.MarcarEvidenciaParaEliminar))" Class="form-control" ElementId="nuevoArchivoPoliticas" />
-                        @if (archivoPoliticasTemp != null && archivoPoliticasTemp.Any(x => !x.MarcarEvidenciaParaEliminar))
+                        <FileEdit Changed="@OnFilesChanged" Disabled="@(archivoPoliticasTemp != null && archivoPoliticasTemp.Any(x => !x.MarcarArchivoParaEliminar))" Class="form-control" ElementId="nuevoArchivoPoliticas" />
+                        @if (archivoPoliticasTemp != null && archivoPoliticasTemp.Any(x => !x.MarcarArchivoParaEliminar))
                         {
-                            <div class="text-muted mt-1" style="font-size: 0.85rem; font-family:IndivisaFont">
-                                <i class="bi bi-info-circle" style="color:#002855"></i> Debe eliminar el archivo actual para subir uno nuevo.
+                            <div class="text-muted mt-1" style="font-size: 0.85rem; font-family:IndivisaFontBold">
+                                Debe eliminar el archivo actual para subir uno nuevo.
                             </div>
                         }
                     </Field>
@@ -70,12 +71,10 @@
                         @if (archivoPoliticasTemp.Any())
                         {
                             <ul class="list-archivo">
-                                @foreach (var e in archivoPoliticasTemp.Where(x => !x.MarcarEvidenciaParaEliminar))
+                                @foreach (var e in archivoPoliticasTemp.Where(x => !x.MarcarArchivoParaEliminar))
                                 {
                                     <li class="item-archivo @(e.EsNuevoArchivo ? "temporal" : "")">
-                                        <i class="bi bi-file-earmark-text-fill"></i>
-
-                                        <span>@e.NombreArchivo</span>
+                                        <span class="nombreArchivo">@e.NombreArchivo</span>
 
                                         @if (e.EsNuevoArchivo)
                                         {
@@ -168,7 +167,7 @@
         </ModalHeader>
         <ModalBody>
             <Field>
-                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar esta evidencia?</FieldLabel>
+                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar este archivo? Cuando se presione el botón "Actualizar", se borrará permanentemente.</FieldLabel>
             </Field>
         </ModalBody>
         <ModalFooter>
@@ -335,8 +334,7 @@
                     return;
                 }
 
-                // eliminar evidencias marcadas.
-                foreach (var e in archivoPoliticasTemp.Where(x => x.MarcarEvidenciaParaEliminar && !x.EsNuevoArchivo))
+                foreach (var e in archivoPoliticasTemp.Where(x => x.MarcarArchivoParaEliminar && !x.EsNuevoArchivo))
                 {
                     var responseToDeleteFile = await ArchivoPoliticasApiService.DeleteAsync(currentFaculty.Id, e.Id!.Value);
 
@@ -359,7 +357,6 @@
                     }
                 }
 
-                // subir nuevas evidencias.
                 foreach (var e in archivoPoliticasTemp.Where(x => x.EsNuevoArchivo))
                 {
                     var responseToUploadFile = await ArchivoPoliticasApiService.UploadAsync(currentFaculty.Id, e.file!);
@@ -392,7 +389,7 @@
         }
     }
 
-    // Método para cargar el archivo de políticas asociado a la facultad y convertirlo a archivo "temporal" para mostrarla.
+
     private async Task LoadFile()
     {
         var archivoReal = await ArchivoPoliticasApiService.GetByFacultyIdAsync(currentFaculty.Id);
@@ -410,7 +407,7 @@
             NombreArchivo = e.NombreArchivo,
             Tipo = e.Tipo,
             EsNuevoArchivo = false,
-            MarcarEvidenciaParaEliminar = false
+            MarcarArchivoParaEliminar = false
         }).ToList();
     }
 
@@ -437,7 +434,7 @@
         }
         else
         {
-            archivoPoliticasT.MarcarEvidenciaParaEliminar = true;
+            archivoPoliticasT.MarcarArchivoParaEliminar = true;
         }
 
         HideModal(modalRefByDeleteFile, false);

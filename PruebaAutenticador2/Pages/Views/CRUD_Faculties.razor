@@ -62,7 +62,7 @@
                 <TableRow>
                     <TableRowCell MobileModeCaption="Nombre de la facultad">@faculty.Nombre</TableRowCell>
                     <TableRowCell MobileModeCaption="Fecha de creación">@faculty.FechaEmision.ToString("dd/MM/yyyy")</TableRowCell>
-                    <TableRowCell MobileModeCaption="Fecha de edición"> @(faculty.Slogan ?? "")</TableRowCell>
+                    <TableRowCell MobileModeCaption="Slogan"> @(faculty.Slogan ?? "")</TableRowCell>
                     <TableRowCell>
                         <Div Class="buttons-container">
                             <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff;" Clicked="() => viewFaculty(faculty.Id)">

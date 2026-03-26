@@ -35,16 +35,12 @@
     flex-direction: row;
     align-items: center;
 }
-    /* Estilos para el enlace del elemento del archivo subido por el usuario */
-    .item-archivo a {
-        text-decoration: none;
-        color: #002855;
-        font-weight: 600;
-    }
-        /* Efecto para el enlace del elemento del archivo subido por el usuario al pasar el cursor por encima */
-        .item-archivo a:hover {
-            text-decoration: underline;
-        }
+
+/* Estilos para la etiqueta del nombre del archivo subido por el usuario */
+.nombreArchivo {
+    font-size: 15px;
+    color: #555;
+}
 
 /* Estilos para el tipo pdf del elemento del archivo subido por el usuario */
 .tipo-archivo {
@@ -57,5 +53,19 @@
 @media (min-width: 320px) and (max-width: 768px) {
     .container-archivo {
         justify-items: center;
+    }
+
+    .item-archivo {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nombreArchivo {
+        font-size: 12px;
+    }
+
+    .tipo-archivo {
+        margin-left: 0px;
+        margin-top: 8px;
     }
 }

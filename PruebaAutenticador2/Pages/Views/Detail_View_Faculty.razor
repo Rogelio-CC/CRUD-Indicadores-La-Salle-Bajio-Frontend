@@ -63,7 +63,7 @@
                         {
                             <li class="item-archivo">
                                 <i class="bi bi-file-earmark-text-fill" style="color:#002855; margin-right:6px;"></i>
-                                <Button Clicked="() => DownloadFile(archivo)">
+                                <Button Class="nombreArchivo" Clicked="() => DownloadFile(archivo)">
                                     @archivo.NombreArchivo
                                 </Button>
                                 <span class="tipo-archivo">(@archivo.Tipo)</span>
@@ -73,7 +73,7 @@
                 }
                 else
                 {
-                    <p style="color: #b22222; font-family:IndivisaFont">No se han subido el archivo.</p>
+                    <p style="color: #b22222; font-family:IndivisaFontBold;">No se ha subido el archivo.</p>
                 }
             </Field>
         </fieldset>

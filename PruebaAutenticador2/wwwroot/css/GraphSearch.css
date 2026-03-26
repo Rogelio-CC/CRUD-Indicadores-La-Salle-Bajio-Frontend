@@ -7,16 +7,6 @@ html, body {
     overflow: hidden; /* 🚀 elimina scroll global */
 }
 
-/* Título principal del dashboard de gráficos y búsqueda de datos */
-/*h1 {
-    margin: 30px 30px 20px;
-    font-size: 2em;
-    text-transform: uppercase;
-    color: #002855;
-    font-family: IndivisaFontBold;
-    text-align: center;
-}*/
-
 /* Línea separadora del dashboard de gráficos y búsqueda de datos */
 .separate-line-detail {
     width: 96%;
@@ -56,7 +46,7 @@ form {
     flex-wrap: wrap; /* Permite que los filtros bajen de fila si la pantalla se achica */
     gap: 10px; /* Más espacio entre ellos para que se vea limpio */
     margin-bottom: 1rem;
-    justify-content: center; /* Mantiene los filtros centrados */
+    align-content: center; /* Mantiene los filtros centrados */
 }
 
 /* Contenedor de cada campo: Les damos un tamaño mínimo */
@@ -100,7 +90,7 @@ form {
     gap: 8px;
 }
 
-/* Card */
+/* Card del dashboard */
 .dashboard-card {
     background-color: #ffffff;
     border-radius: 12px;
@@ -145,13 +135,6 @@ form {
     width: 98%;
 }
 
-/* Contenedor del título principal del dashboard de gráficos y búsqueda de datos */
-/*.title-container {
-    font-family: IndivisaFontBold;
-    color: #002855;
-    text-align: center;
-}*/
-
 /* Mejora la visibilidad de los textos dentro de Radzen */
 .rz-tick-text {
     fill: #002855 !important; /* Color personalizado para las etiquetas del eje */
@@ -159,9 +142,14 @@ form {
     font-size: 11px;
 }
 
+/* Asegura que el contenido del sidebar siempre empiece arriba */
 .sidebar-content {
     padding: 10px;
     width: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Forzar contenido al inicio */
+    height: 100%;
 }
 
     .sidebar-content .container-search {
@@ -172,6 +160,11 @@ form {
     .sidebar-content form {
         padding: 1rem;
     }
+
+/* Ajuste para el Sidebar en móvil/tablet */
+.b-bar-vertical-inline {
+    justify-content: flex-start !important; /* Elimina centrados automáticos de Blazorise */
+}
 
 
 /* Responsividad para móviles (anchura )*/
@@ -186,5 +179,16 @@ form {
 
     form label {
         text-align: center;
+    }
+
+    .sidebar-content {
+        width: 100%; /* Usa todo el ancho del sidebar en móvil (esto mismo se aplica para las tablets) */
+    }
+}
+
+/* Evitar que el LayoutSider ocupe espacio visual en tablets si está colapsado */
+@media (max-width: 991px) {
+    .sidebar-content {
+        width: 100%;
     }
 }

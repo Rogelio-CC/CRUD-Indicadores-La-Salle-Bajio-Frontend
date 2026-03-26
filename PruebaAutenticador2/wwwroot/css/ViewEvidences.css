@@ -35,16 +35,12 @@
     flex-direction: row;
     align-items: center;
 }
-    /* Estilos para los enlaces de cada elemento de la lista de evidencias subidas por el usuario */
-    .item-evidencia a {
-        text-decoration: none;
-        color: #002855;
-        font-weight: 600;
-    }
-        /* Efecto para los enlaces de cada elemento de la lista de evidencias subidas por el usuario al pasar el cursor por encima */
-        .item-evidencia a:hover {
-            text-decoration: underline;
-        }
+
+/* Estilos para la etiqueta del nombre de la evidencia por el usuario */
+.nombreEvidencia {
+    font-size: 15px;
+    color: #555;
+}
 
 /* Estilos para el tipo de evidencia de cada elemento de la lista de evidencias subidas por el usuario */
 .tipo-evidencia {
@@ -65,5 +61,19 @@
 @media (min-width: 320px) and (max-width: 768px) {
     .container-evidencias {
         justify-items: center;
+    }
+
+    .item-evidencia {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nombreEvidencia {
+        font-size: 12px;
+    }
+
+    .tipo-evidencia {
+        margin-left: 0px;
+        margin-top: 8px;
     }
 }

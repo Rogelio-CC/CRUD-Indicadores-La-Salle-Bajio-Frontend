@@ -19,7 +19,7 @@ namespace PruebaAutenticador2.Classes
 
         // Indica si el archivo de políticas esta marcado para eliminarse
         // posteriormente de forma permanente cuando se crea la facultad.
-        public bool MarcarEvidenciaParaEliminar { get; set; }
+        public bool MarcarArchivoParaEliminar { get; set; }
 
         // Atributo usado para pasar el archivo de políticas temporal a uno permanente cuando se crea la facultad.
         // El tipo IFileEntry es exclusivamente de la librería Blazorise.

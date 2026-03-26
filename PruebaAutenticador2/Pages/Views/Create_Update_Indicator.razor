@@ -168,9 +168,8 @@
                                     @foreach (var e in evidenciasTemp.Where(x => !x.MarcarEvidenciaParaEliminar))
                                     {
                                         <li class="item-evidencia @(e.EsNuevaEvidencia ? "temporal" : "")">
-                                            <i class="bi bi-file-earmark-text-fill"></i>
 
-                                            <span>@e.NombreArchivo</span>
+                                        <span class="nombreEvidencia">@e.NombreArchivo</span>
 
                                             @if (e.EsNuevaEvidencia)
                                             {
@@ -187,7 +186,7 @@
                             else
                             {
                                 <!-- Mensaje que se muestra en caso de no haberse agregado alguna evidencia temporal aún. -->
-                                <p style="color: #b22222;">No se han subido evidencias aún.</p>
+                                <p style="color: #b22222; font-family:IndivisaFontBold;">No se han subido evidencias aún.</p>
                             }
 
                         </Field>
@@ -324,7 +323,7 @@
         </ModalHeader>
         <ModalBody>
             <Field>
-                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar esta evidencia?</FieldLabel>
+                <FieldLabel Style="font-family:IndivisaFont;">¿Quieres eliminar esta evidencia? Cuando se presione el botón "Actualizar", se borrará permanentemente.</FieldLabel>
             </Field>
         </ModalBody>
         <ModalFooter>
@@ -628,8 +627,6 @@
                     }
                     catch (Exception ex)
                     {
-                        // Loguea el error pero no rompas la app
-                        Console.WriteLine($"Error enviando correo: {ex.Message}");
                         errorMessage = "La actividad se guardó, pero no pudimos enviar el correo de recordatorio.";
                         await modalToShowErrorMessage.Show();
                     }
