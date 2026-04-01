@@ -55,7 +55,7 @@ namespace PruebaAutenticador2.Services
         }
 
         // Método para subir una nueva evidencia asociada a un indicador específico.
-        public async Task<ApiResponse<bool>> UploadAsync(Guid indicadorId, /*IFileEntry file*/ byte[] contenido, string nombreArchivo)
+        public async Task<ApiResponse<bool>> UploadAsync(Guid indicadorId, byte[] contenido, string nombreArchivo)
         {
 
             var result = new ApiResponse<bool>();
@@ -64,7 +64,6 @@ namespace PruebaAutenticador2.Services
             {
                 // Se crea un contenido del archivo a partir de su selección hecha por el usuario y se prepara para ser enviado a la solicitud HTTP utilizando MultipartFormDataContent,
                 // que es necesario para enviar archivos a través de HTTP.
-
                 using var content = new MultipartFormDataContent();
                 var fileContent = new ByteArrayContent(contenido);
                 content.Add(fileContent, "file", nombreArchivo);

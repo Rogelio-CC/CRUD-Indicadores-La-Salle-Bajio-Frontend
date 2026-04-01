@@ -27,7 +27,7 @@ namespace PruebaAutenticador2.Services
                 if (response.IsSuccessStatusCode)
                 {
                     result.Success = true;
-                    result.Data = await response.Content.ReadFromJsonAsync<List<Faculty>>();
+                    result.Data = await response.Content.ReadFromJsonAsync<List<Faculty>>(); // Se espera que el servidor devuelva el objeto creado con su ID asignado.
                 }
             }
             catch (HttpRequestException)
@@ -86,13 +86,13 @@ namespace PruebaAutenticador2.Services
         }
 
         // Método para crear una nueva facultad.
-        public async Task<ApiResponse<Faculty>> CreateAsync(Faculty Faculty)
+        public async Task<ApiResponse<Faculty>> CreateAsync(Faculty faculty)
         {
             var result = new ApiResponse<Faculty>();
 
             try
             {
-                var response = await _http.PostAsJsonAsync("api/facultades/crear", Faculty);
+                var response = await _http.PostAsJsonAsync("api/facultades", faculty);
 
                 result.StatusCode = response.StatusCode;
 

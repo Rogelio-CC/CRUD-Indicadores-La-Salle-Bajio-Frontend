@@ -2,6 +2,7 @@
 
 /* Estilos generales para el dashboard de gráficos y búsqueda de datos */
 
+/* Ajuste para quitar la barra de desplazamiento de la página */
 html, body {
     height: 100%;
     overflow: hidden; /* 🚀 elimina scroll global */
@@ -119,10 +120,6 @@ form {
     margin-top: 20px;
 }
 
-.greyText {
-    color: #6c757d;
-}
-
 /* Contenedor de cada gráfica del dashboard */
 .container-graphics {
     box-shadow: 0 10px 10px 10px rgba(0, 0, 0, 0.10);
@@ -135,7 +132,7 @@ form {
     width: 98%;
 }
 
-/* Mejora la visibilidad de los textos dentro de Radzen */
+/* Mejora la visibilidad de los textos dentro de Radzen (actualmente no se aplica por el uso del Formatter para eliminación de etiquetas x). */
 .rz-tick-text {
     fill: #002855 !important; /* Color personalizado para las etiquetas del eje */
     font-weight: bold;
@@ -151,12 +148,12 @@ form {
     justify-content: flex-start; /* Forzar contenido al inicio */
     height: 100%;
 }
-
+    /* El sidebar ajusta el ancho del contenedor de los filtros y hace que ese contenedor no tenga una sombra alrededor */
     .sidebar-content .container-search {
         width: 100%;
         box-shadow: none;
     }
-
+    /*El sidebar ajusta el espaciado interno del formulario */
     .sidebar-content form {
         padding: 1rem;
     }
@@ -186,7 +183,7 @@ form {
     }
 }
 
-/* Evitar que el LayoutSider ocupe espacio visual en tablets si está colapsado */
+/* Responsividad para móviles (tablets ). Evitar que el LayoutSider ocupe espacio visual en tablets si está colapsado */
 @media (max-width: 991px) {
     .sidebar-content {
         width: 100%;

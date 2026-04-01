@@ -24,7 +24,7 @@
 
 
 <Layout Sider>
-    <!-- SIDEBAR -->
+    <!-- Sidebar. -->
     <LayoutSider>
         <LayoutSiderContent>
             <Bar @ref="sidebar"
@@ -33,13 +33,13 @@
                  Background="Background.White"
                  ThemeContrast="ThemeContrast.Light">
 
-                @* --- BOTÓN PARA CERRAR EN MÓVIL. SE OCULTA EN TABLET. --- *@
+                @* --- Botón para cerrar en móvil. Se oculat en tablet. --- *@
                 <BarItem Class="d-md-none" Style="padding: 10px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: end;">
                   <BarToggler Bar=sidebar Style="color: white; margin-right: 10px;" />
                 </BarItem>
 
 
-                <!-- AQUÍ VAN LOS FILTROS -->
+                <!-- Filtros. -->
                 <div class="sidebar-content">
                     @SidebarFilters()
                 </div>
@@ -48,10 +48,10 @@
         </LayoutSiderContent>
     </LayoutSider>
 
-    <!-- CONTENIDO PRINCIPAL -->
+    <!-- Contenido principal. -->
     <Layout>
         <LayoutHeader Fixed>
-            @* Aquí es donde debe ir tu Navbar principal *@
+            @* Aquí es donde va el Navbar principal *@
             <PruebaAutenticador2.Pages.ReusableComponents.Navbar role="@AuthState.Role" />
 
             <Bar Mode="BarMode.Horizontal"
@@ -62,7 +62,7 @@
         </LayoutHeader>
 
         <LayoutContent Style="height: calc(100vh - 64px); display: flex; flex-direction: column;">
-            <!-- AQUÍ VAN LOS DASHBOARDS -->
+            <!-- Dashboards. -->
             <Container Class="container-graphics">
                 <!-- Si graficasCargadas es true, se cargan las gráficas. -->
                 @if (graficasCargadas)
@@ -84,9 +84,9 @@
                                 </RadzenColumnSeries>
 
                                 <RadzenLegend Visible="false" />
-
+                                @* Formatter ayuda a quitar las etiquetas x en las gráficas de barras. *@
                                 <RadzenCategoryAxis Padding="20" Formatter="@(value => "")">
-                                    @* Estilo personalizado para las etiquetas del eje X *@
+                                    @* Estilo personalizado para las etiquetas del eje X (si se desean visualizar, es necesario quitar Formatter). *@
                                     <RadzenGridLines Visible="true" Stroke="#f0f0f0" />
                                 </RadzenCategoryAxis>
 

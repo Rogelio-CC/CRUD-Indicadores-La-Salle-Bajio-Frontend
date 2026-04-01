@@ -97,7 +97,7 @@
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
-            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;"><Paragraph Style="white-space: pre-line; text-align:center;">@errorMessage</Paragraph></Heading>
             <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, false)">
                 Ok
             </Button>
@@ -229,7 +229,8 @@
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos del período escolar no deben quedar vacios (son obligatorios). Además, el nombre del período debe tener al menos 5 caracteres y no debe superar los 100 caracteres y las fechas no deben ser pasadas al actual ni mayor a 1 año.";
+                            errorMessage = "• El nombre del período debe tener entre 5 y 100 caracteres.\n\n" +
+                            "• Las fechas no deben ser anteriores al actual ni mayor a 1 año.";
                             await modalToShowErrorMessage.Show();
                             break;
 
@@ -256,7 +257,9 @@
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos del período escolar no deben quedar vacios (son obligatorios). Además, el nombre del período debe tener al menos 5 caracteres y no debe superar los 100 caracteres y las fechas no deben ser pasadas al actual ni mayor a 1 año. También puede ser que el ID no coincida.";
+                            errorMessage = "• El nombre del período debe tener entre 5 y 100 caracteres.\n\n" +
+                            "• Las fechas no deben ser anteriores al actual ni mayor a 1 año.\n\n" +
+                            "• También puede ser que el ID no coincida.";
                             await modalToShowErrorMessage.Show();
                             break;
 

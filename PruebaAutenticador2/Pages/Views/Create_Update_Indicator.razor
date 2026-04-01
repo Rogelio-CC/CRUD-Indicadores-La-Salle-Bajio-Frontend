@@ -1,4 +1,5 @@
 ﻿<!-- La estructura .razor de CreateUpdateComment es la misma que CreateUpdateActivity,  por lo que se reutiliza varias partes de código de esa vista para esta. -->
+<!-- También se reutiliza el código para subir múltiples evidencias como en el archivo de políticas en CreateUpdateFaculty. -->
 @page "/home/vistaIndicadores/creacionIndicador"
 @page "/home/vistaIndicadores/creacionIndicador/{indicatorId:guid}"
 @attribute [Authorize]
@@ -139,7 +140,7 @@
                 {
                     <Field Class="form-field">
                         <FieldLabel for="nuevasEvidencias">@evidenceText</FieldLabel>
-                        <FileEdit Changed="@OnFilesChanged" Disabled="@(currentIndicator.Id == Guid.Empty)" Multiple Class="form-control" ElementId="nuevasEvidencias" />
+                        <FileEdit Filter=".pdf, .jpg, .png, .jpeg, .doc, .docx, .ppt, .pptx, .xls, .xlsx" Changed="@OnFilesChanged" Disabled="@(currentIndicator.Id == Guid.Empty)" Multiple Class="form-control" ElementId="nuevasEvidencias" />
                     </Field>
                 }
                     <Validation Validator="ValidateGuidSelection">
@@ -410,7 +411,7 @@
     private List<CarreraComboDTO> carreras = new();
     private List<GrupoIndicadoresComboDTO> gruposIndicadores = new();
     private List<EvidenciaTemporal> evidenciasTemp = new();
-    private EvidenciaTemporal evidenciaT;
+    private EvidenciaTemporal evidenciaT = new EvidenciaTemporal(); //
 
     private bool remiderActivateIndicator { get; set; } = false;
 
@@ -490,7 +491,7 @@
 
                 var dto = responseToGetId.Data;
 
-                disableAmountOfEvidenceInput = true; // si el indicador ya existe, no se permite modificar la cantidad de evidencias necesarias, para evitar inconsistencias con las evidencias ya subidas anteriormente.
+                disableAmountOfEvidenceInput = true; // Si el indicador ya existe, no se permite modificar la cantidad de evidencias necesarias, para evitar inconsistencias con las evidencias ya subidas anteriormente.
 
                 currentIndicator = new Indicator
                 {
@@ -625,9 +626,9 @@
                     {
                         await EnviarCorreo();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        errorMessage = "La actividad se guardó, pero no pudimos enviar el correo de recordatorio.";
+                        errorMessage = "El indicador se guardó, pero no se pudo enviar el correo de recordatorio.";
                         await modalToShowErrorMessage.Show();
                     }
                 }
@@ -669,7 +670,7 @@
                     return;
                 }
 
-                // eliminar evidencias marcadas.
+                // Eliminar evidencias marcadas para eliminación que ya existían previamente como evidencias permanentes.
                 foreach (var e in evidenciasTemp.Where(x => x.MarcarEvidenciaParaEliminar && !x.EsNuevaEvidencia))
                 {
                     var responseToDeleteEvidence = await EvidenciaApiService.DeleteAsync(currentIndicator.Id, e.Id!.Value);
@@ -693,7 +694,7 @@
                     }
                 }
 
-                // subir nuevas evidencias.
+                // Subir evidencias nuevas que se agregaron como evidencias temporales pero que aún no existen como evidencias permanentes.
                 foreach (var e in evidenciasTemp.Where(x => x.EsNuevaEvidencia))
                 {
                     var responseToUploadEvidences = await EvidenciaApiService.UploadAsync(currentIndicator.Id, e.Contenido, e.NombreArchivo);
@@ -723,11 +724,9 @@
                     {
                         await EnviarCorreo();
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        // Loguea el error pero no rompas la app
-                        Console.WriteLine($"Error enviando correo: {ex.Message}");
-                        errorMessage = "La actividad se guardó, pero no pudimos enviar el correo de recordatorio.";
+                        errorMessage = "El indicador se guardó, pero no se pudo enviar el correo de recordatorio.";
                         await modalToShowErrorMessage.Show();
                     }
                 }
@@ -809,8 +808,12 @@
         return modalRefByDeleteEvidence.Show();
     }
 
+    // Método para enviar el correo de recordatorio de modificación del indicador.
     private async Task EnviarCorreo()
     {
+        // Obtener el nombre de la carrera buscando en tu lista 'carreras' por el ID
+        var nombreCarrera = carreras.FirstOrDefault(c => c.Id == currentIndicator.CarreraId)?.Nombre ?? "";
+
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var userClaims = authState.User;
 
@@ -821,9 +824,9 @@
 
         destinatario = authenticatedEmail;
 
-        asunto = $"Correo enviado para modificar el indicador '{currentIndicator.DescripcionIndicador}'";
+        // Usar la variable nombreCarrera en el asunto
+        asunto = $"Correo enviado para modificar el indicador '{currentIndicator.DescripcionIndicador}' de la carrera '{nombreCarrera}'.";
 
-        // Variable que contiene la estrctura html del correo enviado con información
         string bodyHTML = @"
                             <html>
                             <body style='margin:0; padding:0;'>
@@ -881,7 +884,7 @@
             disabledInputs = true;
             disabledComplimentDateInput = false;
 
-            // Limpias lo que ya no se aplica.
+            // Limpieza de los datos relacionados a una acción correctiva.
             currentIndicator.AccionCorrectiva = string.Empty;
             currentIndicator.ResponsableAccionCorrectivaId = null;
         }
@@ -890,7 +893,7 @@
             disabledInputs = false;
             disabledComplimentDateInput = true;
 
-            // Limpias lo que ya no se aplica.
+            // Limpieza de la fecha de cumplimiento.
             currentIndicator.FechaCumplimiento = null;
         }
     }

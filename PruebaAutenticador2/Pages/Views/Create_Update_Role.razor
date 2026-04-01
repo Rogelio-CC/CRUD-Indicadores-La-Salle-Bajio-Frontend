@@ -200,7 +200,7 @@
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos del rol no deben quedar vacios (son obligatorios). Además, el nombre del rol y los permisos del rol deben tener al menos 5 caracteres y no debe superar los 100 caracteres.";
+                            errorMessage = "El nombre del rol debe tener entre 5 y 100 caracteres.";
                             await modalToShowErrorMessage.Show();
                             break;
 
@@ -227,7 +227,7 @@
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos del rol no deben quedar vacios (son obligatorios). Además, el nombre del rol y los permisos del rol deben tener al menos 5 caracteres y no debe superar los 100 caracteres. También puede ser que el ID no coincida.";
+                            errorMessage = "El nombre del rol debe tener entre 5 y 100 caracteres. También puede ser que el ID no coincida.";
                             await modalToShowErrorMessage.Show();
                             break;
 

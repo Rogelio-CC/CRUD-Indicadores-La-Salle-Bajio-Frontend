@@ -91,7 +91,7 @@
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
-            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;"><Paragraph Style="white-space: pre-line; text-align:center;">@errorMessage</Paragraph></Heading>
             <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, false)">
                 Ok
             </Button>
@@ -205,7 +205,9 @@
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos del grupo no deben quedar vacios (son obligatorios). Además, el número del grupo no debe ser negativo y el nombre del grupo debe tener al menos 5 caracteres y no debe superar los 100 caracteres.";
+                            errorMessage = "• Los campos del grupo no deben quedar vacios.\n\n" + 
+                            "• El número del grupo no debe ser negativo. \n\n" + 
+                            "• El nombre del grupo debe tener al menos 5 caracteres y no debe superar los 100 caracteres.";
                             await modalToShowErrorMessage.Show();
                             break;
 
@@ -232,7 +234,10 @@
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos del grupo no deben quedar vacios (son obligatorios). Además, el número del grupo no debe ser negativo y el nombre del grupo debe tener al menos 5 caracteres y no debe superar los 100 caracteres. También puede ser que el ID no coincida.";
+                            errorMessage = errorMessage = "• Los campos del grupo no deben quedar vacios.\n\n" +
+                            "• El número del grupo no debe ser negativo. \n\n" +
+                            "• El nombre del grupo debe tener al menos 5 caracteres y no debe superar los 100 caracteres. \n\n" + 
+                            "• También puede ser que el ID no coincida.";
                             await modalToShowErrorMessage.Show();
                             break;
 

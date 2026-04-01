@@ -1,6 +1,4 @@
-﻿using Blazorise;
-
-namespace PruebaAutenticador2.Classes
+﻿namespace PruebaAutenticador2.Classes
 {
     // Representa una evidencia temporal, que se utiliza para manejar archivos de evidencia en la aplicación.
     public class EvidenciaTemporal
@@ -22,6 +20,6 @@ namespace PruebaAutenticador2.Classes
         public bool MarcarEvidenciaParaEliminar { get; set; }
 
         // Atributo usado para pasar el archivo temporal a uno permanente cuando se crea el indicador.
-        public byte[] Contenido { get; set; }
+        public byte[] Contenido { get; set; } = Array.Empty<byte>();
     }
 }

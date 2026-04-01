@@ -8,5 +8,8 @@
 
         // Nombre del indicador.
         public string Nombre { get; set; } = string.Empty;
+
+        // Nombre de la carrera del indicador.
+        public string NombreCarrera { get; set; } = string.Empty;
     }
 }

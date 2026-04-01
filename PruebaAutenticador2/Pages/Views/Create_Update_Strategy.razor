@@ -49,7 +49,7 @@
                             @foreach (var i in indicadores)
                             {
                                 <SelectItem TValue="Guid" Value="@i.Id">
-                                    @i.Nombre
+                                    @i.Nombre - @i.NombreCarrera
                                 </SelectItem>
                             }
                         </Select>

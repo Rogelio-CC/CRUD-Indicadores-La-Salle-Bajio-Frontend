@@ -11,8 +11,10 @@
 
 <!-- Importaciones de estilos CSS. -->
 <link rel="stylesheet" href="css/Fonts.css" />
+<link rel="stylesheet" href="css/NotFoundElement.css" />
 
-<!-- Estrctura principal de App (componente usado en MainLayout). -->
+<!-- Estrctura principal de App (componente usado en MainLayout). Se actualizo la interfaz para mostrar el mensaje de "elemento o ruta no encontrado" de manera amigable. -->
+<!-- Los estilos y la estructura mostrados son los mismo que en la pantalla NotFoundUser.razor y NotFoundRole.razor. -->
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
@@ -21,7 +23,30 @@
         <NotFound>
             <PageTitle>No encontrado</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert" style="font: IndivisaFontBold;">Elemento o ruta no encontrado</p>
+                <Container Class="container-error">
+                    <Card Class="error-card shadow">
+                        <CardHeader Class="error-header bg-indivisa-blue text-white">
+                            <Icon Name="IconName.Alert" Size="IconSize.ExtraLarge" Class="error-icon" />
+                            <Heading Size="HeadingSize.Is5" Style="font-family:IndivisaFontBold;">ELEMENTO O RUTA NO ENCONTRADO</Heading>
+                        </CardHeader>
+                        <CardBody>
+                            <Heading Size="HeadingSize.Is6" Style="font-family:IndivisaFont;">POSIBLES CAUSAS:</Heading>
+                            <ListGroup Class="error-list">
+                                <ListGroupItem Style="font-family:IndivisaFont;">
+                                    <Icon Name="IconName.Circle" Class="error-list-icon" />
+                                    LA RUTA NO EXISTE.
+                                </ListGroupItem>
+                                <ListGroupItem Style="font-family:IndivisaFont;">
+                                    <Icon Name="IconName.Circle" Class="error-list-icon" />
+                                    RUTA MAL ESCRITA.
+                                </ListGroupItem>
+                            </ListGroup>
+                        </CardBody>
+                        <CardFooter Class="error-footer text-center">
+                            <Paragraph Style="font-family:IndivisaFont;">UNIVERSIDAD LA SALLE BAJÍO. TODOS LOS DERECHOS RESERVADOS © @DateTime.Now.Year. </Paragraph>
+                        </CardFooter>
+                    </Card>
+                </Container>
             </LayoutView>
         </NotFound>
     </Router>
@@ -53,10 +78,10 @@
         Nav.NavigateTo("/MicrosoftIdentity/Account/SignOut", true);
         await Task.CompletedTask; // Método completado, no se necesita realizar ninguna acción adicional después de cerrar sesión y redirigir al usuario.
     }
+
+    // Método para regresar a la pantalla de inicio.
+    private void GoBack()
+    {
+        Nav.NavigateTo("/home");
+    }
 }
-
-
-
-
-
-

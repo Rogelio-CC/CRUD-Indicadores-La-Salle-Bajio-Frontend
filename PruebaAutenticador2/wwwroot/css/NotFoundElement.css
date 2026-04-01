@@ -1,8 +1,7 @@
-﻿@import "Fonts.css";
+﻿/* Los estilos manejados en este archivo se reutilizan del archivo NotFoundUserAndRolePageDesigncs.css */
 
-/* Estilos generales para el nuevo diseño de error */
+@import "Fonts.css";
 
-/* Contenedor principal centrado */
 .container-error {
     display: flex;
     align-items: center;
@@ -10,14 +9,12 @@
     min-height: 100vh;
 }
 
-/* Tarjeta de error con bordes redondeados y ancho máximo */
 .error-card {
     border-radius: 12px;
     max-width: 600px;
     width: 100%;
 }
 
-/* Encabezado del error con fondo azul oscuro y texto blanco */
 .error-header {
     background-color: #002855;
     color: white;
@@ -29,26 +26,22 @@
     align-items: center;
 }
 
-/* Icono de error grande y rojo */
 .error-icon {
     font-size: 3rem;
     color: #A00000;
     margin-bottom: 20px;
 }
 
-/* Estilo del encabezado del error */
 .error-header heading {
     font-family: IndivisaFontBold;
     font-size: 1.5rem;
     text-align: center;
 }
 
-/* Lista de errores con margen superior */
 .error-list {
     margin-top: 20px;
 }
 
-/* Estilo de cada elemento de la lista de errores */
 .error-list-item {
     font-family: IndivisaFont;
     border: 0;
@@ -56,26 +49,12 @@
     align-items: center;
 }
 
-/* Icono pequeño para cada elemento de la lista de errores */
 .error-list-icon {
     font-size: 1rem;
     color: #002855;
     margin-right: 10px;
 }
 
-/* Estilo para los botones de acción en la sección de errores */
-.error-actions button {
-    margin: 10px;
-}
-
-/* Estilo específico para el botón azul referente a la universidad La Salle Bajío */
-.btn-indivisa-blue {
-    background-color: #002855;
-    border-color: #002855;
-    color: white;
-}
-
-/* Estilo para el pie de página del error con padding y fuente específica */
 .error-footer {
     padding: 15px;
     border-bottom-left-radius: 12px;

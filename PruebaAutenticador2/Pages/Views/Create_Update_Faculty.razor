@@ -58,7 +58,7 @@
                     <Field Class="form-field">
                         <!-- El input se bloquea cuando detecta que ya se subio un archivo temporal. -->
                         <FieldLabel for="nuevoArchivoPoliticas">Adjuntar archivo de políticas en formato PDF</FieldLabel>
-                        <FileEdit Changed="@OnFilesChanged" Disabled="@(archivoPoliticasTemp != null && archivoPoliticasTemp.Any(x => !x.MarcarArchivoParaEliminar))" Class="form-control" ElementId="nuevoArchivoPoliticas" />
+                        <FileEdit Filter=".pdf" Changed="@OnFilesChanged" Disabled="@(archivoPoliticasTemp != null && archivoPoliticasTemp.Any(x => !x.MarcarArchivoParaEliminar))" Class="form-control" ElementId="nuevoArchivoPoliticas" />
                         @if (archivoPoliticasTemp != null && archivoPoliticasTemp.Any(x => !x.MarcarArchivoParaEliminar))
                         {
                             <div class="text-muted mt-1" style="font-size: 0.85rem; font-family:IndivisaFontBold">
@@ -140,7 +140,7 @@
 <Modal @ref="@modalToShowErrorMessage" Style="border-radius: 10px;">
     <ModalContent Centered="true">
         <ModalBody>
-            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;">@errorMessage</Heading>
+            <Heading Size="HeadingSize.Is5" Style="text-align:center; font-family:IndivisaFont; color: #002855;"><Paragraph Style="white-space: pre-line; text-align:center;">@errorMessage</Paragraph></Heading>
             <Button Style="font-family:IndivisaFont; background-color: #002855; color: #ffffff; margin-top: 10px;" Block="true" Clicked="() => HideModal(modalToShowErrorMessage, false)">
                 Ok
             </Button>
@@ -280,8 +280,12 @@
                 {
                     switch (response.StatusCode)
                     {
+                        // Se muestra un mensaje de error específico para el caso de BadRequest, ya que es el error más común que se puede presentar al crear o actualizar una facultad, debido a la validación específica de los campos.
+                        // El mensaje se muestra en doble línea para que sea más fácil de leer, ya que el mensaje es un poco largo.
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos de la facultad no deben quedar vacios (excepto slogan). Además, el nombre deben tener al menos 5 caracteres y no debe superar los 100 caracteres, mientras que la misión y la visión de la facultad no debe superar los 1000 caracteres.";
+                            errorMessage = "• Los campos de la facultad no deben quedar vacíos (excepto slogan).\n\n" +
+                            "• El nombre debe tener entre 5 y 100 caracteres.\n\n" +
+                            "• La misión y visión debe tener entre 5 y 1000 caracteres.";
                             await modalToShowErrorMessage.Show();
                             break;
 
@@ -299,7 +303,7 @@
                     return;
                 }
 
-                currentFaculty.Id = response.Data!.Id;
+                currentFaculty.Id = response.Data!.Id; // Se asigna el Id generado al currentFaculty para poder asociar el archivo de políticas a la facultad recién creada.
 
             }
             else
@@ -311,7 +315,10 @@
                     switch (response.StatusCode)
                     {
                         case HttpStatusCode.BadRequest:
-                            errorMessage = "Los campos de la facultad no deben quedar vacios (excepto slogan). Además, el nombre deben tener al menos 5 caracteres y no debe superar los 100 caracteres, mientras que la misión y la visión de la facultad no debe superar los 1000 caracteres. También puede ser que el ID no coincida.";
+                            errorMessage = "• Los campos de la facultad no deben quedar vacíos (excepto slogan).\n\n" +
+                            "• El nombre debe tener entre 5 y 100 caracteres.\n\n" +
+                            "• La misión y visión debe tener entre 5 y 1000 caracteres.\n\n" +
+                            "• También puede ser que el ID no coincida.";
                             await modalToShowErrorMessage.Show();
                             break;
 
@@ -334,6 +341,7 @@
                     return;
                 }
 
+                // Si el guardado o actualización de la facultad fue exitoso, se procede a eliminar el archivo temporal marcado para la eliminación y subir el nuevo archivo.
                 foreach (var e in archivoPoliticasTemp.Where(x => x.MarcarArchivoParaEliminar && !x.EsNuevoArchivo))
                 {
                     var responseToDeleteFile = await ArchivoPoliticasApiService.DeleteAsync(currentFaculty.Id, e.Id!.Value);
@@ -357,6 +365,7 @@
                     }
                 }
 
+                // Se sube el nuevo archivo solo si no hubo errores al eliminar el archivo anterior (en caso de que se haya marcado uno para eliminación) y si hay un nuevo archivo para subir.
                 foreach (var e in archivoPoliticasTemp.Where(x => x.EsNuevoArchivo))
                 {
                     var responseToUploadFile = await ArchivoPoliticasApiService.UploadAsync(currentFaculty.Id, e.file!);
@@ -389,7 +398,8 @@
         }
     }
 
-
+    // Este método carga el archivo de políticas asociado a la facultad, si es que existe uno. 
+    // Se llama en el método OnInitializedAsync después de cargar la información de la facultad, para que se pueda mostrar el nombre del archivo en la vista y se pueda manejar la eliminación o reemplazo del archivo.
     private async Task LoadFile()
     {
         var archivoReal = await ArchivoPoliticasApiService.GetByFacultyIdAsync(currentFaculty.Id);
@@ -411,6 +421,10 @@
         }).ToList();
     }
 
+    // Este método se ejecuta cuando se selecciona un nuevo archivo en el input. 
+    // Agrega el nuevo archivo a la lista de archivos temporales (archivoPoliticasTemp) con la propiedad EsNuevoArchivo marcada como true, 
+    // para indicar que es un archivo nuevo que aún no se ha guardado en la base de datos. 
+    // Además, si ya hay un archivo existente, el input se deshabilita para evitar que el usuario suba otro archivo sin eliminar primero el existente.
     private async Task OnFilesChanged(FileChangedEventArgs e)
     {
         foreach (var file in e.Files)
@@ -426,6 +440,9 @@
         }
     }
 
+    // Este método se ejecuta cuando el usuario confirma que desea eliminar un archivo de políticas. 
+    // Si el archivo es nuevo (EsNuevoArchivo = true), simplemente se elimina de la lista de archivos temporales (archivoPoliticasTemp). 
+    // Si el archivo no es nuevo, se marca para eliminación (MarcarArchivoParaEliminar = true) y se eliminará permanentemente cuando se guarde la facultad.
     private void RemoveEvidence()
     {
         if (archivoPoliticasT.EsNuevoArchivo)
@@ -440,6 +457,7 @@
         HideModal(modalRefByDeleteFile, false);
     }
 
+    // Este método se ejecuta cuando el usuario hace clic en el botón "Eliminar" junto a un archivo de políticas.
     private Task confirmDelete(ArchivoPoliticasTemporal archivoPT)
     {
         archivoPoliticasT = archivoPT;

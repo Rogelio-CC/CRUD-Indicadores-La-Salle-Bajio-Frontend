@@ -101,7 +101,7 @@ namespace PruebaAutenticador2.Services
                 if (response.IsSuccessStatusCode)
                 {
                     result.Success = true;
-                    result.Data = await response.Content.ReadFromJsonAsync<IndicadorDto>();
+                    result.Data = await response.Content.ReadFromJsonAsync<IndicadorDto>(); // Se espera que el servidor devuelva el objeto creado con su ID asignado.
                 }
                 else
                 {
