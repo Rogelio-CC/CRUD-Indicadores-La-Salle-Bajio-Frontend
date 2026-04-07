@@ -29,15 +29,35 @@
 @code {
     // Al iniciar la página, se verifica el estado de autenticación del usuario.
     // Si no está autenticado, se redirige a la página de inicio de sesión. 
-    // Si está autenticado, se obtiene su correo electrónico y se intenta iniciar sesión en la API para obtener un token JWT. 
+    // Si está autenticado, se obtiene su correo electrónico y se intenta iniciar sesión en la API para obtener un token JWT.
+    // Nota: el atributo replace: true en Nav.NavigateTo se utiliza para reemplazar la URL actual (redirect) en el historial del navegador, 
+    // evitando que el usuario pueda volver a esta página de redirección utilizando el botón "Atrás" del navegador. Sin embargo, 
+    // por la existencia de múltiples métodos asíncronos en esta página, es posible que tarde en implementarse por completo por el renderizado de la misma,
+    // logrando por completo el remplazo de la URL actual después de unos segundos o cuando el usuario intenta volver a /redirect por segunda vez y ya se bloquee el acceso a esta página.
     protected override async Task OnInitializedAsync()
     {
+        // Checa si ya se tiene un token JWT en memoria o en el almacenamiento local. Si es así, se redirige a la página principal de la aplicación.
+        if (!string.IsNullOrEmpty(AuthState.JwtToken))
+        {
+            // Reemplaza la URL actual por /home (evita volver a /redirect con "Atrás")
+            Nav.NavigateTo("/home", replace: true);
+            return;
+        }
+        var existingToken = await tokenStorageService.GetTokenAsync();
+        if (!string.IsNullOrEmpty(existingToken))
+        {
+            // Reemplaza la URL actual por /home (evita volver a /redirect con "Atrás")
+            Nav.NavigateTo("/home", replace: true);
+            return;
+        }
+
+        // Si no se tiene el token en memoria o en almacenamiento local, se obtiene el estado de autenticación del usuario utilizando AuthenticationStateProvider para iniciar sesión en la API y obtener el token JWT.
         var authState = await AuthProvider.GetAuthenticationStateAsync();
         var user = authState.User;
 
         if (!user.Identity?.IsAuthenticated ?? true)
         {
-            Nav.NavigateTo("/");
+            Nav.NavigateTo("/", replace: true);
             return;
         }
 
@@ -47,7 +67,7 @@
         // Si no se encuentra el correo electrónico, se redirige a una página de error indicando que el usuario no fue encontrado.
         if (string.IsNullOrEmpty(email))
         {
-            Nav.NavigateTo("/usuario-no-encontrado");
+            Nav.NavigateTo("/usuario-no-encontrado", replace: true);
             return;
         }
 
@@ -57,7 +77,7 @@
         // Si la respuesta de inicio de sesión es nula, se redirige a una página de error indicando que el usuario no fue encontrado.
         if (loginResponse == null)
         {
-            Nav.NavigateTo("/usuario-no-encontrado");
+            Nav.NavigateTo("/usuario-no-encontrado", replace: true);
             return;
         }
 
@@ -77,14 +97,14 @@
             rol != "Investigador" && 
             rol != "Maestro")
         {
-            Nav.NavigateTo("/rol-no-identificado");
+            Nav.NavigateTo("/rol-no-identificado", replace: true);
             return;
         }
 
         // Verificar que se haya obtenido un Id de usuario válido. Si no es así, se redirige a una página de error indicando que el usuario no fue encontrado.
         if (string.IsNullOrEmpty(idUser))
         {
-            Nav.NavigateTo("/usuario-no-encontrado");
+            Nav.NavigateTo("/usuario-no-encontrado", replace: true);
             return;
         }
 
@@ -94,7 +114,7 @@
 
         // Redirigir a la página principal de la aplicación. 
         // Dependiendo de la implementación de la aplicación, se podría redirigir a diferentes páginas dependiendo del rol del usuario.
-        Nav.NavigateTo("/home");
+        Nav.NavigateTo("/home", replace: true);
     }
 
 }
