@@ -15,9 +15,6 @@
         // Tipo de entidad a la que pertenece el comentario.
         public string TipoObjetivo { get; set; } = null!;
 
-        // Identificador de la entidad a la que pertenece el comentario.
-        public Guid IdObjetivo { get; set; }
-
         // Identificador del usuario que creó el comentario.
         public Guid CreadorId { get; set; }
 
