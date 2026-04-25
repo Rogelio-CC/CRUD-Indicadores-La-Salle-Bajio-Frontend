@@ -73,6 +73,7 @@
                             <Select Class="form-select" TValue="string" ElementId="frecuenciaControl" @bind-SelectedValue="currentIndicator.FrecuenciaControl">
                                 <SelectItem TValue="string" Value="string.Empty">Selecciona alguna de las opciones</SelectItem>
                                 <SelectItem TValue="string" Value="@("Anual")">Anual</SelectItem>
+                                <SelectItem TValue="string" Value="@("Semestral")">Semestral</SelectItem>
                                 <SelectItem TValue="string" Value="@("Mensual")">Mensual</SelectItem>
                                 <SelectItem TValue="string" Value="@("Semanal")">Semanal</SelectItem>
                                 <SelectItem TValue="string" Value="@("Diario")">Diario</SelectItem>
@@ -411,7 +412,7 @@
     private List<CarreraComboDTO> carreras = new();
     private List<GrupoIndicadoresComboDTO> gruposIndicadores = new();
     private List<EvidenciaTemporal> evidenciasTemp = new();
-    private EvidenciaTemporal evidenciaT = new EvidenciaTemporal(); //
+    private EvidenciaTemporal evidenciaT = new EvidenciaTemporal();
 
     private bool remiderActivateIndicator { get; set; } = false;
 
@@ -525,7 +526,6 @@
                 currentIndicator = new Indicator();
                 pageTitle = "Crear indicador";
                 buttonText = "Crear";
-                evidenceText = "Agregar evidencias (primero crea un indicador)";
 
             }
 
